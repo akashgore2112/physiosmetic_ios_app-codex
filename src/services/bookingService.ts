@@ -1,7 +1,7 @@
 import { supabase } from '../config/supabaseClient';
 import type { AvailabilitySlot } from '../types/AvailabilitySlot';
 import type { Appointment } from '../types/appointment';
-import { getClinicDateWindow } from '../utils/clinicTime';
+import { getClinicDateWindow, isPastSlot } from '../utils/clinicTime';
 
 export type SlotWithTherapist = AvailabilitySlot & { therapist?: { id: string; name: string } };
 
@@ -29,9 +29,10 @@ export async function getSlotsForServiceAndDate(serviceId: string, date: string)
     .eq('service_id', serviceId)
     .eq('date', date)
     .eq('is_booked', false)
-    .order('start_time');
+    .order('start_time', { ascending: true });
   if (error) throw error;
-  return (data ?? []).map((r: any) => ({
+  const rows = (data ?? []).filter((r: any) => !isPastSlot(r.date, r.start_time));
+  return rows.map((r: any) => ({
     id: r.id,
     therapist_id: r.therapist_id,
     service_id: r.service_id,
@@ -186,18 +187,16 @@ export async function getUpcomingAppointmentsForUser(userId: string, max = 10): 
 }
 
 export async function getNextSlotsForService(serviceId: string, limit = 3): Promise<SlotWithTherapist[]> {
-  const todayStr = new Date().toISOString().slice(0, 10);
   const { data, error } = await supabase
     .from('availability_slots')
     .select('id,therapist_id,service_id,date,start_time,end_time,is_booked, therapists!inner(id,name)')
     .eq('service_id', serviceId)
     .eq('is_booked', false)
-    .gte('date', todayStr)
-    .order('date')
-    .order('start_time')
-    .limit(limit);
+    .order('date', { ascending: true })
+    .order('start_time', { ascending: true });
   if (error) throw error;
-  return (data ?? []).map((r: any) => ({
+  const future = (data ?? []).filter((r: any) => !isPastSlot(r.date, r.start_time)).slice(0, limit);
+  return future.map((r: any) => ({
     id: r.id,
     therapist_id: r.therapist_id,
     service_id: r.service_id,
@@ -222,11 +221,12 @@ export async function getNextAvailableSlots(limit = 3): Promise<NextAvailableSlo
     .select('id,service_id,therapist_id,date,start_time,end_time,is_booked, services:service_id(id,name), therapists:therapist_id(id,name)')
     .in('date', windowDates)
     .eq('is_booked', false)
-    .order('date')
-    .order('start_time');
+    .order('date', { ascending: true })
+    .order('start_time', { ascending: true });
   if (error) throw error;
+  const filtered = (data ?? []).filter((r: any) => !isPastSlot(r.date, r.start_time));
   const earliestByPair = new Map<string, any>();
-  for (const r of data ?? []) {
+  for (const r of filtered) {
     const key = `${r.service_id}:${r.therapist_id}`;
     if (!earliestByPair.has(key)) earliestByPair.set(key, r);
   }

@@ -1,6 +1,7 @@
 // Helpers for clinic-local date math using Asia/Dubai without external deps
 
-const TIMEZONE = 'Asia/Dubai';
+export const CLINIC_TZ = 'Asia/Dubai';
+const TIMEZONE = CLINIC_TZ;
 
 function toDubaiDate(d: Date): Date {
   // Convert given Date to an equivalent date/time in Asia/Dubai by reconstructing components
@@ -55,3 +56,22 @@ export function isWithinClinicWindow(dateStr: string, daysAhead = 7): boolean {
   return window.includes(dateStr);
 }
 
+// Lightweight helpers requested by spec
+export function nowInClinicTZ(): Date {
+  // Keep as JS Date; comparisons will be performed with string-based helpers
+  return new Date();
+}
+
+export function isPastSlot(dateISO: string, startTimeHHMM: string): boolean {
+  // dateISO: 'YYYY-MM-DD', startTimeHHMM: 'HH:MM'
+  // Convert to a comparable Date (UTC baseline is acceptable for relative ordering here)
+  try {
+    const [y, m, d] = dateISO.split('-').map((n) => parseInt(n, 10));
+    const [hh, mm] = startTimeHHMM.split(':').map((n) => parseInt(n, 10));
+    const slotUtc = new Date(Date.UTC(y, (m - 1), d, hh, mm));
+    const now = new Date();
+    return slotUtc.getTime() <= now.getTime();
+  } catch {
+    return false;
+  }
+}

@@ -1,10 +1,12 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { View, Text, FlatList, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { useFocusEffect } from '@react-navigation/native';
 import type { BookingStackParamList } from '../../navigation/BookingStack';
 import { getSlotsForServiceAndDate, SlotWithTherapist } from '../../services/bookingService';
 import { useToast } from '../../components/feedback/useToast';
 import { formatTime } from '../../utils/formatDate';
+import { isPastSlot } from '../../utils/clinicTime';
 
 type Props = NativeStackScreenProps<BookingStackParamList, 'SelectTimeSlot'>;
 
@@ -22,7 +24,13 @@ export default function SelectTimeSlotScreen({ route, navigation }: Props): JSX.
       try {
         const s = await getSlotsForServiceAndDate(serviceId, date);
         const filtered = therapistId ? s.filter((x) => x.therapist_id === therapistId) : s;
-        if (!cancelled) setSlots(filtered);
+        const visible = filtered.filter((x) => !isPastSlot(x.date, x.start_time));
+        if (!cancelled) {
+          setSlots(visible);
+          if (selectedId && !visible.some((v) => v.id === selectedId)) {
+            setSelectedId(null);
+          }
+        }
       } catch (e: any) {
         show(e?.message ?? 'Failed to load slots');
       } finally {
@@ -33,6 +41,22 @@ export default function SelectTimeSlotScreen({ route, navigation }: Props): JSX.
       cancelled = true;
     };
   }, [serviceId, therapistId, date]);
+
+  // Auto-prune past slots every 60s while focused
+  useFocusEffect(
+    React.useCallback(() => {
+      const id = setInterval(() => {
+        setSlots((curr) => {
+          const pruned = curr.filter((s) => !isPastSlot(s.date, s.start_time));
+          if (selectedId && !pruned.some((v) => v.id === selectedId)) {
+            setSelectedId(null);
+          }
+          return pruned;
+        });
+      }, 60000);
+      return () => clearInterval(id);
+    }, [selectedId])
+  );
 
   const selectedSlot = useMemo(() => slots.find((s) => s.id === selectedId) || null, [selectedId, slots]);
 

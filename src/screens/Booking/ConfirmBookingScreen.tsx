@@ -3,6 +3,7 @@ import { View, Text, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { useSessionStore } from '../../store/useSessionStore';
 import { bookAppointment, rescheduleAppointment } from '../../services/bookingService';
 import { useToast } from '../../components/feedback/useToast';
+import { isPastSlot } from '../../utils/clinicTime';
 import { formatDate, formatTime } from '../../utils/formatDate';
 
 type Params = {
@@ -22,6 +23,12 @@ export default function ConfirmBookingScreen({ route, navigation }: any): JSX.El
   const onConfirm = async () => {
     if (!canConfirm) {
       show('Please sign in to confirm');
+      return;
+    }
+    // Race guard: ensure slot is still in the future
+    if (params?.slot && isPastSlot(params.slot.date, params.slot.start_time)) {
+      show('This slot just expired, please pick another time.');
+      navigation.goBack();
       return;
     }
     setLoading(true);

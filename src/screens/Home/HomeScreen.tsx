@@ -7,6 +7,7 @@ import { supabase } from '../../config/supabaseClient';
 import { getAllActiveServices } from '../../services/serviceCatalogService';
 import { useToast } from '../../components/feedback/useToast';
 import { formatDate, formatTime } from '../../utils/formatDate';
+import { isPastSlot } from '../../utils/clinicTime';
 import ServiceCard from '../../components/ServiceCard';
 
 export default function HomeScreen({ navigation }: any): JSX.Element {
@@ -69,7 +70,8 @@ export default function HomeScreen({ navigation }: any): JSX.Element {
     (async () => {
       try {
         const list = await getNextAvailableSlots(3);
-        if (!cancelled) setNextSlots(list);
+        const future = (list || []).filter((s: any) => !isPastSlot(s.date, s.start_time));
+        if (!cancelled) setNextSlots(future);
       } catch {}
     })();
     return () => { cancelled = true; };

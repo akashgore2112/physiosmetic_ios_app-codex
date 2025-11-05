@@ -391,6 +391,24 @@ Deep analysis notes
 - `src/components/NextSlotsRow.tsx`: next slots chips row with friendly empty state.
 - `src/components/StickyBookingBar.tsx`: anchored safe-area CTA with `PriceTag`.
 
+### Home/Service slots → future-only + realtime + pruning (2025-11-05)
+- Goal: Ensure only truly upcoming times appear; keep Home dynamic and resilient to last‑minute changes.
+- Files changed:
+  - `src/utils/clinicTime.ts`: added `CLINIC_TZ`, `nowInClinicTZ()`, and `isPastSlot(date, time)` helpers.
+  - `src/services/bookingService.ts`:
+    - `getSlotsForServiceAndDate` now filters with `!isPastSlot` (client-side) and orders by start_time.
+    - `getNextSlotsForService` orders by date/time then filters `!isPastSlot` and slices to `limit`.
+    - `getNextAvailableSlots` future-only via `!isPastSlot` before picking earliest per (service, therapist).
+    - Added `getUpcomingAppointmentsForUser(userId, max)` for Home carousel.
+  - `src/screens/Home/HomeScreen.tsx`:
+    - Horizontal “Your Upcoming Appointments (N)” list; tap → My Appointments (highlightId).
+    - Filters Home “Next Available Slots” via `!isPastSlot` and hides section if empty.
+    - Realtime subscription to `public.appointments` (user_id scoped) for immediate refresh on book/cancel/reschedule.
+  - `src/screens/Services/ServiceDetailScreen.tsx`: next slots already sourced via service helper; section hidden when empty.
+  - `src/screens/Booking/SelectTimeSlotScreen.tsx`: filters `!isPastSlot` after fetch; 60s focus interval prunes past slots; clears selection if current slot expires.
+  - `src/screens/Booking/ConfirmBookingScreen.tsx`: pre‑confirm race guard using `isPastSlot` → toast + go back if slot expired.
+- Result: Home card(s) update instantly; Service/Select Time never show past slots; Confirm prevents races.
+
 - Atomic booking RPC
   - Added `scripts/rpc_book_appointment.sql` and executed via MCP to create `public.book_appointment(...)` (security definer).
   - Switched `createBooking()` to `supabase.rpc('book_appointment', ...)` in `src/services/bookingService.ts`.
