@@ -2,7 +2,8 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { View, Text, TouchableOpacity, ActivityIndicator, ScrollView, Pressable } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import { useSessionStore } from '../../store/useSessionStore';
-import { getNextAppointmentForUser, getNextAvailableSlots } from '../../services/bookingService';
+import { getNextAppointmentForUser, getUpcomingAppointmentsForUser, getNextAvailableSlots } from '../../services/bookingService';
+import { supabase } from '../../config/supabaseClient';
 import { getAllActiveServices } from '../../services/serviceCatalogService';
 import { useToast } from '../../components/feedback/useToast';
 import { formatDate, formatTime } from '../../utils/formatDate';
@@ -12,11 +13,12 @@ export default function HomeScreen({ navigation }: any): JSX.Element {
   const { isLoggedIn, userId } = useSessionStore();
   const [loading, setLoading] = useState(false);
   const [nextAppt, setNextAppt] = useState<any | null>(null);
+  const [upcoming, setUpcoming] = useState<any[]>([]);
   const [services, setServices] = useState<any[]>([]);
   const [nextSlots, setNextSlots] = useState<any[]>([]);
   const { show } = useToast();
 
-  async function refresh() {
+  const refresh = useCallback(async () => {
     if (!userId) return setNextAppt(null);
     setLoading(true);
     try {
@@ -25,15 +27,31 @@ export default function HomeScreen({ navigation }: any): JSX.Element {
       if (appt) console.debug('[home][next-appt] appt-found', appt.id, appt.availability_slots?.date, appt.availability_slots?.start_time);
       else console.debug('[home][next-appt] appt-none');
       setNextAppt(appt as any);
+      const list = await getUpcomingAppointmentsForUser(userId, 10);
+      setUpcoming(list as any[]);
     } catch (e: any) {
       console.debug('[home][next-appt] query-error (silent):', e?.message);
     } finally {
       setLoading(false);
     }
-  }
+  }, [userId]);
 
-  useEffect(() => { refresh(); }, [userId]);
-  useFocusEffect(useCallback(() => { refresh(); }, []));
+  useEffect(() => { refresh(); }, [refresh]);
+  useFocusEffect(useCallback(() => { refresh(); }, [refresh]));
+
+  // Realtime: reflect appointment changes immediately
+  useEffect(() => {
+    if (!userId) return;
+    const channel = supabase
+      .channel(`home_next_appt_${userId}`)
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'appointments', filter: `user_id=eq.${userId}` }, () => {
+        refresh();
+      })
+      .subscribe();
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [userId, refresh]);
 
   useEffect(() => {
     let cancelled = false;
@@ -101,18 +119,27 @@ export default function HomeScreen({ navigation }: any): JSX.Element {
 
       {/* Your Next Appointment (compact, tappable) */}
       <View style={{ marginTop: 20 }}>
-        {loading ? null : ((!!userId) && nextAppt?.availability_slots ? (
-          <Pressable
-            onPress={() => navigation.navigate('Account', { screen: 'MyAppointments', params: { highlightId: nextAppt.id } })}
-            style={({ pressed }) => ({ backgroundColor: '#fff', borderRadius: 12, padding: 16, marginBottom: 16, opacity: pressed ? 0.9 : 1 })}
-          >
-            <Text style={{ fontWeight: '700', marginBottom: 6 }}>Your Next Appointment</Text>
-            <Text style={{ fontWeight: '600' }}>{nextAppt.services?.name || 'Service'} • {nextAppt.therapists?.name || 'Therapist'}</Text>
-            <Text style={{ marginTop: 4 }}>{formatDate(nextAppt.availability_slots.date)} • {formatTime(nextAppt.availability_slots.start_time)}</Text>
-            <View style={{ marginTop: 8, alignSelf: 'flex-start', paddingHorizontal: 8, paddingVertical: 4, borderRadius: 10, backgroundColor: '#e6f7ee' }}>
-              <Text style={{ color: '#2e7d32', fontWeight: '600' }}>{nextAppt.status}</Text>
-            </View>
-          </Pressable>
+        {loading ? null : ((!!userId) && upcoming.length > 0 ? (
+          <View>
+            <Text style={{ fontSize: 16, fontWeight: '700', marginBottom: 8 }}>Your Upcoming Appointments ({upcoming.length})</Text>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+              <View style={{ flexDirection: 'row' }}>
+                {upcoming.map((item) => (
+                  <Pressable
+                    key={item.id}
+                    onPress={() => navigation.navigate('Account', { screen: 'MyAppointments', params: { highlightId: item.id } })}
+                    style={({ pressed }) => ({ backgroundColor: '#fff', borderRadius: 12, padding: 12, marginRight: 10, width: 220, opacity: pressed ? 0.9 : 1 })}
+                  >
+                    <Text numberOfLines={1} style={{ fontWeight: '600' }}>{item.services?.name || 'Service'} • {item.therapists?.name || 'Therapist'}</Text>
+                    <Text style={{ marginTop: 4 }}>{formatDate(item.availability_slots.date)} • {formatTime(item.availability_slots.start_time)}</Text>
+                    <View style={{ marginTop: 8, alignSelf: 'flex-start', paddingHorizontal: 8, paddingVertical: 4, borderRadius: 10, backgroundColor: '#e6f7ee' }}>
+                      <Text style={{ color: '#2e7d32', fontWeight: '600' }}>{item.status}</Text>
+                    </View>
+                  </Pressable>
+                ))}
+              </View>
+            </ScrollView>
+          </View>
         ) : null)}
       </View>
 

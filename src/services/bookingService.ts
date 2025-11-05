@@ -149,6 +149,42 @@ export async function getNextAppointmentForUser(userId: string): Promise<(Appoin
   } as any;
 }
 
+export async function getUpcomingAppointmentsForUser(userId: string, max = 10): Promise<Array<Appointment & {
+  availability_slots: AvailabilitySlot,
+  services?: { name: string },
+  therapists?: { name: string },
+}>> {
+  const now = new Date();
+  const todayStr = now.toISOString().slice(0, 10);
+  const hh = String(now.getHours()).padStart(2, '0');
+  const mm = String(now.getMinutes()).padStart(2, '0');
+  const nowTime = `${hh}:${mm}`;
+
+  const { data, error } = await supabase
+    .from('appointments')
+    .select('id,status, service_id, therapist_id, availability_slots:slot_id(id,service_id,therapist_id,date,start_time,end_time,is_booked), services:service_id(name), therapists:therapist_id(name)')
+    .eq('user_id', userId)
+    .eq('status', 'booked')
+    .gte('availability_slots.date', todayStr)
+    .limit(100);
+  if (error) throw error;
+  const rows = (data ?? []) as any[];
+  const future = rows.filter((r) => {
+    const d = r.availability_slots?.date || '';
+    const t = (r.availability_slots?.start_time || '').slice(0, 5);
+    return (d > todayStr) || (d === todayStr && t > nowTime);
+  });
+  future.sort((a: any, b: any) => {
+    const ad = a.availability_slots?.date ?? '';
+    const bd = b.availability_slots?.date ?? '';
+    if (ad !== bd) return ad < bd ? -1 : 1;
+    const at = (a.availability_slots?.start_time ?? '').slice(0, 5);
+    const bt = (b.availability_slots?.start_time ?? '').slice(0, 5);
+    return at < bt ? -1 : at > bt ? 1 : 0;
+  });
+  return future.slice(0, max) as any;
+}
+
 export async function getNextSlotsForService(serviceId: string, limit = 3): Promise<SlotWithTherapist[]> {
   const todayStr = new Date().toISOString().slice(0, 10);
   const { data, error } = await supabase

@@ -364,6 +364,33 @@ Deep analysis notes
 - Tests: With an order in `placed`, Cancel is visible and enabled → tap → status becomes `cancelled` → button hides on refresh.
 ## Today’s Log (2025-11-04)
 
+### Service Detail refactor + therapist flow + sticky bar (2025-11-05)
+- Refactored Service Detail to premium layout with image, category badge, name, `PriceTag`, online pill, collapsible description, and next slots row. Sticky booking bar added.
+- Files:
+  - `src/screens/Services/ServiceDetailScreen.tsx` (refactor to ScrollView layout; removed "Who Treats"; CTA → `SelectTherapist`; next slots → `SelectTimeSlot`)
+  - `src/components/PriceTag.tsx` (inline price/duration chip)
+  - `src/components/NextSlotsRow.tsx` (chips for next 3 slots; friendly empty state)
+  - `src/components/StickyBookingBar.tsx` (safe-area bottom CTA + price)
+- Behavior:
+  - Fetches service via `getServiceById(serviceId)`; next slots via `getNextSlotsForService(serviceId, 3)`.
+  - Tapping a next slot routes to `SelectTimeSlot` with `{ serviceId, therapistId, date, therapistName, serviceName }`.
+  - Sticky CTA routes to `SelectTherapist` with `{ serviceId }`.
+
+### Therapist selection: full-detail cards + next slot (2025-11-05)
+- `src/components/TherapistCard.tsx`: full card with avatar, name, speciality, about, optional online badge, next-slot text, and "Select & Continue".
+- `src/screens/Booking/SelectTherapistScreen.tsx`:
+  - Reads `{ serviceId, isOnline, serviceName, category }` from route params.
+  - Loads therapists via availability-backed helper; falls back to active therapists (optional speciality~category filter).
+  - Fetches next slot per therapist using `bookingService.getNextSlotForTherapist(serviceId, therapistId)`; formats with `formatDate/formatTime`.
+  - Renders list of `TherapistCard` with `showOnlineBadge` and per-card next slot; onSelect → `SelectDate` prefilled.
+- `src/services/bookingService.ts`: added `getNextSlotForTherapist(serviceId, therapistId)` (future, unbooked, window today..+7, earliest).
+
+### Utility components (2025-11-05)
+- `src/components/TherapistChips.tsx`: horizontal chips component (currently not rendered in Service Detail per design).
+- `src/components/PriceTag.tsx`: compact "From ₹… • ~X min" helper.
+- `src/components/NextSlotsRow.tsx`: next slots chips row with friendly empty state.
+- `src/components/StickyBookingBar.tsx`: anchored safe-area CTA with `PriceTag`.
+
 - Atomic booking RPC
   - Added `scripts/rpc_book_appointment.sql` and executed via MCP to create `public.book_appointment(...)` (security definer).
   - Switched `createBooking()` to `supabase.rpc('book_appointment', ...)` in `src/services/bookingService.ts`.
