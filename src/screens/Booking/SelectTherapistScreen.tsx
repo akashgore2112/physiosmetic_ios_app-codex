@@ -1,24 +1,35 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, TouchableOpacity, ActivityIndicator } from 'react-native';
+import React, { useEffect, useMemo, useState } from 'react';
+import { View, Text, FlatList, ActivityIndicator, Pressable } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import type { BookingStackParamList } from '../../navigation/BookingStack';
-import { getTherapistsForService } from '../../services/bookingService';
+import { getTherapistsForService, getNextSlotForTherapist } from '../../services/bookingService';
 import { useToast } from '../../components/feedback/useToast';
+import TherapistCard from '../../components/TherapistCard';
+import { supabase } from '../../config/supabaseClient';
+import { formatDate, formatTime } from '../../utils/formatDate';
 
 type Props = NativeStackScreenProps<BookingStackParamList, 'SelectTherapist'>;
 
 export default function SelectTherapistScreen({ route, navigation }: Props): JSX.Element {
-  const { serviceId, serviceName, isOnline, appointmentId, oldSlotId } = route.params as any;
+  const { serviceId, isOnline, serviceName, category } = route.params || {};
   const [loading, setLoading] = useState(true);
-  const [therapists, setTherapists] = useState<{ id: string; name: string }[]>([]);
+  const [therapists, setTherapists] = useState<any[]>([]);
+  const [nextMap, setNextMap] = useState<Record<string, string | null>>({});
   const { show } = useToast();
 
   useEffect(() => {
     let cancelled = false;
     (async () => {
       try {
-        const list = await getTherapistsForService(serviceId);
-        if (!cancelled) setTherapists(list);
+        // Prefer availability-backed list; else fallback to active therapists by category
+        let list = await getTherapistsForService(serviceId);
+        if (!list || list.length === 0) {
+          const q = supabase.from('therapists').select('id,name,speciality,about,photo_url').eq('is_active', true);
+          const { data, error } = await q;
+          if (error) throw error;
+          list = (data ?? []).filter((t: any) => !category || (t.speciality || '').toLowerCase().includes(String(category).toLowerCase()));
+        }
+        if (!cancelled) setTherapists(list as any);
       } catch (e: any) {
         show(e?.message ?? 'Failed to load therapists');
       } finally {
@@ -26,31 +37,46 @@ export default function SelectTherapistScreen({ route, navigation }: Props): JSX
       }
     })();
     return () => { cancelled = true; };
-  }, [serviceId]);
+  }, [serviceId, category]);
+
+  useEffect(() => {
+    // Fire-and-forget next slot fetch per therapist
+    therapists.forEach(async (t) => {
+      try {
+        const slot = await getNextSlotForTherapist(serviceId, t.id);
+        const text = slot ? `${formatDate(slot.date)} · ${formatTime(slot.start_time)}` : null;
+        setNextMap((m) => ({ ...m, [t.id]: text }));
+      } catch {
+        setNextMap((m) => ({ ...m, [t.id]: null }));
+      }
+    });
+  }, [therapists, serviceId]);
 
   if (loading) {
     return (
-      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-        <ActivityIndicator />
+      <View style={{ flex: 1, padding: 12 }}>
+        {[1,2,3].map((i) => (
+          <View key={i} style={{ height: 120, backgroundColor: '#f3f3f3', borderRadius: 12, marginBottom: 12 }} />
+        ))}
       </View>
     );
   }
 
   return (
     <View style={{ flex: 1, padding: 12 }}>
-      <Text style={{ fontSize: 16, marginBottom: 8 }}>Choose a therapist for {serviceName}</Text>
+      <Text style={{ fontSize: 18, fontWeight: '800', marginBottom: 8 }}>Choose Specialist</Text>
       <FlatList
         data={therapists}
         keyExtractor={(t) => t.id}
         renderItem={({ item }) => (
-          <TouchableOpacity
-            onPress={() => navigation.navigate('SelectDate', { serviceId, serviceName, therapistId: item.id, therapistName: item.name, isOnline: !!isOnline, appointmentId, oldSlotId })}
-            style={{ backgroundColor: '#fff', padding: 14, borderRadius: 10, marginBottom: 8 }}
-          >
-            <Text style={{ fontWeight: '700' }}>{item.name}</Text>
-          </TouchableOpacity>
+          <TherapistCard
+            therapist={item}
+            nextSlotText={nextMap[item.id] ?? null}
+            showOnlineBadge={!!isOnline}
+            onSelect={(tid) => navigation.navigate('SelectDate', { serviceId, serviceName, therapistId: tid, therapistName: item.name, isOnline: !!isOnline })}
+          />
         )}
-        ListEmptyComponent={<Text>No therapists available for this service.</Text>}
+        ListEmptyComponent={<Text>Our team list is being updated.</Text>}
       />
     </View>
   );

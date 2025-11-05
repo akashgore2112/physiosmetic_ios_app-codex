@@ -101,7 +101,7 @@ export default function HomeScreen({ navigation }: any): JSX.Element {
 
       {/* Your Next Appointment (compact, tappable) */}
       <View style={{ marginTop: 20 }}>
-        {loading ? null : (isLoggedIn && nextAppt?.availability_slots ? (
+        {loading ? null : ((!!userId) && nextAppt?.availability_slots ? (
           <Pressable
             onPress={() => navigation.navigate('Account', { screen: 'MyAppointments', params: { highlightId: nextAppt.id } })}
             style={({ pressed }) => ({ backgroundColor: '#fff', borderRadius: 12, padding: 16, marginBottom: 16, opacity: pressed ? 0.9 : 1 })}

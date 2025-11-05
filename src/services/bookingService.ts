@@ -208,6 +208,23 @@ export async function getNextAvailableSlots(limit = 3): Promise<NextAvailableSlo
   return picked;
 }
 
+export async function getNextSlotForTherapist(serviceId: string, therapistId: string): Promise<{ date: string; start_time: string } | null> {
+  const windowDates = getClinicDateWindow(7);
+  const { data, error } = await supabase
+    .from('availability_slots')
+    .select('date,start_time')
+    .eq('service_id', serviceId)
+    .eq('therapist_id', therapistId)
+    .eq('is_booked', false)
+    .in('date', windowDates)
+    .order('date')
+    .order('start_time')
+    .limit(1);
+  if (error) throw error;
+  if (!data || data.length === 0) return null;
+  return { date: (data[0] as any).date, start_time: (data[0] as any).start_time };
+}
+
 // Double-book guard: block if user has any appointment at same date+time already
 async function hasUserApptAtDateTime(userId: string, date: string, startTime: string): Promise<boolean> {
   const { data, error } = await supabase
