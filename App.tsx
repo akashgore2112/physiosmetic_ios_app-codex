@@ -5,6 +5,22 @@ import { ToastProvider } from './src/components/feedback/ToastProvider';
 import { supabase } from './src/config/supabaseClient';
 import { useSessionStore } from './src/store/useSessionStore';
 import { fetchProfile } from './src/services/profileService';
+import * as Sentry from 'sentry-expo';
+import ErrorBoundary from './src/components/feedback/ErrorBoundary';
+
+Sentry.init({
+  dsn: process.env.EXPO_PUBLIC_SENTRY_DSN,
+  enableInExpoDevelopment: true,
+  debug: __DEV__,
+  beforeSend(event) {
+    if (event.request) {
+      // Guard PII: strip request bodies
+      // @ts-expect-error
+      if (event.request.data) event.request.data = undefined;
+    }
+    return event;
+  },
+});
 
 export default function App(): JSX.Element {
   // Bootstrap Supabase auth session and subscribe to changes
@@ -36,7 +52,9 @@ export default function App(): JSX.Element {
   return (
     <ToastProvider>
       <NavigationContainer>
-        <RootNavigator />
+        <ErrorBoundary>
+          <RootNavigator />
+        </ErrorBoundary>
       </NavigationContainer>
     </ToastProvider>
   );

@@ -4,6 +4,7 @@ import { formatPrice } from '../utils/formatPrice';
 import { showToast } from '../utils/toast';
 import { useCartStore } from '../store/useCartStore';
 import { getProductPlaceholder } from '../utils/productImages';
+import { startSpan } from '../monitoring/instrumentation';
 
 type Props = {
   id: string;
@@ -37,15 +38,18 @@ export default function ProductCard({ id, name, price, image_url, category, in_s
         <Text style={{ fontSize: 12, color: '#999', marginTop: 2 }}>★ 4.5</Text>
         <Pressable
           onPress={() => {
+            const span = startSpan('cart.add');
             if (clinic_only) {
               showToast('Request sent to clinic');
+              span.end();
               return;
             }
-            if (onAdd) onAdd();
+            if (onAdd) { onAdd(); span.end(); }
             else {
               if (outOfStock) { showToast('Out of stock'); return; }
               add({ id, name, price, qty: 1 });
               showToast('Added to cart');
+              span.end();
             }
           }}
           hitSlop={8}

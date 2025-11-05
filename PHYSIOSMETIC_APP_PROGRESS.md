@@ -409,6 +409,19 @@ Deep analysis notes
   - `src/screens/Booking/ConfirmBookingScreen.tsx`: pre‑confirm race guard using `isPastSlot` → toast + go back if slot expired.
 - Result: Home card(s) update instantly; Service/Select Time never show past slots; Confirm prevents races.
 
+### Monitoring: Sentry integration + spans (2025-11-05)
+- Integrated `sentry-expo` plugin and initialized Sentry in App with DSN from `EXPO_PUBLIC_SENTRY_DSN`. Enabled in dev; debug reflects `__DEV__`. Added `beforeSend` to strip request bodies.
+- Global ErrorBoundary captures exceptions via Sentry and shows a simple fallback UI.
+- Instrumentation utility:
+  - `src/monitoring/instrumentation.ts` exports `startSpan(name)` that uses `Sentry.startSpan` if available else no‑op.
+- Spans added around:
+  - Booking confirm (`booking.confirm`) in `ConfirmBookingScreen`.
+  - Cart add (`cart.add`) in `ProductCard`.
+  - Orders cancel/reorder (`orders.cancel`, `orders.reorder`) in `MyOrdersScreen`.
+- Config:
+  - `app.json` → `plugins: ["sentry-expo"]`.
+  - `App.tsx` → Sentry.init and ErrorBoundary around RootNavigator.
+
 - Atomic booking RPC
   - Added `scripts/rpc_book_appointment.sql` and executed via MCP to create `public.book_appointment(...)` (security definer).
   - Switched `createBooking()` to `supabase.rpc('book_appointment', ...)` in `src/services/bookingService.ts`.

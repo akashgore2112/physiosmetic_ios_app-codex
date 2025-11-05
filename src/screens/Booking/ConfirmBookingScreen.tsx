@@ -4,6 +4,7 @@ import { useSessionStore } from '../../store/useSessionStore';
 import { bookAppointment, rescheduleAppointment } from '../../services/bookingService';
 import { useToast } from '../../components/feedback/useToast';
 import { isPastSlot } from '../../utils/clinicTime';
+import { startSpan } from '../../monitoring/instrumentation';
 import { formatDate, formatTime } from '../../utils/formatDate';
 
 type Params = {
@@ -21,8 +22,10 @@ export default function ConfirmBookingScreen({ route, navigation }: any): JSX.El
   const canConfirm = useMemo(() => Boolean(userId && params?.slot?.id && params?.serviceId), [userId, params]);
 
   const onConfirm = async () => {
+    const span = startSpan('booking.confirm');
     if (!canConfirm) {
       show('Please sign in to confirm');
+      span.end();
       return;
     }
     // Race guard: ensure slot is still in the future
@@ -57,6 +60,7 @@ export default function ConfirmBookingScreen({ route, navigation }: any): JSX.El
       show(e?.message ?? 'Booking failed');
     } finally {
       setLoading(false);
+      span.end();
     }
   };
 

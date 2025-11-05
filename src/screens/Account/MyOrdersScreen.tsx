@@ -5,6 +5,7 @@ import { getMyOrders, getReorderItems, cancelOrder, getOrderItems } from '../../
 import { useCartStore } from '../../store/useCartStore';
 import { useToast } from '../../components/feedback/useToast';
 import { formatPrice } from '../../utils/formatPrice';
+import { startSpan } from '../../monitoring/instrumentation';
 
 type Row = { id: string; total_amount: number; status: string; created_at?: string };
 type ItemRow = { product_id: string; qty: number; price_each: number; products?: { name?: string } };
@@ -34,6 +35,7 @@ export default function MyOrdersScreen({ navigation }: any): JSX.Element {
   }, [userId]);
 
   const onReorder = async (orderId: string) => {
+    const span = startSpan('orders.reorder');
     try {
       const items = await getReorderItems(orderId);
       items.forEach((it) => addItem(it));
@@ -42,9 +44,11 @@ export default function MyOrdersScreen({ navigation }: any): JSX.Element {
     } catch (e: any) {
       show(e?.message ?? 'Reorder failed');
     }
+    span.end();
   };
 
   const onCancel = async (orderId: string) => {
+    const span = startSpan('orders.cancel');
     try {
       await cancelOrder(orderId);
       show('Order cancelled');
@@ -52,6 +56,7 @@ export default function MyOrdersScreen({ navigation }: any): JSX.Element {
     } catch (e: any) {
       show(e?.message ?? 'Cancel failed');
     }
+    span.end();
   };
 
   return (
