@@ -561,6 +561,7 @@ Deep analysis notes
 - Files touched: `src/services/bookingService.ts`, `src/screens/Home/HomeScreen.tsx`.
 - Helper now returns the earliest future appointment (status='booked') strictly after local now via date/time filter and includes service/therapist names.
 - Home renders a compact, tappable card with service, therapist, formatted date • time, and a status chip. Tap opens My Appointments (with highlightId). Card refreshes on tab focus and hides when none.
+- Diagnostics added during fix: console.debug tags (session-ok, query-called, appt-found/none, render path). These can be removed later.
 - Files touched:
   - `App.tsx`: Bootstraps session on app start (`supabase.auth.getSession`) and subscribes to `onAuthStateChange`; hydrates SessionStore with profile for greeting.
   - `src/services/authService.ts`: Implements `signIn`, `signUp` (ensures profile with RLS-safe `ensureProfileExists`), and `signOut`. Hydrates/clears SessionStore.

@@ -69,26 +69,84 @@ export async function getNextAppointmentForUser(userId: string): Promise<(Appoin
   services?: { name: string },
   therapists?: { name: string },
 }) | null> {
-  // Compute local date/time for strict future filter
+  // Safer approach: fetch a small window of future-by-date items then filter by time locally
   const now = new Date();
-  const todayStr = now.toISOString().slice(0, 10); // YYYY-MM-DD in local TZ approximation
+  const todayStr = now.toISOString().slice(0, 10);
   const hh = String(now.getHours()).padStart(2, '0');
   const mm = String(now.getMinutes()).padStart(2, '0');
-  const nowTime = `${hh}:${mm}`; // HH:MM
+  const nowTime = `${hh}:${mm}`;
 
-  // date > today OR (date = today AND start_time > now)
   const { data, error } = await supabase
     .from('appointments')
     .select('id,status, service_id, therapist_id, availability_slots:slot_id(id,service_id,therapist_id,date,start_time,end_time,is_booked), services:service_id(name), therapists:therapist_id(name)')
     .eq('user_id', userId)
     .eq('status', 'booked')
-    .or(`availability_slots.date.gt.${todayStr},and(availability_slots.date.eq.${todayStr},availability_slots.start_time.gt.${nowTime})`)
-    .order('availability_slots.date')
-    .order('availability_slots.start_time')
-    .limit(1)
-    .maybeSingle();
-  if (error && (error as any).code !== 'PGRST116') throw error;
-  return (data as any) ?? null;
+    .gte('availability_slots.date', todayStr)
+    .limit(50);
+  if (error) throw error;
+  const rows = (data ?? []) as any[];
+  // Sort locally by (date, start_time)
+  rows.sort((a: any, b: any) => {
+    const ad = a.availability_slots?.date ?? '';
+    const bd = b.availability_slots?.date ?? '';
+    if (ad !== bd) return ad < bd ? -1 : 1;
+    const at = (a.availability_slots?.start_time ?? '').slice(0, 5);
+    const bt = (b.availability_slots?.start_time ?? '').slice(0, 5);
+    return at < bt ? -1 : at > bt ? 1 : 0;
+  });
+  const first = rows.find((r) => (r.availability_slots?.date > todayStr) || (r.availability_slots?.date === todayStr && ((r.availability_slots?.start_time ?? '').slice(0, 5)) > nowTime));
+  if (first) return first as any;
+
+  // Fallback: fetch appointments → fetch their slots → compute future locally → join names
+  const { data: appts, error: apptErr } = await supabase
+    .from('appointments')
+    .select('id,slot_id,service_id,therapist_id,status')
+    .eq('user_id', userId)
+    .eq('status', 'booked')
+    .order('created_at', { ascending: true })
+    .limit(50);
+  if (apptErr) throw apptErr;
+  const slotIds = (appts ?? []).map((a: any) => a.slot_id).filter(Boolean);
+  if (slotIds.length === 0) return null;
+
+  const { data: slots, error: slotErr } = await supabase
+    .from('availability_slots')
+    .select('id,service_id,therapist_id,date,start_time,end_time,is_booked')
+    .in('id', slotIds);
+  if (slotErr) throw slotErr;
+  const futureSlots = (slots ?? []).filter((s: any) => {
+    const t = typeof s.start_time === 'string' ? s.start_time.slice(0, 5) : '';
+    return (s.date > todayStr) || (s.date === todayStr && t > nowTime);
+  });
+  if (futureSlots.length === 0) return null;
+  futureSlots.sort((a: any, b: any) => (a.date < b.date ? -1 : a.date > b.date ? 1 : (a.start_time < b.start_time ? -1 : a.start_time > b.start_time ? 1 : 0)));
+  const chosenSlot = futureSlots[0];
+  const chosenAppt = (appts ?? []).find((a: any) => a.slot_id === chosenSlot.id);
+  if (!chosenAppt) return null;
+
+  // Fetch names (best-effort)
+  let serviceName: string | undefined;
+  let therapistName: string | undefined;
+  try {
+    const [{ data: svc }] = await Promise.all([
+      supabase.from('services').select('name').eq('id', chosenSlot.service_id).maybeSingle(),
+    ]);
+    serviceName = (svc as any)?.name;
+  } catch {}
+  try {
+    const { data: th } = await supabase.from('therapists').select('name').eq('id', chosenSlot.therapist_id).maybeSingle();
+    therapistName = (th as any)?.name;
+  } catch {}
+
+  return {
+    id: chosenAppt.id,
+    status: chosenAppt.status,
+    service_id: chosenSlot.service_id,
+    therapist_id: chosenSlot.therapist_id,
+    availability_slots: chosenSlot as any,
+    services: serviceName ? { name: serviceName } : undefined,
+    therapists: therapistName ? { name: therapistName } : undefined,
+  } as any;
 }
 
 export async function getNextSlotsForService(serviceId: string, limit = 3): Promise<SlotWithTherapist[]> {

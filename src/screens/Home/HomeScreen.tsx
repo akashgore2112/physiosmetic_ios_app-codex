@@ -20,10 +20,13 @@ export default function HomeScreen({ navigation }: any): JSX.Element {
     if (!userId) return setNextAppt(null);
     setLoading(true);
     try {
+      console.debug('[home][next-appt] session-ok, querying for user:', userId);
       const appt = await getNextAppointmentForUser(userId);
+      if (appt) console.debug('[home][next-appt] appt-found', appt.id, appt.availability_slots?.date, appt.availability_slots?.start_time);
+      else console.debug('[home][next-appt] appt-none');
       setNextAppt(appt as any);
     } catch (e: any) {
-      // silent per spec
+      console.debug('[home][next-appt] query-error (silent):', e?.message);
     } finally {
       setLoading(false);
     }
