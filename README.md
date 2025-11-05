@@ -183,6 +183,29 @@ This matches clinic policy: "Login only at the point of commitment."
 
 ---
 
+## State Management → Zustand
+- We use Zustand for lightweight global state.
+- Stores live under `src/store/`.
+- Session store: `useSessionStore`
+  - `isLoggedIn: boolean`
+  - `user: { id?: string; name?: string } | null`
+  - `login(user)` / `logout()`
+- Cart store: `useCartStore`
+  - `items: Array<{ id: string; name: string; price: number; qty: number }>`
+  - `addItem(item)` / `removeItem(itemId)` / `clearCart()`
+  - `total(): number` derived getter
+
+Example usage:
+```ts
+import { useSessionStore } from './src/store/useSessionStore';
+import { useCartStore } from './src/store/useCartStore';
+
+const isLoggedIn = useSessionStore((s) => s.isLoggedIn);
+const addItem = useCartStore((s) => s.addItem);
+```
+
+---
+
 ## 4. Project Structure (Expo)
 We will create this structure in /src:
 
@@ -333,3 +356,63 @@ Security:
 6. Shop with cart, orders table, checkout requires login.
 7. MCP hook stub (mcpServiceStub.ts) for future AI assistant.
 8. Branding polish (clinic hours, WhatsApp link, call clinic, etc.).
+
+### Smoke Path (Rescue Rebuild)
+Follow this to validate the booking flow end‑to‑end:
+
+1) Seed availability for next 14 days
+
+```
+supabase db execute -f scripts/reset_test_data.sql
+npm run seed:avail
+```
+
+2) In the app:
+- Tab: Services → pick any service → Book This Service → pick any listed date (including >+2 days) → pick a slot.
+- The Continue button becomes enabled after selecting a slot. Confirm booking.
+
+3) Try to double‑book the same date+time (choose another service/therapist for the same timestamp):
+- App blocks with a clear toast: “You already have an appointment at this time.”
+
+4) Cancel the appointment:
+- From Home → “Your Next Appointment” card → Cancel, or from Account → My Appointments → Cancel.
+- Slot reappears under the same date.
+
+5) “Your Next Appointment” card on Home reflects live state and hides when none.
+
+6) UI detail: On the time slot screen, the “Pick another date” link is aligned under the slot list.
+### Configure availability via JSON
+
+You can seed therapist availability for the next 14 days from a JSON config.
+
+1) Edit `config/availability.json` with defaults and optional therapist/service overrides:
+
+```
+{
+  "defaults": { "timezone": "Asia/Dubai", "slotMinutes": 30, "hours": { "mon":["10:00-13:00","15:00-18:00"], "sun":[] } },
+  "therapists": {
+    "<THERAPIST_UUID_A>": { "services": { "<SERVICE_UUID_X>": { "hours": { "mon":["10:00-12:00"], "wed":["14:00-18:00"] } } }, "hours": { "mon":["10:00-18:00"] } }
+  }
+}
+```
+
+Rules: `therapist.services[serviceId].hours` override `therapist.hours`; which override `defaults.hours`. Empty array = closed.
+
+2) Ensure DB has unique index for upsert: see `scripts/indexes.sql` (already applied).
+
+3) Seed availability (requires env `SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY`):
+
+```
+npm run seed:avail
+```
+
+This generates slots for today → +13 days and upserts into `public.availability_slots` (conflict on therapist_id, service_id, date, start_time).
+
+4) Reset test data (appointments and slots) then reseed:
+
+```
+supabase db execute -f scripts/reset_test_data.sql
+npm run seed:avail
+```
+
+App uses only real `availability_slots` (is_booked=false) in production; dev-only fallback slots are hidden in prod.

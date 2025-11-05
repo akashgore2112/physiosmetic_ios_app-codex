@@ -1,0 +1,35 @@
+import React from 'react';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import AccountScreen from '../screens/Account/AccountScreen';
+import MyAppointmentsScreen from '../screens/Account/MyAppointmentsScreen';
+import MyProfileScreen from '../screens/Account/MyProfileScreen';
+import MyOrdersScreen from '../screens/Account/MyOrdersScreen';
+import OrderDetailScreen from '../screens/Account/OrderDetailScreen';
+import SignInScreen from '../screens/Auth/SignInScreen';
+import SignUpScreen from '../screens/Auth/SignUpScreen';
+
+export type AccountStackParamList = {
+  AccountMain: undefined;
+  SignIn: undefined;
+  SignUp: undefined;
+  MyAppointments: undefined;
+  MyProfile: undefined;
+  MyOrders: undefined;
+  OrderDetail: { id: string } | undefined;
+};
+
+const Stack = createNativeStackNavigator<AccountStackParamList>();
+
+export default function AccountStackNavigator(): JSX.Element {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen name="AccountMain" component={AccountScreen} options={{ title: 'Account' }} />
+      <Stack.Screen name="SignIn" component={SignInScreen} options={{ title: 'Sign In' }} />
+      <Stack.Screen name="SignUp" component={SignUpScreen} options={{ title: 'Create Account' }} />
+      <Stack.Screen name="MyAppointments" component={MyAppointmentsScreen} options={{ title: 'My Appointments' }} />
+      <Stack.Screen name="MyProfile" component={MyProfileScreen} options={{ title: 'My Profile' }} />
+      <Stack.Screen name="MyOrders" component={MyOrdersScreen} options={{ title: 'My Orders' }} />
+      <Stack.Screen name="OrderDetail" component={OrderDetailScreen} options={{ title: 'Order Detail' }} />
+    </Stack.Navigator>
+  );
+}

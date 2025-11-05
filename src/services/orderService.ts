@@ -1,0 +1,70 @@
+import { supabase } from '../config/supabaseClient';
+import type { Order } from '../types/Order';
+import type { OrderItem } from '../types/OrderItem';
+
+export async function getMyOrders(userId: string): Promise<Order[]> {
+  const { data, error } = await supabase
+    .from('orders')
+    .select('id,total_amount,status,created_at')
+    .eq('user_id', userId)
+    .order('created_at', { ascending: false });
+  if (error) throw error;
+  return data ?? [];
+}
+
+export async function getOrderItems(orderId: string): Promise<(OrderItem & { product?: { id: string; name: string; price: number; image_url?: string | null; in_stock?: boolean } })[]> {
+  const { data, error } = await supabase
+    .from('order_items')
+    .select('id,order_id,product_id,qty,price_each, products:product_id(id,name,price,image_url,in_stock)')
+    .eq('order_id', orderId);
+  if (error) throw error;
+  return (data ?? []) as any;
+}
+
+export async function cancelOrder(orderId: string): Promise<void> {
+  // Check current status first
+  const { data, error } = await supabase
+    .from('orders')
+    .select('status')
+    .eq('id', orderId)
+    .maybeSingle();
+  if (error) throw error;
+  const status = data?.status as string | undefined;
+  const eligible = status === 'placed' || status === 'pending' || status === 'processing';
+  if (!eligible) throw new Error('Order cannot be cancelled at this stage');
+  const { error: updErr } = await supabase.from('orders').update({ status: 'cancelled' }).eq('id', orderId);
+  if (updErr) throw updErr;
+}
+
+export type ReorderCartItem = { id: string; name: string; price: number; qty: number; image_url?: string | null };
+
+export async function getReorderItems(orderId: string): Promise<ReorderCartItem[]> {
+  const items = await getOrderItems(orderId);
+  // Skip unavailable products
+  return items
+    .filter((it) => it.products?.in_stock !== false)
+    .map((it) => ({
+      id: it.product_id,
+      name: it.products?.name ?? 'Product',
+      price: it.products?.price ?? it.price_each ?? 0,
+      qty: it.qty,
+      image_url: it.products?.image_url ?? null,
+    }));
+}
+
+export async function placeOrder(userId: string, items: ReorderCartItem[]): Promise<{ id: string }> {
+  const total = items.reduce((sum, it) => sum + it.price * it.qty, 0);
+  const { data: order, error } = await supabase
+    .from('orders')
+    .insert({ user_id: userId, total_amount: total, status: 'placed' })
+    .select('id')
+    .single();
+  if (error) throw error;
+  const orderId = order.id as string;
+  if (items.length > 0) {
+    const rows = items.map((it) => ({ order_id: orderId, product_id: it.id, qty: it.qty, price_each: it.price }));
+    const { error: oiErr } = await supabase.from('order_items').insert(rows);
+    if (oiErr) throw oiErr;
+  }
+  return { id: orderId };
+}
