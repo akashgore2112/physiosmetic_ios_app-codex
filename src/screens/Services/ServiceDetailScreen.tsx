@@ -1,90 +1,140 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, TouchableOpacity, ActivityIndicator } from 'react-native';
+import React, { useCallback, useEffect, useState } from 'react';
+import { View, Text, ActivityIndicator, Image, Pressable, ScrollView } from 'react-native';
 import { getServiceById } from '../../services/serviceCatalogService';
-import { formatPrice } from '../../utils/formatPrice';
-import TherapistChips from '../../components/TherapistChips';
-import { getTherapistsForService } from '../../services/bookingService';
+import { getNextSlotsForService } from '../../services/bookingService';
+import PriceTag from '../../components/PriceTag';
+import NextSlotsRow from '../../components/NextSlotsRow';
+import StickyBookingBar from '../../components/StickyBookingBar';
+import { useToast } from '../../components/feedback/useToast';
 
 export default function ServiceDetailScreen({ route, navigation }: any): JSX.Element {
-  const { serviceId, serviceName } = route.params ?? {};
+  const { serviceId: routeServiceId } = route.params ?? {};
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [service, setService] = useState<any | null>(null);
-  const [therapists, setTherapists] = useState<Array<{ id: string; name: string; speciality?: string; photo_url?: string }>>([]);
+  const [nextSlots, setNextSlots] = useState<any[]>([]);
+  const [descExpanded, setDescExpanded] = useState(false);
+  const { show } = useToast();
+
+  const load = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const svc = await getServiceById(routeServiceId);
+      setService(svc);
+      if (svc?.id) {
+        const slots = await getNextSlotsForService(svc.id, 3);
+        setNextSlots(
+          slots.map((s: any) => ({
+            id: s.id,
+            date: s.date,
+            start_time: s.start_time,
+            therapist_id: s.therapist_id,
+            therapist_name: s.therapist?.name,
+          }))
+        );
+      } else setNextSlots([]);
+    } catch (e: any) {
+      setError(e?.message ?? 'Failed to load service');
+      show(e?.message ?? 'Failed to load service');
+    } finally {
+      setLoading(false);
+    }
+  }, [routeServiceId]);
 
   useEffect(() => {
     let cancelled = false;
-    (async () => {
-      try {
-        const s = await getServiceById(serviceId);
-        if (!cancelled) setService(s);
-      } finally {
-        if (!cancelled) setLoading(false);
-      }
-    })();
+    (async () => { if (!cancelled) await load(); })();
     return () => { cancelled = true; };
-  }, [serviceId]);
+  }, [load]);
 
-  useEffect(() => {
-    let cancelled = false;
-    (async () => {
-      try {
-        const list = await getTherapistsForService(serviceId);
-        if (!cancelled) setTherapists(list as any);
-        console.debug('[ServiceDetail] therapists', list?.length ?? 0);
-      } catch {
-        console.debug('[ServiceDetail] therapists fetch failed');
-      }
-    })();
-    return () => { cancelled = true; };
-  }, [serviceId]);
+  const onPressSlot = useCallback((slot: any) => {
+    if (!service?.id) return;
+    navigation.navigate('SelectTimeSlot', {
+      serviceId: service.id,
+      therapistId: slot.therapist_id,
+      date: slot.date,
+      therapistName: slot.therapist_name,
+      serviceName: service.name,
+    });
+  }, [navigation, service]);
+
+  const onPressBook = useCallback(() => {
+    if (!service?.id) return;
+    navigation.navigate('SelectTherapist', { serviceId: service.id });
+  }, [navigation, service]);
 
   if (loading) {
     return (
-      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-        <ActivityIndicator />
+      <View style={{ flex: 1, padding: 16 }}>
+        <View style={{ height: 180, backgroundColor: '#f2f2f2', borderRadius: 12 }} />
+        <View style={{ height: 16, backgroundColor: '#eee', marginTop: 12, borderRadius: 8, width: '60%' }} />
+        <View style={{ height: 12, backgroundColor: '#eee', marginTop: 8, borderRadius: 8, width: '40%' }} />
+        <View style={{ height: 80, backgroundColor: '#f5f5f5', marginTop: 16, borderRadius: 12 }} />
+      </View>
+    );
+  }
+
+  if (!service) {
+    return (
+      <View style={{ flex: 1, padding: 16 }}>
+        <Text style={{ marginBottom: 12 }}>{error ?? 'Service not found'}</Text>
+        <Pressable onPress={load} style={({ pressed }) => ({ padding: 12, backgroundColor: '#eee', borderRadius: 8, opacity: pressed ? 0.9 : 1 })}>
+          <Text>Retry</Text>
+        </Pressable>
       </View>
     );
   }
 
   return (
-    <View style={{ flex: 1, padding: 16 }}>
-      <Text style={{ fontSize: 20, fontWeight: '700' }}>{service?.name ?? serviceName}</Text>
-      {!!service?.base_price && <Text style={{ marginTop: 8, color: '#666' }}>{formatPrice(service.base_price)}</Text>}
-      {!!service?.description && <Text style={{ marginTop: 12 }}>{service.description}</Text>}
+    <View style={{ flex: 1 }}>
+      <ScrollView contentContainerStyle={{ paddingBottom: 100 }} style={{ flex: 1 }}>
+        {/* (A) Header */}
+        <View style={{ padding: 16 }}>
+          {service.image_url ? (
+            <Image source={{ uri: service.image_url }} style={{ width: '100%', height: 200, borderRadius: 12, backgroundColor: '#eee' }} />
+          ) : (
+            <View style={{ width: '100%', height: 200, borderRadius: 12, backgroundColor: '#eee', alignItems: 'center', justifyContent: 'center' }}>
+              <Text>No Image</Text>
+            </View>
+          )}
+          {!!service.category && (
+            <Text style={{ marginTop: 12, color: '#1e64d4', fontWeight: '700' }}>{service.category}</Text>
+          )}
+          <Text numberOfLines={2} style={{ fontSize: 20, fontWeight: '800', marginTop: 4 }}>{service.name}</Text>
+          <View style={{ marginTop: 6 }}>
+            <PriceTag price={service.base_price} durationMinutes={service.duration_minutes} />
+          </View>
+          {!!service.is_online_allowed && (
+            <View style={{ alignSelf: 'flex-start', marginTop: 8, paddingHorizontal: 8, paddingVertical: 4, backgroundColor: '#e6f2ff', borderRadius: 12 }}>
+              <Text style={{ color: '#1e64d4', fontWeight: '600', fontSize: 12 }}>Online consult available</Text>
+            </View>
+          )}
 
-      {/* Who treats */}
-      <Text style={{ marginTop: 18, fontWeight: '700' }}>Who treats</Text>
-      {therapists?.length ? (
-        <TherapistChips
-          therapists={therapists}
-          onPressTherapist={(id: string) =>
-            navigation.navigate('SelectTherapist', { serviceId: serviceId, serviceName: service?.name ?? serviceName, preselectTherapistId: id })
-          }
-        />
-      ) : (
-        <Text style={{ opacity: 0.6, marginTop: 6 }}>Our team details are being updated.</Text>
-      )}
+          {!!service.description && (
+            <View style={{ marginTop: 12 }}>
+              <Text numberOfLines={descExpanded ? undefined : 4}>{service.description}</Text>
+              {service.description.length > 120 && (
+                <Pressable onPress={() => setDescExpanded((v) => !v)} style={({ pressed }) => ({ marginTop: 6, opacity: pressed ? 0.85 : 1 })}>
+                  <Text style={{ color: '#1e64d4', fontWeight: '600' }}>{descExpanded ? 'Read less' : 'Read more'}</Text>
+                </Pressable>
+              )}
+            </View>
+          )}
+        </View>
 
-      <TouchableOpacity
-        onPress={() => navigation.navigate('SelectTherapist', {
-          serviceId: service?.id ?? serviceId,
-          isOnline: !!service?.is_online_allowed,
-          serviceName: service?.name ?? serviceName,
-          category: service?.category,
-        })}
-        style={{ backgroundColor: '#F37021', padding: 16, borderRadius: 12, alignItems: 'center', marginTop: 24 }}
-      >
-        <Text style={{ color: '#fff', fontWeight: '700' }}>Book This Service</Text>
-      </TouchableOpacity>
+        {/* (B) Next 3 available slots */}
+        <View style={{ paddingHorizontal: 16 }}>
+          <NextSlotsRow slots={nextSlots} onPressSlot={onPressSlot} />
+        </View>
+      </ScrollView>
 
-      {service?.is_online_allowed && (
-        <TouchableOpacity
-          onPress={() => navigation.navigate('SelectTherapist', { serviceId: serviceId, serviceName: service?.name ?? serviceName, isOnline: true })}
-          style={{ backgroundColor: '#1e64d4', padding: 16, borderRadius: 12, alignItems: 'center', marginTop: 12 }}
-        >
-          <Text style={{ color: '#fff', fontWeight: '700' }}>Book Online Consultation</Text>
-        </TouchableOpacity>
-      )}
+      {/* Sticky footer booking bar */}
+      <StickyBookingBar
+        price={service.base_price}
+        durationMinutes={service.duration_minutes}
+        onPressCta={onPressBook}
+      />
     </View>
   );
 }

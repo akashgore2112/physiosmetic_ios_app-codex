@@ -14,7 +14,7 @@ export async function getAllActiveServices(): Promise<Service[]> {
 export async function getServiceById(id: string): Promise<Service | null> {
   const { data, error } = await supabase
     .from('services')
-    .select('id,name,category,description,duration_minutes,base_price,is_online_allowed,image_url,is_active')
+    .select('id,name,category,description,duration_minutes,base_price,is_online_allowed,image_url')
     .eq('id', id)
     .maybeSingle();
   if (error) throw error;
