@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { View, Text, TouchableOpacity, ActivityIndicator, ScrollView, Pressable } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import { useSessionStore } from '../../store/useSessionStore';
-import { getNextAppointmentForUser, getUpcomingAppointmentsForUser, getNextAvailableSlots } from '../../services/bookingService';
+import { getMyUpcomingAppointments, getNextAvailableSlots } from '../../services/bookingService';
 import { supabase } from '../../config/supabaseClient';
 import { getAllActiveServices } from '../../services/serviceCatalogService';
 import { useToast } from '../../components/feedback/useToast';
@@ -10,36 +10,38 @@ import { toastError } from '../../utils/toast';
 import { formatDate, formatTime } from '../../utils/formatDate';
 import { isPastSlot } from '../../utils/clinicTime';
 import ServiceCard from '../../components/ServiceCard';
+import { showReleaseChecklist } from '../../dev/releaseChecklist';
 
 export default function HomeScreen({ navigation }: any): JSX.Element {
   const { isLoggedIn, userId } = useSessionStore();
   const [loading, setLoading] = useState(false);
-  const [nextAppt, setNextAppt] = useState<any | null>(null);
   const [upcoming, setUpcoming] = useState<any[]>([]);
   const [services, setServices] = useState<any[]>([]);
   const [nextSlots, setNextSlots] = useState<any[]>([]);
   const { show } = useToast();
 
   const refresh = useCallback(async () => {
-    if (!userId) return setNextAppt(null);
+    if (!userId) {
+      setUpcoming([]);
+      return;
+    }
     setLoading(true);
     try {
-      console.debug('[home][next-appt] session-ok, querying for user:', userId);
-      const appt = await getNextAppointmentForUser(userId);
-      if (appt) console.debug('[home][next-appt] appt-found', appt.id, appt.availability_slots?.date, appt.availability_slots?.start_time);
-      else console.debug('[home][next-appt] appt-none');
-      setNextAppt(appt as any);
-      const list = await getUpcomingAppointmentsForUser(userId, 10);
+      const list = await getMyUpcomingAppointments(1);
       setUpcoming(list as any[]);
     } catch (e: any) {
-      console.debug('[home][next-appt] query-error (silent):', e?.message);
+      console.debug('[home][upcoming] query-error (silent):', e?.message);
     } finally {
       setLoading(false);
     }
   }, [userId]);
 
   useEffect(() => { refresh(); }, [refresh]);
-  useFocusEffect(useCallback(() => { refresh(); }, [refresh]));
+  useFocusEffect(useCallback(() => {
+    refresh();
+    const id = setInterval(() => refresh(), 60000);
+    return () => clearInterval(id);
+  }, [refresh]));
 
   // Realtime: reflect appointment changes immediately
   useEffect(() => {
@@ -92,7 +94,28 @@ export default function HomeScreen({ navigation }: any): JSX.Element {
   return (
     <ScrollView style={{ flex: 1 }} contentContainerStyle={{ padding: 16 }}>
       {/* Header */}
-      <Text style={{ fontSize: 22, fontWeight: '800' }}>Physiosmetic</Text>
+      <Pressable
+        onPress={() => {
+          if (!__DEV__) return;
+          // simple 3-tap within 1.2s gate
+          const now = Date.now();
+          // @ts-ignore attach to component instance via closure var on module scope not available; use (globalThis as any)
+          const g: any = globalThis as any;
+          const key = '__rls_tap__';
+          const last = g[key]?.last || 0;
+          const count = g[key]?.count || 0;
+          const within = now - last < 1200;
+          const nextCount = within ? count + 1 : 1;
+          g[key] = { last: now, count: nextCount };
+          if (nextCount >= 3) {
+            g[key] = { last: 0, count: 0 };
+            showReleaseChecklist();
+          }
+        }}
+        hitSlop={20}
+      >
+        <Text style={{ fontSize: 22, fontWeight: '800' }}>Physiosmetic</Text>
+      </Pressable>
       <Text style={{ color: '#666', marginTop: 4 }}>Hours: 10:00–19:00 · Mumbai</Text>
 
       {/* Quick Actions */}

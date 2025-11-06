@@ -847,7 +847,7 @@ Deep analysis notes
 ### Fix: ReferenceError 'isOnline' cleanup (2025-11-06)
 - Added net util `src/utils/net.ts` exporting `getOnlineState()` using `expo-network` with a safe fallback.
 - Removed/renamed bare `isOnline` usages to avoid global collisions:
-  - Renamed reactive connectivity vars to `isConnected`/`isOnlineStatus` in lists/screens.
+- Earlier note referenced `isOnlineStatus`; unified on `isOnline` via useNetworkStore selector.
   - Kept route params `isOnline` (service online consult flag) intact where appropriate.
 - Service detail: rely on `service.is_online_allowed` (exposed as `onlineAllowed`) to render the “Online consult available” pill.
 - Outcome: No bare global `isOnline` references remain; crashes on app launch due to ReferenceError are eliminated.
@@ -913,3 +913,39 @@ Deep analysis notes
 ### Network store enforcement (2025-11-06)
 - Network store enforced in 4 screens; all isOnline reads come from useNetworkStore.
 - Network store enforced in 4 screens; all isOnline reads come from useNetworkStore.
+### Offline awareness (2025-11-06)
+- Added global OfflineBanner and enforced retry UX:
+  - App.tsx renders OfflineBanner.
+  - Lists show “Tap to retry” when a request fails and auto‑retry on reconnect.
+### Legal & consent (2025-11-06)
+- Added legal screens: Terms and Privacy (markdown placeholders) under `src/screens/Legal/`.
+- Account: added links to Terms & Privacy.
+- First-login consent: one-time modal stores a local flag (`consent_v1:<userId>`) in AsyncStorage when user agrees.
+### Release checklist (2025-11-06)
+- Added `src/dev/releaseChecklist.ts` with `showReleaseChecklist()` displaying an ActionSheet of pre-release checks (icons/splash, bundle IDs, Sentry DSN, Supabase envs, EAS profiles, Sentry init).
+- Wired hidden DEV trigger: triple-tap on Home title opens the checklist.
+### Hooks order fix (2025-11-06)
+- MyProfileScreen: refactored to place all hooks at the top-level (no conditional/late hooks), added derived guards and stable callbacks. Eliminates “Rendered more hooks than during the previous render”.
+### Duplicate identifier fix (2025-11-06)
+- MyProfileScreen: ensured a single top-level declaration for `nameRef` and `phoneRef` (useRef<TextInput>), no shadowing, and no early returns before hook declarations. File compiles without duplicate identifier errors.
+### Diagnostic: MyProfileScreen hooks/refs (2025-11-06)
+- Reported duplicate refs and early-return check in `src/screens/Account/MyProfileScreen.tsx`.
+- Found duplicate `nameRef` and `phoneRef` declarations and confirmed no early return before first hook.
+### MyProfileScreen hook-order + refs (2025-11-06)
+- Ensured a single top-level declaration for `nameRef` and `phoneRef` and placed the requested hooks block at the top of the component. Removed duplicate ref declarations and kept UI unchanged.
+### Supabase RPC (2025-11-06)
+- Added SQL function to mark only the signed-in user’s past appointments as completed:
+  - scripts/rpc_mark_my_past_appointments_completed.sql
+  - `public.mark_my_past_appointments_completed()` (security definer), granted to anon/authenticated.
+### Home upcoming refactor (2025-11-06)
+- Replaced next-appointment fetch with `bookingService.getMyUpcomingAppointments(1)`.
+- Added focused 60s interval refetch using `useFocusEffect` + `setInterval`.
+- Kept Supabase realtime subscription to `public.appointments` (user-scoped) to refetch on changes.
+- Card hides automatically when there are zero upcoming items.
+### MyAppointments: future-only + auto-complete (2025-11-06)
+- On mount/focus, calls `syncMyPastAppointments()` then fetches via `getMyAllAppointments()`.
+- Rows mark as completed when slot end-time is past; Cancel/Reschedule disabled for completed.
+- Added 60s focused interval to refetch and auto-flip to completed; pull-to-refresh uses the same logic.
+### Confirm screen expiry guard (2025-11-06)
+- Before confirming, ConfirmBookingScreen now checks slot end_time using `isPastSlot(date, end_time)`.
+- If expired, shows "This slot expired." and navigates back to SelectTimeSlot.

@@ -16,6 +16,17 @@ export default function SelectDateScreen({ route, navigation }: Props): JSX.Elem
   const [hadError, setHadError] = useState(false);
   const [loading, setLoading] = useState(true);
   const [dates, setDates] = useState<string[]>([]);
+  const reload = () => {
+    setHadError(false);
+    setLoading(true);
+    (async () => {
+      try {
+        const d = await getBookableDatesForService(serviceId);
+        setDates(d);
+      } catch {}
+      setLoading(false);
+    })();
+  };
 
   useEffect(() => {
     let cancelled = false;
@@ -76,7 +87,15 @@ export default function SelectDateScreen({ route, navigation }: Props): JSX.Elem
             <Text style={{ fontWeight: '600' }}>{formatDate(item)}</Text>
           </TouchableOpacity>
         )}
-        ListEmptyComponent={<Text>No dates available. Please pick another service.</Text>}
+        ListEmptyComponent={
+          hadError ? (
+            <TouchableOpacity onPress={reload} style={{ padding: 16, alignItems: 'center' }}>
+              <Text style={{ color: '#1e64d4' }}>Tap to retry</Text>
+            </TouchableOpacity>
+          ) : (
+            <Text>No dates available. Please pick another service.</Text>
+          )
+        }
       />
     </View>
   );

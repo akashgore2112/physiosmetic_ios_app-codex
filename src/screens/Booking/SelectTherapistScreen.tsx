@@ -45,7 +45,7 @@ export default function SelectTherapistScreen({ route, navigation }: Props): JSX
 
   // Auto-retry on reconnect
   useEffect(() => {
-    if (isOnlineStatus && hadError) {
+    if (isOnline && hadError) {
       setHadError(false);
       // trigger reload
       (async () => {
@@ -62,7 +62,7 @@ export default function SelectTherapistScreen({ route, navigation }: Props): JSX
         setLoading(false);
       })();
     }
-  }, [isOnlineStatus]);
+  }, [isOnline]);
 
   useEffect(() => {
     // Fire-and-forget next slot fetch per therapist

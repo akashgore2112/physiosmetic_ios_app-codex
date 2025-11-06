@@ -102,7 +102,15 @@ export default function MyOrdersScreen({ navigation }: any): JSX.Element {
               </View>
             );
           }}
-          ListEmptyComponent={<Text>No orders</Text>}
+          ListEmptyComponent={
+            hadError ? (
+              <TouchableOpacity onPress={fetchRows} style={{ padding: 16, alignItems: 'center' }}>
+                <Text style={{ color: '#1e64d4' }}>Tap to retry</Text>
+              </TouchableOpacity>
+            ) : (
+              <Text>No orders</Text>
+            )
+          }
         />
       )}
     </View>

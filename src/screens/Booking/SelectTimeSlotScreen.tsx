@@ -136,7 +136,27 @@ export default function SelectTimeSlotScreen({ route, navigation }: Props): JSX.
             </TouchableOpacity>
           );
         }}
-        ListEmptyComponent={<Text>No slots for this date. Pick another date.</Text>}
+        ListEmptyComponent={
+          hadError ? (
+            <TouchableOpacity onPress={() => {
+              setHadError(false);
+              setLoading(true);
+              (async () => {
+                try {
+                  const s = await getSlotsForServiceAndDate(serviceId, date);
+                  const filtered = therapistId ? s.filter((x) => x.therapist_id === therapistId) : s;
+                  const visible = filtered.filter((x) => !isPastSlot(x.date, x.start_time));
+                  setSlots(visible);
+                } catch {}
+                setLoading(false);
+              })();
+            }} style={{ padding: 16, alignItems: 'center' }}>
+              <Text style={{ color: '#1e64d4' }}>Tap to retry</Text>
+            </TouchableOpacity>
+          ) : (
+            <Text>No slots for this date. Pick another date.</Text>
+          )
+        }
       />
 
       {/* Pick another date link aligned under slots */}

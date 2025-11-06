@@ -28,10 +28,10 @@ export default function ConfirmBookingScreen({ route, navigation }: any): JSX.El
       span.end();
       return;
     }
-    // Race guard: ensure slot is still in the future
-    if (params?.slot && isPastSlot(params.slot.date, params.slot.start_time)) {
-      show('This slot just expired, please pick another time.');
-      navigation.goBack();
+    // Race guard: ensure slot hasn't expired (compare against end_time)
+    if (params?.slot && isPastSlot(params.slot.date, params.slot.end_time)) {
+      show('This slot expired.');
+      navigation.goBack(); // back to SelectTimeSlot
       return;
     }
     setLoading(true);

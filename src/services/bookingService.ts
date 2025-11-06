@@ -5,6 +5,90 @@ import { getClinicDateWindow, isPastSlot } from '../utils/clinicTime';
 
 export type SlotWithTherapist = AvailabilitySlot & { therapist?: { id: string; name: string } };
 
+export async function syncMyPastAppointments() {
+  // call RPC to mark my past appointments completed
+  const { data, error } = await supabase.rpc('mark_my_past_appointments_completed');
+  if (error) console.warn('[syncMyPastAppointments] error', error);
+  return data ?? 0;
+}
+
+type AppointmentRow = {
+  id: string;
+  service_id: string;
+  therapist_id: string;
+  slot_id: string | null;
+  status: string;
+  availability_slots?: { date: string; start_time: string; end_time: string } | null;
+  services?: { name?: string } | null;
+  therapists?: { name?: string } | null;
+};
+
+export type MyApptItem = {
+  id: string;
+  service_id: string;
+  therapist_id: string;
+  slot_id: string | null;
+  status: string;
+  slot: { date: string; start_time: string; end_time: string } | null;
+  service_name?: string;
+  therapist_name?: string;
+  isPast?: boolean;
+};
+
+export async function getMyUpcomingAppointments(limit = 3): Promise<MyApptItem[]> {
+  // fire-and-forget cleanup
+  syncMyPastAppointments().catch(() => {});
+  const { data, error } = await supabase
+    .from('appointments')
+    .select('id,service_id,therapist_id,slot_id,status, availability_slots:slot_id(date,start_time,end_time), services:service_id(name), therapists:therapist_id(name)')
+    .eq('status', 'booked')
+    .order('availability_slots.date', { ascending: true })
+    .order('availability_slots.start_time', { ascending: true })
+    .limit(limit);
+  if (error) throw error;
+  const rows = (data ?? []) as AppointmentRow[];
+  // Filter to future-only using end_time
+  const items = rows
+    .filter((r) => r.availability_slots && !isPastSlot(r.availability_slots.date, r.availability_slots.end_time))
+    .map<MyApptItem>((r) => ({
+      id: r.id,
+      service_id: r.service_id,
+      therapist_id: r.therapist_id,
+      slot_id: r.slot_id,
+      status: r.status,
+      slot: r.availability_slots ? { ...r.availability_slots } : null,
+      service_name: r.services?.name ?? undefined,
+      therapist_name: r.therapists?.name ?? undefined,
+    }));
+  return items;
+}
+
+export async function getMyAllAppointments(): Promise<MyApptItem[]> {
+  syncMyPastAppointments().catch(() => {});
+  const { data, error } = await supabase
+    .from('appointments')
+    .select('id,service_id,therapist_id,slot_id,status, availability_slots:slot_id(date,start_time,end_time), services:service_id(name), therapists:therapist_id(name)')
+    .order('created_at', { ascending: false })
+    .limit(200);
+  if (error) throw error;
+  const rows = (data ?? []) as AppointmentRow[];
+  return rows.map<MyApptItem>((r) => {
+    const slot = r.availability_slots ? { ...r.availability_slots } : null;
+    const isPast = slot ? isPastSlot(slot.date, slot.end_time) : false;
+    return {
+      id: r.id,
+      service_id: r.service_id,
+      therapist_id: r.therapist_id,
+      slot_id: r.slot_id,
+      status: r.status,
+      slot,
+      service_name: r.services?.name ?? undefined,
+      therapist_name: r.therapists?.name ?? undefined,
+      isPast,
+    };
+  });
+}
+
 export async function getBookableDatesForService(serviceId: string): Promise<string[]> {
   // Distinct future dates that have at least one unbooked slot
   const today = new Date();

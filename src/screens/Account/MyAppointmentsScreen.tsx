@@ -2,13 +2,13 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { View, Text, FlatList, TouchableOpacity, ActivityIndicator, RefreshControl } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import { useSessionStore } from '../../store/useSessionStore';
-import { cancelAppointment } from '../../services/bookingService';
-import { supabase } from '../../config/supabaseClient';
+import { cancelAppointment, getMyAllAppointments, syncMyPastAppointments } from '../../services/bookingService';
 import { useToast } from '../../components/feedback/useToast';
 import { formatDate, formatTime } from '../../utils/formatDate';
+import { isPastSlot } from '../../utils/clinicTime';
 import useNetworkStore from '../../store/useNetworkStore';
 
-type Row = { id: string; status: string; slot: { id: string; date: string; start_time: string; end_time: string } };
+type Row = { id: string; status: string; service_id: string; therapist_id: string; slot_id: string | null; slot: { date: string; start_time: string; end_time: string } | null; service_name?: string; therapist_name?: string; isPast?: boolean };
 
 export default function MyAppointmentsScreen(): JSX.Element {
   const { userId } = useSessionStore();
@@ -25,16 +25,9 @@ export default function MyAppointmentsScreen(): JSX.Element {
     if (!userId) return setRows([]);
     if (reset) setLoading(true);
     try {
-      const { data, error } = await supabase
-        .from('appointments')
-        .select('id,status, service_id, therapist_id, availability_slots:slot_id(id,date,start_time,end_time), services:service_id(name), therapists:therapist_id(name)')
-        .eq('user_id', userId)
-        .order('created_at', { ascending: false })
-        .range(reset ? 0 : offset, (reset ? 0 : offset) + PAGE - 1);
-      if (error) throw error;
-      const mapped = (data ?? []) as any;
-      setRows(reset ? mapped : [...rows, ...mapped]);
-      if (!reset) setOffset(offset + PAGE);
+      syncMyPastAppointments().catch(() => {});
+      const all = await getMyAllAppointments();
+      setRows(all as any);
     } catch (e: any) {
       show(e?.message ?? 'Failed to load');
       setHadError(true);
@@ -52,7 +45,11 @@ export default function MyAppointmentsScreen(): JSX.Element {
     if (isOnline && hadError) fetchRows(true);
   }, [isOnline]);
 
-  useFocusEffect(useCallback(() => { fetchRows(true); }, []));
+  useFocusEffect(useCallback(() => {
+    fetchRows(true);
+    const id = setInterval(() => fetchRows(true), 60000);
+    return () => clearInterval(id);
+  }, []));
 
   const onCancel = async (id: string) => {
     try {
@@ -73,13 +70,14 @@ export default function MyAppointmentsScreen(): JSX.Element {
           data={rows}
           keyExtractor={(r) => r.id}
           renderItem={({ item }) => {
-            const future = true; // server enforces; simplify here
-            const canAct = item.status === 'booked' && future;
+            const past = item.slot ? isPastSlot(item.slot.date, item.slot.end_time) : false;
+            const effectiveStatus = item.status === 'booked' && past ? 'completed' : item.status;
+            const canAct = item.status === 'booked' && !past;
             return (
               <View style={{ backgroundColor: '#fff', padding: 14, borderRadius: 10, marginBottom: 8 }}>
-                <Text style={{ fontWeight: '700' }}>{item.services?.name || 'Service'} • {item.therapists?.name || 'Therapist'}</Text>
-                <Text style={{ marginTop: 4 }}>{formatDate(item.availability_slots.date)} • {formatTime(item.availability_slots.start_time)}</Text>
-                <Text style={{ marginTop: 6, color: item.status === 'booked' ? '#2e7d32' : '#666' }}>Status: {item.status}</Text>
+                <Text style={{ fontWeight: '700' }}>{item.service_name || 'Service'} • {item.therapist_name || 'Therapist'}</Text>
+                {!!item.slot && <Text style={{ marginTop: 4 }}>{formatDate(item.slot.date)} • {formatTime(item.slot.start_time)}</Text>}
+                <Text style={{ marginTop: 6, color: effectiveStatus === 'booked' ? '#2e7d32' : '#666' }}>Status: {effectiveStatus}</Text>
                 <View style={{ flexDirection: 'row', gap: 12, marginTop: 10 }}>
                   <TouchableOpacity disabled={!canAct} onPress={() => onCancel(item.id)} style={{ padding: 10, backgroundColor: canAct ? '#eee' : '#f5f5f5', borderRadius: 8 }}>
                     <Text style={{ color: canAct ? '#000' : '#999' }}>Cancel</Text>
@@ -90,12 +88,12 @@ export default function MyAppointmentsScreen(): JSX.Element {
                       (global as any).navigation?.navigate?.('Services', {
                         screen: 'SelectDate',
                         params: {
-                          serviceName: item.services?.name,
+                          serviceName: item.service_name,
                           serviceId: item.service_id,
                           therapistId: item.therapist_id,
-                          therapistName: item.therapists?.name,
+                          therapistName: item.therapist_name,
                           appointmentId: item.id,
-                          oldSlotId: item.availability_slots?.id,
+                          oldSlotId: item.slot_id ?? undefined,
                         },
                       })
                     }
@@ -107,7 +105,15 @@ export default function MyAppointmentsScreen(): JSX.Element {
               </View>
             );
           }}
-          ListEmptyComponent={<Text>No appointments</Text>}
+          ListEmptyComponent={
+            hadError ? (
+              <TouchableOpacity onPress={() => fetchRows(true)} style={{ padding: 16, alignItems: 'center' }}>
+                <Text style={{ color: '#1e64d4' }}>Tap to retry</Text>
+              </TouchableOpacity>
+            ) : (
+              <Text>No appointments</Text>
+            )
+          }
           refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => { setRefreshing(true); setOffset(0); fetchRows(true); }} />}
           onEndReachedThreshold={0.2}
           onEndReached={() => fetchRows(false)}

@@ -5,6 +5,7 @@ import { useAppNetwork } from './src/hooks/useAppNetwork';
 import useNetworkStore from './src/store/useNetworkStore';
 import AppTabs from './src/navigation/AppTabs';
 import { ToastProvider } from './src/components/feedback/ToastProvider';
+import OfflineBanner from './src/components/feedback/OfflineBanner';
 
 export default function App() {
   useAppNetwork(); // keep network listener alive
@@ -14,6 +15,7 @@ export default function App() {
     <ToastProvider>
       <NavigationContainer>
         <StatusBar barStyle="dark-content" />
+        <OfflineBanner />
         {/* Root tabs (Booking/Shop/Account etc.) */}
         <AppTabs />
       </NavigationContainer>
