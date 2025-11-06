@@ -2,18 +2,25 @@
   "expo": {
     "name": "physiosmetic",
     "slug": "physiosmetic",
+    "scheme": "physiosmetic",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
+    "runtimeVersion": { "policy": "sdkVersion" },
+    "updates": {
+      "url": "https://u.expo.dev/8836c37b-198f-4302-bc15-cdbb10b5a61a",
+      "requestHeaders": { "x-channel-name": "production" }
+    },
     "splash": {
       "image": "./assets/splash-icon.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.physiosmetic.app"
     },
     "android": {
       "adaptiveIcon": {
@@ -21,13 +28,19 @@
         "backgroundColor": "#ffffff"
       },
       "edgeToEdgeEnabled": true,
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "package": "com.physiosmetic.app"
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
     "plugins": [
       "sentry-expo"
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "8836c37b-198f-4302-bc15-cdbb10b5a61a"
+      }
+    }
   }
 }

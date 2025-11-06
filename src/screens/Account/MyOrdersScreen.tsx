@@ -6,6 +6,7 @@ import { useCartStore } from '../../store/useCartStore';
 import { useToast } from '../../components/feedback/useToast';
 import { formatPrice } from '../../utils/formatPrice';
 import { startSpan } from '../../monitoring/instrumentation';
+import useNetworkStore from '../../store/useNetworkStore';
 
 type Row = { id: string; total_amount: number; status: string; created_at?: string };
 type ItemRow = { product_id: string; qty: number; price_each: number; products?: { name?: string } };
@@ -16,6 +17,8 @@ export default function MyOrdersScreen({ navigation }: any): JSX.Element {
   const [rows, setRows] = useState<Row[]>([]);
   const addItem = useCartStore((s) => s.addItem);
   const { show } = useToast();
+  const isOnline = useNetworkStore((s) => s.isOnline);
+  const [hadError, setHadError] = useState(false);
 
   async function fetchRows() {
     if (!userId) return setRows([]);
@@ -23,8 +26,10 @@ export default function MyOrdersScreen({ navigation }: any): JSX.Element {
     try {
       const data = await getMyOrders(userId);
       setRows(data as any);
+      setHadError(false);
     } catch (e: any) {
       show(e?.message ?? 'Failed to load orders');
+      setHadError(true);
     } finally {
       setLoading(false);
     }
@@ -33,6 +38,11 @@ export default function MyOrdersScreen({ navigation }: any): JSX.Element {
   useEffect(() => {
     fetchRows();
   }, [userId]);
+
+  // Auto-retry on reconnect
+  useEffect(() => {
+    if (isOnline && hadError) fetchRows();
+  }, [isOnline]);
 
   const onReorder = async (orderId: string) => {
     const span = startSpan('orders.reorder');
@@ -67,6 +77,10 @@ export default function MyOrdersScreen({ navigation }: any): JSX.Element {
         <FlatList
           data={rows}
           keyExtractor={(r) => r.id}
+          initialNumToRender={8}
+          maxToRenderPerBatch={8}
+          windowSize={5}
+          removeClippedSubviews
           renderItem={({ item }) => {
             const cancelEligible = item.status === 'placed' || item.status === 'pending' || item.status === 'processing';
             return (

@@ -26,6 +26,7 @@ export default function StickyBookingBar({
         </View>
         <Pressable
           accessibilityRole="button"
+          accessibilityLabel={ctaLabel}
           onPress={onPressCta}
           disabled={disabled}
           style={({ pressed }) => [
@@ -67,6 +68,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 12,
     borderRadius: 10,
+    minHeight: 44,
+    justifyContent: 'center',
   },
   ctaDisabled: {
     backgroundColor: '#ccc',
@@ -76,4 +79,3 @@ const styles = StyleSheet.create({
     fontWeight: '700',
   },
 });
-

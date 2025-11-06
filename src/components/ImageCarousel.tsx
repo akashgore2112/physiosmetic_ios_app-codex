@@ -1,5 +1,6 @@
 import React, { useRef, useState } from 'react';
-import { View, FlatList, Image, NativeScrollEvent, NativeSyntheticEvent, Text } from 'react-native';
+import { View, FlatList, NativeScrollEvent, NativeSyntheticEvent, Text } from 'react-native';
+import CachedImage from './CachedImage';
 
 type Props = {
   images: string[];
@@ -22,10 +23,12 @@ export default function ImageCarousel({ images, height = 220 }: Props) {
         showsHorizontalScrollIndicator={false}
         data={data}
         keyExtractor={(uri, i) => `${uri}-${i}`}
-        renderItem={({ item }) => (
-          <Image source={{ uri: item }} style={{ width: '100%', height }} resizeMode="cover" />
-        )}
+        renderItem={({ item }) => <CachedImage source={{ uri: item }} style={{ width: '100%', height }} contentFit="cover" />}
         onScroll={onScroll}
+        initialNumToRender={3}
+        maxToRenderPerBatch={3}
+        windowSize={5}
+        removeClippedSubviews
       />
       {!!data.length && (
         <View style={{ position: 'absolute', right: 8, bottom: 8, backgroundColor: 'rgba(0,0,0,0.4)', paddingHorizontal: 6, paddingVertical: 2, borderRadius: 4 }}>
@@ -35,4 +38,3 @@ export default function ImageCarousel({ images, height = 220 }: Props) {
     </View>
   );
 }
-

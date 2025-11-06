@@ -5,3 +5,12 @@ export function showToast(msg: string) {
   else Alert.alert('', msg);
 }
 
+export function toastError(err: any) {
+  try {
+    const code = err?.code ? ` (${err.code})` : '';
+    const message = err?.message || 'Something went wrong';
+    showToast(`${message}${code}`);
+  } catch {
+    showToast('Something went wrong');
+  }
+}

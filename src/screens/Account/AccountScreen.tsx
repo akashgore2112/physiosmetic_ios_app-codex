@@ -1,12 +1,22 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { View, Text, Pressable, Linking } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useSessionStore } from '../../store/useSessionStore';
 import { supabase } from '../../config/supabaseClient';
+import { runRlsSmoke } from '../../dev/rlsSmoke';
 
 export default function AccountScreen(): JSX.Element {
   const navigation = useNavigation<any>();
-  const { isLoggedIn, displayName } = useSessionStore();
+  const { isLoggedIn, displayName, userId } = useSessionStore();
+
+  // Dev-only: run a lightweight RLS smoke once when logged in
+  useEffect(() => {
+    let done = false;
+    if (__DEV__ && isLoggedIn && userId && !done) {
+      runRlsSmoke(supabase as any, userId).finally(() => { done = true; });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isLoggedIn, userId]);
 
   const Button = ({ title, onPress }: { title: string; onPress: () => void }) => (
     <Pressable onPress={onPress} style={({ pressed }) => ({ padding: 14, borderRadius: 12, backgroundColor: '#fff', borderWidth: 1, borderColor: '#eee', marginBottom: 10, opacity: pressed ? 0.9 : 1 })}>

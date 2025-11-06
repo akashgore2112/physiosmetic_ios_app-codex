@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, Alert } from 'react-native';
+import React, { useEffect, useRef, useState } from 'react';
+import { View, Text, TextInput, TouchableOpacity, Alert, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
 import { supabase } from '../../config/supabaseClient';
 import { fetchProfile, updateProfile } from '../../services/profileService';
 import { useSessionStore } from '../../store/useSessionStore';
@@ -81,34 +81,47 @@ export default function MyProfileScreen(): JSX.Element {
     );
   }
 
+  const nameRef = useRef<TextInput>(null);
+  const phoneRef = useRef<TextInput>(null);
+
   return (
-    <View style={{ padding: 16 }}>
+    <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} style={{ flex: 1 }}>
+      <ScrollView keyboardShouldPersistTaps="handled" contentContainerStyle={{ padding: 16 }}>
       <Text style={{ fontSize: 18, marginBottom: 12 }}>My Profile</Text>
       <Text>Email (read-only)</Text>
       <Text style={{ marginBottom: 12 }}>{email}</Text>
       <Text>Full Name</Text>
       <TextInput
+        ref={nameRef}
         value={fullName}
         onChangeText={setFullName}
         placeholder="Full Name"
+        returnKeyType="next"
+        blurOnSubmit={false}
+        onSubmitEditing={() => phoneRef.current?.focus()}
         style={{ borderWidth: 1, borderColor: '#ccc', padding: 8, marginBottom: 12 }}
       />
       <Text>Phone</Text>
       <View style={{ flexDirection: 'row', marginBottom: 8 }}>
         <CountryCodePicker value={countryCode} onChange={setCountryCode} />
         <TextInput
+          ref={phoneRef}
           value={phone}
           onChangeText={(t) => setPhone(onlyDigits(t))}
           keyboardType="phone-pad"
           placeholder="Phone number"
+          returnKeyType="done"
+          blurOnSubmit
+          onSubmitEditing={onSave}
           style={{ flex: 1, borderWidth: 1, borderColor: '#ccc', padding: 8 }}
         />
       </View>
       {phoneError && <Text style={{ color: 'crimson', marginBottom: 8 }}>{phoneError}</Text>}
-      <TouchableOpacity onPress={onSave} disabled={saving} style={{ padding: 12, backgroundColor: '#222' }}>
+      <TouchableOpacity accessibilityRole="button" accessibilityLabel="Save profile" onPress={onSave} disabled={saving} style={{ padding: 12, minHeight: 44, justifyContent: 'center', backgroundColor: '#222', borderRadius: 8 }}>
         <Text style={{ color: '#fff', textAlign: 'center' }}>{saving ? 'Saving...' : 'Save'}</Text>
       </TouchableOpacity>
       {error && <Text style={{ color: 'crimson', marginTop: 8 }}>{error}</Text>}
-    </View>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 }

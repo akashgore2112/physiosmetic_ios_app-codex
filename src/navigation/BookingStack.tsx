@@ -11,9 +11,9 @@ import ConfirmBookingScreen from '../screens/Booking/ConfirmBookingScreen';
 export type BookingStackParamList = {
   ServicesMain: undefined;
   ServiceDetail: { serviceName?: string; serviceId?: string };
-  SelectTherapist: { serviceName: string; serviceId: string; isOnline?: boolean };
-  SelectDate: { serviceName: string; serviceId: string; therapistId: string; therapistName: string; appointmentId?: string; oldSlotId?: string; isOnline?: boolean };
-  SelectTimeSlot: { serviceName: string; serviceId: string; therapistId: string; therapistName: string; date: string; appointmentId?: string; oldSlotId?: string; isOnline?: boolean };
+  SelectTherapist: { serviceName: string; serviceId: string };
+  SelectDate: { serviceName: string; serviceId: string; therapistId: string; therapistName: string; appointmentId?: string; oldSlotId?: string };
+  SelectTimeSlot: { serviceName: string; serviceId: string; therapistId: string; therapistName: string; date: string; appointmentId?: string; oldSlotId?: string };
   BookingFlow: {
     serviceName: string;
     serviceId: string;
@@ -24,7 +24,6 @@ export type BookingStackParamList = {
     slotStart: string;
     appointmentId?: string;
     oldSlotId?: string;
-    isOnline?: boolean;
   };
 };
 

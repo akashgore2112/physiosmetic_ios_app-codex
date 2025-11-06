@@ -1,5 +1,6 @@
 import React from 'react';
-import { View, Text, Image, Pressable, StyleSheet } from 'react-native';
+import { View, Text, Pressable, StyleSheet } from 'react-native';
+import CachedImage from './CachedImage';
 
 type Therapist = { id: string; name: string; speciality?: string; about?: string; photo_url?: string };
 
@@ -10,7 +11,7 @@ type Props = {
   onSelect: (therapistId: string) => void;
 };
 
-export default function TherapistCard({ therapist, nextSlotText, showOnlineBadge, onSelect }: Props): JSX.Element {
+function TherapistCardBase({ therapist, nextSlotText, showOnlineBadge, onSelect }: Props): JSX.Element {
   return (
     <Pressable
       accessibilityRole="button"
@@ -20,7 +21,7 @@ export default function TherapistCard({ therapist, nextSlotText, showOnlineBadge
     >
       <View style={styles.row}>
         {therapist.photo_url ? (
-          <Image source={{ uri: therapist.photo_url }} style={styles.avatar} />
+          <CachedImage source={{ uri: therapist.photo_url }} style={styles.avatar} contentFit="cover" />
         ) : (
           <View style={[styles.avatar, styles.avatarFallback]}>
             <Text style={styles.avatarInitial}>{(therapist.name || '?').charAt(0).toUpperCase()}</Text>
@@ -54,6 +55,9 @@ export default function TherapistCard({ therapist, nextSlotText, showOnlineBadge
   );
 }
 
+const TherapistCard = React.memo(TherapistCardBase);
+export default TherapistCard;
+
 const AVATAR = 56;
 const styles = StyleSheet.create({
   card: {
@@ -86,4 +90,3 @@ const styles = StyleSheet.create({
   btn: { paddingVertical: 10, paddingHorizontal: 14, backgroundColor: '#F37021', borderRadius: 10 },
   btnText: { color: '#fff', fontWeight: '700' },
 });
-

@@ -13,6 +13,31 @@ type Props = {
   onPressTherapist: (therapistId: string) => void;
 };
 
+const Chip = React.memo(function Chip({ item, onPressTherapist }: { item: Therapist; onPressTherapist: (id: string) => void }) {
+  return (
+    <Pressable
+      onPress={() => onPressTherapist(item.id)}
+      accessibilityRole="button"
+      accessibilityLabel={`Therapist ${item.name}`}
+      style={({ pressed }) => [styles.chip, pressed && styles.chipPressed]}
+    >
+      {item.photo_url ? (
+        <Image source={{ uri: item.photo_url }} style={styles.avatar} />
+      ) : (
+        <View style={[styles.avatar, styles.avatarFallback]}>
+          <Text style={styles.avatarInitial}>{(item.name || '?').trim().charAt(0).toUpperCase()}</Text>
+        </View>
+      )}
+      <View style={styles.textWrap}>
+        <Text numberOfLines={1} style={styles.nameText}>{item.name}</Text>
+        {!!item.speciality && (
+          <Text numberOfLines={1} style={styles.specText}>{item.speciality}</Text>
+        )}
+      </View>
+    </Pressable>
+  );
+});
+
 export default function TherapistChips({ therapists, onPressTherapist }: Props): JSX.Element | null {
   if (!therapists || therapists.length === 0) return null;
 
@@ -23,28 +48,11 @@ export default function TherapistChips({ therapists, onPressTherapist }: Props):
       horizontal
       showsHorizontalScrollIndicator={false}
       contentContainerStyle={styles.container}
-      renderItem={({ item }) => (
-        <Pressable
-          onPress={() => onPressTherapist(item.id)}
-          accessibilityRole="button"
-          accessibilityLabel={`Therapist ${item.name}`}
-          style={({ pressed }) => [styles.chip, pressed && styles.chipPressed]}
-        >
-          {item.photo_url ? (
-            <Image source={{ uri: item.photo_url }} style={styles.avatar} />
-          ) : (
-            <View style={[styles.avatar, styles.avatarFallback]}>
-              <Text style={styles.avatarInitial}>{(item.name || '?').trim().charAt(0).toUpperCase()}</Text>
-            </View>
-          )}
-          <View style={styles.textWrap}>
-            <Text numberOfLines={1} style={styles.nameText}>{item.name}</Text>
-            {!!item.speciality && (
-              <Text numberOfLines={1} style={styles.specText}>{item.speciality}</Text>
-            )}
-          </View>
-        </Pressable>
-      )}
+      initialNumToRender={8}
+      maxToRenderPerBatch={8}
+      windowSize={5}
+      removeClippedSubviews
+      renderItem={({ item }) => <Chip item={item} onPressTherapist={onPressTherapist} />}
     />
   );
 }
@@ -98,4 +106,3 @@ const styles = StyleSheet.create({
     marginTop: 2,
   },
 });
-

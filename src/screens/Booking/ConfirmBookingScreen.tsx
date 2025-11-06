@@ -74,9 +74,11 @@ export default function ConfirmBookingScreen({ route, navigation }: any): JSX.El
       </View>
 
       <TouchableOpacity
+        accessibilityRole="button"
+        accessibilityLabel="Confirm booking"
         onPress={onConfirm}
         disabled={!canConfirm || loading}
-        style={{ backgroundColor: canConfirm ? '#F37021' : '#ccc', padding: 16, borderRadius: 12, alignItems: 'center' }}
+        style={{ backgroundColor: canConfirm ? '#F37021' : '#ccc', padding: 16, minHeight: 44, borderRadius: 12, alignItems: 'center', justifyContent: 'center' }}
       >
         {loading ? <ActivityIndicator color="#fff" /> : <Text style={{ color: '#fff', fontWeight: '700' }}>Confirm</Text>}
       </TouchableOpacity>

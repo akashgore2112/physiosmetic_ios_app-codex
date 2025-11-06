@@ -7,15 +7,18 @@ import { useToast } from '../../components/feedback/useToast';
 import TherapistCard from '../../components/TherapistCard';
 import { supabase } from '../../config/supabaseClient';
 import { formatDate, formatTime } from '../../utils/formatDate';
+import { useNetworkStore } from '../../store/useNetworkStore';
 
 type Props = NativeStackScreenProps<BookingStackParamList, 'SelectTherapist'>;
 
 export default function SelectTherapistScreen({ route, navigation }: Props): JSX.Element {
-  const { serviceId, isOnline, serviceName, category } = route.params || {};
+  const { serviceId, serviceName, category } = route.params || {};
   const [loading, setLoading] = useState(true);
   const [therapists, setTherapists] = useState<any[]>([]);
   const [nextMap, setNextMap] = useState<Record<string, string | null>>({});
   const { show } = useToast();
+  const isOnline = useNetworkStore((s) => s.isOnline);
+  const [hadError, setHadError] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -32,12 +35,34 @@ export default function SelectTherapistScreen({ route, navigation }: Props): JSX
         if (!cancelled) setTherapists(list as any);
       } catch (e: any) {
         show(e?.message ?? 'Failed to load therapists');
+        setHadError(true);
       } finally {
         if (!cancelled) setLoading(false);
       }
     })();
     return () => { cancelled = true; };
   }, [serviceId, category]);
+
+  // Auto-retry on reconnect
+  useEffect(() => {
+    if (isOnlineStatus && hadError) {
+      setHadError(false);
+      // trigger reload
+      (async () => {
+        setLoading(true);
+        try {
+          let list = await getTherapistsForService(serviceId);
+          if (!list || list.length === 0) {
+            const q = supabase.from('therapists').select('id,name,speciality,about,photo_url').eq('is_active', true);
+            const { data } = await q;
+            list = (data ?? []).filter((t: any) => !category || (t.speciality || '').toLowerCase().includes(String(category).toLowerCase()));
+          }
+          setTherapists(list as any);
+        } catch {}
+        setLoading(false);
+      })();
+    }
+  }, [isOnlineStatus]);
 
   useEffect(() => {
     // Fire-and-forget next slot fetch per therapist
@@ -68,12 +93,16 @@ export default function SelectTherapistScreen({ route, navigation }: Props): JSX
       <FlatList
         data={therapists}
         keyExtractor={(t) => t.id}
+        initialNumToRender={8}
+        maxToRenderPerBatch={8}
+        windowSize={5}
+        removeClippedSubviews
         renderItem={({ item }) => (
           <TherapistCard
             therapist={item}
             nextSlotText={nextMap[item.id] ?? null}
-            showOnlineBadge={!!isOnline}
-            onSelect={(tid) => navigation.navigate('SelectDate', { serviceId, serviceName, therapistId: tid, therapistName: item.name, isOnline: !!isOnline })}
+            showOnlineBadge={false}
+            onSelect={(tid) => navigation.navigate('SelectDate', { serviceId, serviceName, therapistId: tid, therapistName: item.name })}
           />
         )}
         ListEmptyComponent={<Text>Our team list is being updated.</Text>}

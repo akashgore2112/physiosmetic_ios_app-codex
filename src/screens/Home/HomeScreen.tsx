@@ -6,6 +6,7 @@ import { getNextAppointmentForUser, getUpcomingAppointmentsForUser, getNextAvail
 import { supabase } from '../../config/supabaseClient';
 import { getAllActiveServices } from '../../services/serviceCatalogService';
 import { useToast } from '../../components/feedback/useToast';
+import { toastError } from '../../utils/toast';
 import { formatDate, formatTime } from '../../utils/formatDate';
 import { isPastSlot } from '../../utils/clinicTime';
 import ServiceCard from '../../components/ServiceCard';

@@ -1,5 +1,6 @@
 import React from 'react';
-import { View, Text, Image, Pressable } from 'react-native';
+import { View, Text, Pressable } from 'react-native';
+import CachedImage from './CachedImage';
 
 type Props = {
   name: string;
@@ -8,11 +9,11 @@ type Props = {
   onPress: () => void;
 };
 
-export default function ServiceCard({ name, category, imageUrl, onPress }: Props) {
+function ServiceCardBase({ name, category, imageUrl, onPress }: Props) {
   return (
     <Pressable onPress={onPress} style={({ pressed }) => ({ width: 200, marginRight: 12, opacity: pressed ? 0.85 : 1 })}>
       {imageUrl ? (
-        <Image source={{ uri: imageUrl }} style={{ width: '100%', height: 100, backgroundColor: '#eee' }} />
+        <CachedImage source={{ uri: imageUrl }} style={{ width: '100%', height: 100, backgroundColor: '#eee' }} contentFit="cover" />
       ) : (
         <View style={{ width: '100%', height: 100, backgroundColor: '#eee', justifyContent: 'center', alignItems: 'center' }}>
           <Text>No Image</Text>
@@ -23,3 +24,6 @@ export default function ServiceCard({ name, category, imageUrl, onPress }: Props
     </Pressable>
   );
 }
+
+const ServiceCard = React.memo(ServiceCardBase);
+export default ServiceCard;

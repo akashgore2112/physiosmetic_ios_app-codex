@@ -5,12 +5,15 @@ import type { BookingStackParamList } from '../../navigation/BookingStack';
 import { getBookableDatesForService } from '../../services/bookingService';
 import { formatDate } from '../../utils/formatDate';
 import { useToast } from '../../components/feedback/useToast';
+import useNetworkStore from '../../store/useNetworkStore';
 
 type Props = NativeStackScreenProps<BookingStackParamList, 'SelectDate'>;
 
 export default function SelectDateScreen({ route, navigation }: Props): JSX.Element {
   const { serviceId, serviceName, therapistId, therapistName, appointmentId, oldSlotId } = route.params;
   const { show } = useToast();
+  const isOnline = useNetworkStore((s) => s.isOnline);
+  const [hadError, setHadError] = useState(false);
   const [loading, setLoading] = useState(true);
   const [dates, setDates] = useState<string[]>([]);
 
@@ -22,6 +25,7 @@ export default function SelectDateScreen({ route, navigation }: Props): JSX.Elem
         if (!cancelled) setDates(d);
       } catch (e: any) {
         show(e?.message ?? 'Failed to load dates');
+        setHadError(true);
       } finally {
         if (!cancelled) setLoading(false);
       }
@@ -30,6 +34,21 @@ export default function SelectDateScreen({ route, navigation }: Props): JSX.Elem
       cancelled = true;
     };
   }, [serviceId]);
+
+  // Auto-retry on reconnect
+  useEffect(() => {
+    if (isOnline && hadError) {
+      setHadError(false);
+      setLoading(true);
+      (async () => {
+        try {
+          const d = await getBookableDatesForService(serviceId);
+          setDates(d);
+        } catch {}
+        setLoading(false);
+      })();
+    }
+  }, [isOnline]);
 
   if (loading) {
     return (
@@ -45,6 +64,10 @@ export default function SelectDateScreen({ route, navigation }: Props): JSX.Elem
       <FlatList
         data={dates}
         keyExtractor={(d) => d}
+        initialNumToRender={8}
+        maxToRenderPerBatch={8}
+        windowSize={5}
+        removeClippedSubviews
         renderItem={({ item }) => (
           <TouchableOpacity
             style={{ padding: 14, backgroundColor: '#fff', borderRadius: 10, marginBottom: 8 }}

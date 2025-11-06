@@ -30,6 +30,10 @@ export default function CountryCodePicker({ value, onChange }: { value: string; 
                 const safeDial = item.code || 'NA';
                 return `${item.iso2}-${safeDial}`;
               }}
+              initialNumToRender={8}
+              maxToRenderPerBatch={8}
+              windowSize={5}
+              removeClippedSubviews
               renderItem={({ item }) => (
                 <TouchableOpacity onPress={() => { onChange(item.code); setOpen(false); }} style={{ paddingVertical: 10 }}>
                   <Text>{`${item.name} (${item.code})`}</Text>

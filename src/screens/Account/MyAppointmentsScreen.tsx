@@ -6,6 +6,7 @@ import { cancelAppointment } from '../../services/bookingService';
 import { supabase } from '../../config/supabaseClient';
 import { useToast } from '../../components/feedback/useToast';
 import { formatDate, formatTime } from '../../utils/formatDate';
+import useNetworkStore from '../../store/useNetworkStore';
 
 type Row = { id: string; status: string; slot: { id: string; date: string; start_time: string; end_time: string } };
 
@@ -17,6 +18,8 @@ export default function MyAppointmentsScreen(): JSX.Element {
   const [offset, setOffset] = useState(0);
   const PAGE = 20;
   const { show } = useToast();
+  const isOnline = useNetworkStore((s) => s.isOnline);
+  const [hadError, setHadError] = useState(false);
 
   async function fetchRows(reset = true) {
     if (!userId) return setRows([]);
@@ -34,6 +37,7 @@ export default function MyAppointmentsScreen(): JSX.Element {
       if (!reset) setOffset(offset + PAGE);
     } catch (e: any) {
       show(e?.message ?? 'Failed to load');
+      setHadError(true);
     } finally {
       if (reset) setLoading(false);
       setRefreshing(false);
@@ -43,6 +47,10 @@ export default function MyAppointmentsScreen(): JSX.Element {
   useEffect(() => {
     fetchRows(true);
   }, [userId]);
+
+  useEffect(() => {
+    if (isOnline && hadError) fetchRows(true);
+  }, [isOnline]);
 
   useFocusEffect(useCallback(() => { fetchRows(true); }, []));
 

@@ -7,6 +7,7 @@ import { getSlotsForServiceAndDate, SlotWithTherapist } from '../../services/boo
 import { useToast } from '../../components/feedback/useToast';
 import { formatTime } from '../../utils/formatDate';
 import { isPastSlot } from '../../utils/clinicTime';
+import useNetworkStore from '../../store/useNetworkStore';
 
 type Props = NativeStackScreenProps<BookingStackParamList, 'SelectTimeSlot'>;
 
@@ -17,6 +18,8 @@ export default function SelectTimeSlotScreen({ route, navigation }: Props): JSX.
   const [slots, setSlots] = useState<SlotWithTherapist[]>([]);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [continuing, setContinuing] = useState(false);
+  const isOnline = useNetworkStore((s) => s.isOnline);
+  const [hadError, setHadError] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -33,6 +36,7 @@ export default function SelectTimeSlotScreen({ route, navigation }: Props): JSX.
         }
       } catch (e: any) {
         show(e?.message ?? 'Failed to load slots');
+        setHadError(true);
       } finally {
         if (!cancelled) setLoading(false);
       }
@@ -79,6 +83,23 @@ export default function SelectTimeSlotScreen({ route, navigation }: Props): JSX.
     });
   };
 
+  // Auto-retry on reconnect
+  useEffect(() => {
+    if (isOnline && hadError) {
+      setHadError(false);
+      setLoading(true);
+      (async () => {
+        try {
+          const s = await getSlotsForServiceAndDate(serviceId, date);
+          const filtered = therapistId ? s.filter((x) => x.therapist_id === therapistId) : s;
+          const visible = filtered.filter((x) => !isPastSlot(x.date, x.start_time));
+          setSlots(visible);
+        } catch {}
+        setLoading(false);
+      })();
+    }
+  }, [isOnline]);
+
   if (loading) {
     return (
       <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
@@ -93,13 +114,19 @@ export default function SelectTimeSlotScreen({ route, navigation }: Props): JSX.
       <FlatList
         data={slots}
         keyExtractor={(item) => item.id}
+        initialNumToRender={8}
+        maxToRenderPerBatch={8}
+        windowSize={5}
+        removeClippedSubviews
         renderItem={({ item }) => {
           const selected = item.id === selectedId;
           return (
             <TouchableOpacity
+              accessibilityRole="button"
+              accessibilityLabel={`Select ${formatTime(item.start_time)} to ${formatTime(item.end_time)}`}
               onPress={() => setSelectedId(item.id)}
               activeOpacity={0.75}
-              style={{ padding: 14, backgroundColor: selected ? '#fff6ef' : '#fff', borderRadius: 10, marginBottom: 8, borderWidth: selected ? 2 : 1, borderColor: selected ? '#F37021' : '#eee', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}
+              style={{ padding: 14, minHeight: 44, backgroundColor: selected ? '#fff6ef' : '#fff', borderRadius: 10, marginBottom: 8, borderWidth: selected ? 2 : 1, borderColor: selected ? '#F37021' : '#eee', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}
             >
               <Text style={{ fontWeight: '600' }}>{formatTime(item.start_time)} - {formatTime(item.end_time)}</Text>
               {selected && <Text style={{ color: '#F37021', fontSize: 18 }}>✓</Text>}
@@ -118,9 +145,11 @@ export default function SelectTimeSlotScreen({ route, navigation }: Props): JSX.
       </TouchableOpacity>
 
       <TouchableOpacity
+        accessibilityRole="button"
+        accessibilityLabel="Continue to confirm booking"
         onPress={onContinue}
         disabled={!selectedSlot}
-        style={{ backgroundColor: selectedSlot ? '#F37021' : '#ccc', padding: 16, borderRadius: 12, alignItems: 'center', marginTop: 12 }}
+        style={{ backgroundColor: selectedSlot ? '#F37021' : '#ccc', padding: 16, minHeight: 44, borderRadius: 12, alignItems: 'center', justifyContent: 'center', marginTop: 12 }}
       >
         <Text style={{ color: '#fff', fontWeight: '700' }}>{continuing ? 'Continuing…' : 'Continue'}</Text>
       </TouchableOpacity>

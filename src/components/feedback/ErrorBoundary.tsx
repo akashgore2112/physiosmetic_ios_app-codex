@@ -1,6 +1,5 @@
 import React from 'react';
 import { View, Text } from 'react-native';
-import * as Sentry from 'sentry-expo';
 
 type State = { hasError: boolean };
 
@@ -12,7 +11,14 @@ export default class ErrorBoundary extends React.Component<{ children: React.Rea
   }
 
   componentDidCatch(error: any, errorInfo: any) {
-    try { Sentry.Native.captureException(error, { extra: errorInfo }); } catch {}
+    try {
+      // Lazy require to avoid loading Sentry at module init time
+      // Use eval to avoid Metro static resolution if sentry-expo is missing
+      // eslint-disable-next-line no-eval
+      const req: any = eval('require');
+      const Sentry = req('sentry-expo');
+      Sentry.Native.captureException(error, { extra: errorInfo });
+    } catch {}
   }
 
   render() {
@@ -26,4 +32,3 @@ export default class ErrorBoundary extends React.Component<{ children: React.Rea
     return this.props.children as any;
   }
 }
-

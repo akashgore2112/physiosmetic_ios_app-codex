@@ -15,6 +15,7 @@ export default function CartScreen({ navigation }: any): JSX.Element {
   const clear = useCartStore((s) => s.clearCart);
   const { userId, isLoggedIn } = useSessionStore();
   const { show } = useToast();
+  // Optional: could use network store here if needed later
 
   const canCheckout = total > 0;
 
@@ -35,6 +36,10 @@ export default function CartScreen({ navigation }: any): JSX.Element {
       <FlatList
         data={items}
         keyExtractor={(i) => i.id}
+        initialNumToRender={8}
+        maxToRenderPerBatch={8}
+        windowSize={5}
+        removeClippedSubviews
         renderItem={({ item }) => (
           <View style={{ backgroundColor: '#fff', borderRadius: 10, padding: 12, marginBottom: 8 }}>
             <Text style={{ fontWeight: '700' }}>{item.name}</Text>

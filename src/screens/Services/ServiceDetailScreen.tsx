@@ -6,6 +6,7 @@ import PriceTag from '../../components/PriceTag';
 import NextSlotsRow from '../../components/NextSlotsRow';
 import StickyBookingBar from '../../components/StickyBookingBar';
 import { useToast } from '../../components/feedback/useToast';
+import { toastError } from '../../utils/toast';
 
 export default function ServiceDetailScreen({ route, navigation }: any): JSX.Element {
   const { serviceId: routeServiceId } = route.params ?? {};
@@ -36,7 +37,7 @@ export default function ServiceDetailScreen({ route, navigation }: any): JSX.Ele
       } else setNextSlots([]);
     } catch (e: any) {
       setError(e?.message ?? 'Failed to load service');
-      show(e?.message ?? 'Failed to load service');
+      toastError(e);
     } finally {
       setLoading(false);
     }
@@ -88,6 +89,9 @@ export default function ServiceDetailScreen({ route, navigation }: any): JSX.Ele
 
   return (
     <View style={{ flex: 1 }}>
+      {/** onlineAllowed used for clarity; set from service.is_online_allowed */}
+      {/** eslint-disable-next-line @typescript-eslint/no-unused-vars */}
+      {(() => { const onlineAllowed = !!service?.is_online_allowed; return null; })()}
       <ScrollView contentContainerStyle={{ paddingBottom: 100 }} style={{ flex: 1 }}>
         {/* (A) Header */}
         <View style={{ padding: 16 }}>
