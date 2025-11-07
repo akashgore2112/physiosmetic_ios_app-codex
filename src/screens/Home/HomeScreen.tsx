@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { View, Text, TouchableOpacity, ActivityIndicator, ScrollView, Pressable } from 'react-native';
+import { View, Text, TouchableOpacity, ActivityIndicator, ScrollView, Pressable, useWindowDimensions } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import { useSessionStore } from '../../store/useSessionStore';
 import { getMyUpcomingAppointments, getMyAllAppointments, getNextAvailableSlots } from '../../services/bookingService';
@@ -7,7 +7,7 @@ import { supabase } from '../../config/supabaseClient';
 import { getAllActiveServices } from '../../services/serviceCatalogService';
 import { useToast } from '../../components/feedback/useToast';
 import { toastError } from '../../utils/toast';
-import { formatDate, formatTime } from '../../utils/formatDate';
+import { formatDate, formatTime, formatRelativeToNow } from '../../utils/formatDate';
 import { isPastSlot } from '../../utils/clinicTime';
 import ServiceCard from '../../components/ServiceCard';
 import { showReleaseChecklist } from '../../dev/releaseChecklist';
@@ -20,6 +20,9 @@ export default function HomeScreen({ navigation }: any): JSX.Element {
   const [nextSlots, setNextSlots] = useState<any[]>([]);
   const { show } = useToast();
   const endRefreshRef = useRef<NodeJS.Timeout | null>(null);
+  const [tick, setTick] = useState(0);
+  const { width: windowWidth } = useWindowDimensions();
+  const cardWidth = Math.max(280, Math.floor(windowWidth - 32)); // fill screen minus outer padding
 
   const refresh = useCallback(async () => {
     if (!userId) {
@@ -32,7 +35,8 @@ export default function HomeScreen({ navigation }: any): JSX.Element {
       if (!list || list.length === 0) {
         // Fallback: compute next upcoming from all appointments
         const all = await getMyAllAppointments();
-        const future = (all as any[]).filter((r) => r.status === 'booked' && r.slot && !isPastSlot(r.slot.date, r.slot.end_time));
+        // Use start_time for future check so card hides as soon as appointment starts
+        const future = (all as any[]).filter((r) => r.status === 'booked' && r.slot && !isPastSlot(r.slot.date, r.slot.start_time));
         // Sort by (date, start_time)
         future.sort((a, b) => {
           const ad = a.slot.date, bd = b.slot.date;
@@ -73,6 +77,12 @@ export default function HomeScreen({ navigation }: any): JSX.Element {
     const id = setInterval(() => refresh(), 60000);
     return () => clearInterval(id);
   }, [refresh]));
+
+  // Lightweight ticker to refresh countdown labels every 15s
+  useEffect(() => {
+    const t = setInterval(() => setTick((x) => x + 1), 15000);
+    return () => clearInterval(t);
+  }, []);
 
   // Realtime: reflect appointment changes immediately
   useEffect(() => {
@@ -178,11 +188,23 @@ export default function HomeScreen({ navigation }: any): JSX.Element {
                   <Pressable
                     key={item.id}
                     onPress={() => navigation.navigate('Account', { screen: 'MyAppointments', params: { highlightId: item.id } })}
-                    style={({ pressed }) => ({ backgroundColor: '#fff', borderRadius: 12, padding: 12, marginRight: 10, width: 220, opacity: pressed ? 0.9 : 1 })}
+                    style={({ pressed }) => ({ backgroundColor: '#fff', borderRadius: 12, padding: 12, marginRight: 10, width: cardWidth, opacity: pressed ? 0.9 : 1, overflow: 'hidden', borderWidth: 1, borderColor: '#eee' })}
                   >
-                    <Text numberOfLines={1} style={{ fontWeight: '600' }}>{item.service_name || 'Service'} • {item.therapist_name || 'Therapist'}</Text>
+                    <Text numberOfLines={1} ellipsizeMode="tail" style={{ fontWeight: '600', maxWidth: '100%', flexShrink: 1, lineHeight: 20 }}>
+                      {item.service_name || 'Service'} • {item.therapist_name || 'Therapist'}
+                    </Text>
                     {!!item.slot && (
-                      <Text style={{ marginTop: 4 }}>{formatDate(item.slot.date)} • {formatTime(item.slot.start_time)}</Text>
+                      <>
+                        <Text style={{ marginTop: 4 }}>{formatDate(item.slot.date)}</Text>
+                        <View style={{ flexDirection: 'row', marginTop: 4 }}>
+                          <View style={{ backgroundColor: '#eef2ff', paddingHorizontal: 8, paddingVertical: 3, borderRadius: 10, marginRight: 8 }}>
+                            <Text style={{ color: '#1e40af', fontWeight: '600' }}>Starts {formatTime(item.slot.start_time)}</Text>
+                          </View>
+                          <View style={{ backgroundColor: '#e0f2fe', paddingHorizontal: 8, paddingVertical: 3, borderRadius: 10 }}>
+                            <Text style={{ color: '#075985', fontWeight: '600' }}>{formatRelativeToNow(item.slot.date, item.slot.start_time)}</Text>
+                          </View>
+                        </View>
+                      </>
                     )}
                     <View style={{ marginTop: 8, alignSelf: 'flex-start', paddingHorizontal: 8, paddingVertical: 4, borderRadius: 10, backgroundColor: '#e6f7ee' }}>
                       <Text style={{ color: '#2e7d32', fontWeight: '600' }}>{item.status}</Text>

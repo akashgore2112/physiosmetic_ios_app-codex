@@ -2,6 +2,64 @@
 _Maintained automatically; newest first._
 _Last cleaned: 2025-11-06_
 
+### RLS hardening (2025-11-07)
+**Summary:** Locked down client table access; reads scoped to active inventory; added secure order placement RPC.
+**Files:** scripts/rls_consolidated.sql, scripts/rpc_place_order.sql
+**Behavior:**
+- availability_slots: Removed client UPDATE policy; clients can no longer mark slots booked. Public read now returns only future, unbooked rows.
+- appointments: Dropped broad UPDATE and granted column-level UPDATE(status, notes) only; RLS still enforces `user_id = auth.uid()`.
+- order_items: Removed client INSERT/UPDATE; clients must call `place_order(items)` which computes `price_each` server-side and ties order to `auth.uid()`.
+- Catalog: Public reads now filter by `is_active = true` (services/therapists) and `is_active = true AND in_stock = true` (products).
+**QA:**
+- As auth user, `update availability_slots set is_booked=true limit 1;` is denied. Selecting slots returns only `is_booked=false` and future times.
+- Updating `appointments` non-allowed columns is denied; updating `status` or `notes` succeeds for own rows.
+- Direct `insert into order_items` is denied; `select public.place_order('[{"product_id":"<uuid>","qty":2}]'::jsonb);` creates an order with correct totals and item prices.
+- Catalog queries no longer return inactive or out-of-stock records.
+
+### Home upcoming: hide on start (fallback fix) (2025-11-07)
+**Summary:** Ensured the Home "Your Upcoming Appointments" card hides immediately when an appointment starts by aligning fallback filter with start_time.
+**Files:** src/screens/Home/HomeScreen.tsx
+**Behavior:**
+- Fallback path (when primary upcoming query yields zero) now filters future items using `isPastSlot(date, start_time)` instead of `end_time`.
+- Exact refresh timer remains aligned to `start_time` for prompt hide.
+**QA:**
+- Book a test slot in the near future; at the slot start time, the upcoming card disappears within ~1s even if the fallback path is active.
+
+### Home upcoming: start label + countdown (2025-11-07)
+**Summary:** Added a small "Starts at HH:MM" label with a live countdown (e.g., "in 12m", "in 1h 5m").
+**Files:** src/screens/Home/HomeScreen.tsx, src/utils/formatDate.ts
+**Behavior:**
+- Each upcoming card shows the appointment date on one line and below it two badges: "Starts <time>" and a live countdown badge (e.g., "in 12m").
+- A lightweight 15s ticker keeps the countdown fresh without heavy polling.
+**QA:**
+- Observe label updating every ~30s; when the start time arrives, it shows "starting now" and the card hides per existing timers/filters.
+
+### Home upcoming: countdown badges polish (2025-11-07)
+**Summary:** Switched countdown text to subtle pill badges and increased refresh cadence to 15s for smoother updates.
+**Files:** src/screens/Home/HomeScreen.tsx
+**Behavior:**
+- Countdown appears in a shaded pill; start time also shown as a pill for clarity.
+- Refresh ticker adjusted from 30s → 15s.
+**QA:**
+- Countdown badge updates roughly every 15s; transitions to "starting now" before the card hides at start time.
+
+### Home upcoming: card layout + overflow (2025-11-07)
+**Summary:** Fixed text overflow by increasing card width slightly, clipping overflow, wrapping title to 2 lines, and making pill row wrap.
+**Files:** src/screens/Home/HomeScreen.tsx
+**Behavior:**
+- Pressable card width 260, `overflow: hidden`, subtle border; title kept to 1 line with tail ellipsis to preserve previous height.
+- Pill row kept on one line to stabilize card height; padding tuned to reduce extra vertical space.
+**QA:**
+- Long service/therapist names stay within the card bounds; no text bleeds outside while scrolling horizontally.
+
+### Home upcoming: width increase, height preserved (2025-11-07)
+**Summary:** Increased card width to 260 while maintaining the prior vertical height footprint.
+**Files:** src/screens/Home/HomeScreen.tsx
+**Behavior:**
+- Card now fills available screen width (screenWidth - 32 padding), with a minimum of 280; auto-recalculates on orientation/size change via `useWindowDimensions()`; badges remain single-line; overall card height remains comparable to previous design.
+**QA:**
+- Rotate device; cards resize to full width without layout jumps; titles fit one line; height remains steady across items.
+
 ### Confirm screen expiry guard (2025-11-06)
 **Summary:** Prevents booking a slot that already ended using shared time helper.
 **Files:** src/screens/Booking/ConfirmBookingScreen.tsx
