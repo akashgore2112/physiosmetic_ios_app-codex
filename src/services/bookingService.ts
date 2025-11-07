@@ -50,9 +50,9 @@ export async function getMyUpcomingAppointments(limit = 3, userId?: string): Pro
   const { data, error } = await q;
   if (error) throw error;
   const rows = (data ?? []) as AppointmentRow[];
-  // Filter to future-only using end_time
+  // Filter to future-only using start_time (hide as soon as start passes)
   const items = rows
-    .filter((r) => r.availability_slots && !isPastSlot(r.availability_slots.date, r.availability_slots.end_time))
+    .filter((r) => r.availability_slots && !isPastSlot(r.availability_slots.date, r.availability_slots.start_time))
     .map<MyApptItem>((r) => ({
       id: r.id,
       service_id: r.service_id,
@@ -77,7 +77,7 @@ export async function getMyAllAppointments(): Promise<MyApptItem[]> {
   const rows = (data ?? []) as AppointmentRow[];
   return rows.map<MyApptItem>((r) => {
     const slot = r.availability_slots ? { ...r.availability_slots } : null;
-    const isPast = slot ? isPastSlot(slot.date, slot.end_time) : false;
+    const isPast = slot ? isPastSlot(slot.date, slot.start_time) : false;
     return {
       id: r.id,
       service_id: r.service_id,

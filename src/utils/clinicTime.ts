@@ -62,15 +62,14 @@ export function nowInClinicTZ(): Date {
   return new Date();
 }
 
-export function isPastSlot(dateISO: string, startTimeHHMM: string): boolean {
-  // dateISO: 'YYYY-MM-DD', startTimeHHMM: 'HH:MM'
-  // Convert to a comparable Date (UTC baseline is acceptable for relative ordering here)
+export function isPastSlot(dateISO: string, timeHHMM: string): boolean {
+  // Compare using device local time to avoid TZ drift for date+time (no TZ info in DB)
   try {
     const [y, m, d] = dateISO.split('-').map((n) => parseInt(n, 10));
-    const [hh, mm] = startTimeHHMM.split(':').map((n) => parseInt(n, 10));
-    const slotUtc = new Date(Date.UTC(y, (m - 1), d, hh, mm));
+    const [hh, mm] = timeHHMM.split(':').map((n) => parseInt(n, 10));
+    const slotLocal = new Date(y, (m - 1), d, hh, mm, 0, 0);
     const now = new Date();
-    return slotUtc.getTime() <= now.getTime();
+    return slotLocal.getTime() <= now.getTime();
   } catch {
     return false;
   }

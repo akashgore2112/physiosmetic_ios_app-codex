@@ -144,3 +144,44 @@ _Last cleaned: 2025-11-06_
 - Subscribes to auth changes to keep session store in sync.
 **QA:**
 - After booking as a logged-in user, upcoming card appears without restart; after logout/login it refreshes correctly.
+### Home auto-hide at end_time (2025-11-06)
+**Summary:** Upcoming card now auto-hides exactly when a slot ends using an exact refresh timer.
+**Files:** src/screens/Home/HomeScreen.tsx
+**Behavior:**
+- After fetching upcoming, schedules a setTimeout to refresh at the nearest `slot.end_time` (+1s) in addition to 60s interval.
+- Ensures the card disappears right when the appointment passes end_time without waiting for the next minute tick.
+**QA:**
+- Book a near-future test slot; observe card disappear within a second after end_time.
+- Multiple upcoming items re-schedule the timer to the next soonest end.
+### Start-time based completion (2025-11-06)
+**Summary:** Card hides and appointments mark completed as soon as start_time passes (not end_time).
+**Files:** src/services/bookingService.ts, src/screens/Home/HomeScreen.tsx, scripts/rpc_mark_my_past_appointments_completed.sql
+**Behavior:**
+- Upcoming filtering uses `start_time`.
+- Exact refresh timer set to nearest `start_time`.
+- RPC updated to mark booked → completed when `(date + start_time) <= now()`.
+**QA:**
+- Book at 16:00; at 16:12, Home card hides and My Appointments shows completed.
+### TZ-safe past checks (2025-11-06)
+**Summary:** Fixed time comparisons to use device-local date/time to prevent drift against UTC when DB stores date+time without TZ.
+**Files:** src/utils/clinicTime.ts, src/screens/Home/HomeScreen.tsx
+**Behavior:**
+- `isPastSlot()` now constructs local Date from `YYYY-MM-DD` + `HH:MM`.
+- HomeScreen refresh timer parses local date/time for exact changeover.
+**QA:**
+- Booking starting at 16:00 hides exactly after 16:00 local; My Appointments reflects completed per UI and RPC sync.
+### RPC rowcount fix (2025-11-06)
+**Summary:** Eliminated multi-row RETURNING error in `mark_my_past_appointments_completed()`.
+**Files:** scripts/rpc_mark_my_past_appointments_completed.sql
+**Behavior:**
+- Replaced `RETURNING INTO` with `GET DIAGNOSTICS updated_count = ROW_COUNT;` after UPDATE.
+- Prevents `P0003 query returned more than one row` warnings in `syncMyPastAppointments()`.
+**QA:**
+- Running RPC returns an integer count without errors; client logs no warnings.
+### MyAppointments completion UI (2025-11-06)
+**Summary:** Fixed client-side completion toggle to use start_time so rows flip to completed as soon as time passes.
+**Files:** src/screens/Account/MyAppointmentsScreen.tsx
+**Behavior:**
+- Uses `isPastSlot(date, start_time)` to determine “completed” display and disable actions.
+**QA:**
+- At 16:12 for a 16:00 booking, row shows “completed” without manual refresh (interval/focus refresh ensure update).

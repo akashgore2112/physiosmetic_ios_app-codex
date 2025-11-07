@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { View, Text, TouchableOpacity, ActivityIndicator, ScrollView, Pressable } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import { useSessionStore } from '../../store/useSessionStore';
@@ -19,6 +19,7 @@ export default function HomeScreen({ navigation }: any): JSX.Element {
   const [services, setServices] = useState<any[]>([]);
   const [nextSlots, setNextSlots] = useState<any[]>([]);
   const { show } = useToast();
+  const endRefreshRef = useRef<NodeJS.Timeout | null>(null);
 
   const refresh = useCallback(async () => {
     if (!userId) {
@@ -42,6 +43,23 @@ export default function HomeScreen({ navigation }: any): JSX.Element {
         list = future.slice(0, 10);
       }
       setUpcoming(list as any[]);
+
+      // Schedule an exact refresh at the nearest end_time so the card auto-hides right on time
+      if (endRefreshRef.current) { clearTimeout(endRefreshRef.current as any); endRefreshRef.current = null; }
+      const now = Date.now();
+      const ends = (list as any[])
+        .map((r) => {
+          if (!r?.slot) return null;
+          const [y, m, d] = r.slot.date.split('-').map((n: string) => parseInt(n, 10));
+          const [hh, mm] = (r.slot.start_time || '00:00').split(':').map((n: string) => parseInt(n, 10));
+          return new Date(y, (m - 1), d, hh, mm, 1).getTime();
+        })
+        .filter((t: any) => typeof t === 'number' && t > now) as number[];
+      if (ends.length > 0) {
+        const next = Math.min(...ends);
+        const delay = Math.max(1000, next - now + 1000); // +1s safety
+        endRefreshRef.current = setTimeout(() => refresh(), delay) as any;
+      }
     } catch (e: any) {
       console.debug('[home][upcoming] query-error (silent):', e?.message);
     } finally {
@@ -69,6 +87,8 @@ export default function HomeScreen({ navigation }: any): JSX.Element {
       supabase.removeChannel(channel);
     };
   }, [userId, refresh]);
+
+  useEffect(() => () => { if (endRefreshRef.current) clearTimeout(endRefreshRef.current as any); }, []);
 
   useEffect(() => {
     let cancelled = false;

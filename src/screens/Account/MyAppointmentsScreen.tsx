@@ -89,7 +89,7 @@ export default function MyAppointmentsScreen(): JSX.Element {
           data={rows}
           keyExtractor={(r) => r.id}
           renderItem={({ item }) => {
-            const past = item.slot ? isPastSlot(item.slot.date, item.slot.end_time) : false;
+            const past = item.slot ? isPastSlot(item.slot.date, item.slot.start_time) : false;
             const effectiveStatus = item.status === 'booked' && past ? 'completed' : item.status;
             const mins = minutesUntil(item.slot?.date, item.slot?.start_time) ?? 9999;
             const canCancel = item.status === 'booked' && !past && mins >= 60;
