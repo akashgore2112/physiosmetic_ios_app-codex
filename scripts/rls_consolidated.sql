@@ -12,19 +12,19 @@ create policy "profiles update own" on public.profiles for update using (auth.ui
 alter table public.services enable row level security;
 drop policy if exists "services public read" on public.services;
 create policy "services public read" on public.services for select using (
-  is_active is true
+  coalesce(is_active, true)
 );
 
 alter table public.therapists enable row level security;
 drop policy if exists "therapists public read" on public.therapists;
 create policy "therapists public read" on public.therapists for select using (
-  is_active is true
+  coalesce(is_active, true)
 );
 
 alter table public.products enable row level security;
 drop policy if exists "products public read" on public.products;
 create policy "products public read" on public.products for select using (
-  (is_active is true) and (in_stock is true)
+  coalesce(is_active, true) and coalesce(in_stock, true)
 );
 
 alter table public.availability_slots enable row level security;

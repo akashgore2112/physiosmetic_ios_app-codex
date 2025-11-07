@@ -5,6 +5,7 @@ import MyAppointmentsScreen from '../screens/Account/MyAppointmentsScreen';
 import MyProfileScreen from '../screens/Account/MyProfileScreen';
 import MyOrdersScreen from '../screens/Account/MyOrdersScreen';
 import OrderDetailScreen from '../screens/Account/OrderDetailScreen';
+import AppointmentDetailScreen from '../screens/Account/AppointmentDetailScreen';
 import TermsScreen from '../screens/Legal/TermsScreen';
 import PrivacyScreen from '../screens/Legal/PrivacyScreen';
 import SignInScreen from '../screens/Auth/SignInScreen';
@@ -15,6 +16,7 @@ export type AccountStackParamList = {
   SignIn: undefined;
   SignUp: undefined;
   MyAppointments: undefined;
+  AppointmentDetail: { id: string };
   MyProfile: undefined;
   MyOrders: undefined;
   OrderDetail: { id: string } | undefined;
@@ -31,6 +33,7 @@ export default function AccountStackNavigator(): JSX.Element {
       <Stack.Screen name="SignIn" component={SignInScreen} options={{ title: 'Sign In' }} />
       <Stack.Screen name="SignUp" component={SignUpScreen} options={{ title: 'Create Account' }} />
       <Stack.Screen name="MyAppointments" component={MyAppointmentsScreen} options={{ title: 'My Appointments' }} />
+      <Stack.Screen name="AppointmentDetail" component={AppointmentDetailScreen} options={{ title: 'Appointment Detail' }} />
       <Stack.Screen name="MyProfile" component={MyProfileScreen} options={{ title: 'My Profile' }} />
       <Stack.Screen name="MyOrders" component={MyOrdersScreen} options={{ title: 'My Orders' }} />
       <Stack.Screen name="OrderDetail" component={OrderDetailScreen} options={{ title: 'Order Detail' }} />

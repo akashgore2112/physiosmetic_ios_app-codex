@@ -1,6 +1,7 @@
 import React from 'react';
 import { StatusBar } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { useAppNetwork } from './src/hooks/useAppNetwork';
 import { supabase } from './src/config/supabaseClient';
 import { useSessionStore } from './src/store/useSessionStore';
@@ -33,12 +34,14 @@ export default function App() {
 
   return (
     <ToastProvider>
-      <NavigationContainer>
-        <StatusBar barStyle="dark-content" />
-        <OfflineBanner />
-        {/* Root tabs (Booking/Shop/Account etc.) */}
-        <AppTabs />
-      </NavigationContainer>
+      <SafeAreaProvider>
+        <NavigationContainer>
+          <StatusBar barStyle="dark-content" />
+          <OfflineBanner />
+          {/* Root tabs (Booking/Shop/Account etc.) */}
+          <AppTabs />
+        </NavigationContainer>
+      </SafeAreaProvider>
     </ToastProvider>
   );
 }
