@@ -51,9 +51,28 @@ export default function MyAppointmentsScreen(): JSX.Element {
     return () => clearInterval(id);
   }, []));
 
-  const onCancel = async (id: string) => {
+  const minutesUntil = (dateISO?: string, timeHHMM?: string): number | null => {
+    if (!dateISO || !timeHHMM) return null;
     try {
-      await cancelAppointment(id);
+      const [y, m, d] = dateISO.split('-').map((n) => parseInt(n, 10));
+      const [hh, mm] = timeHHMM.split(':').map((n) => parseInt(n, 10));
+      const target = new Date(Date.UTC(y, m - 1, d, hh, mm));
+      const now = new Date();
+      return Math.round((target.getTime() - now.getTime()) / 60000);
+    } catch {
+      return null;
+    }
+  };
+
+  const onCancel = async (item: Row) => {
+    try {
+      // Enforce cancellation window (60 minutes before start)
+      const mins = minutesUntil(item.slot?.date, item.slot?.start_time);
+      if (mins !== null && mins < 60) {
+        show('Cancellation is disabled within 60 minutes of start time');
+        return;
+      }
+      await cancelAppointment(item.id);
       show('Cancelled');
       fetchRows();
     } catch (e: any) {
@@ -72,18 +91,20 @@ export default function MyAppointmentsScreen(): JSX.Element {
           renderItem={({ item }) => {
             const past = item.slot ? isPastSlot(item.slot.date, item.slot.end_time) : false;
             const effectiveStatus = item.status === 'booked' && past ? 'completed' : item.status;
-            const canAct = item.status === 'booked' && !past;
+            const mins = minutesUntil(item.slot?.date, item.slot?.start_time) ?? 9999;
+            const canCancel = item.status === 'booked' && !past && mins >= 60;
+            const canReschedule = item.status === 'booked' && !past;
             return (
               <View style={{ backgroundColor: '#fff', padding: 14, borderRadius: 10, marginBottom: 8 }}>
                 <Text style={{ fontWeight: '700' }}>{item.service_name || 'Service'} • {item.therapist_name || 'Therapist'}</Text>
                 {!!item.slot && <Text style={{ marginTop: 4 }}>{formatDate(item.slot.date)} • {formatTime(item.slot.start_time)}</Text>}
                 <Text style={{ marginTop: 6, color: effectiveStatus === 'booked' ? '#2e7d32' : '#666' }}>Status: {effectiveStatus}</Text>
                 <View style={{ flexDirection: 'row', gap: 12, marginTop: 10 }}>
-                  <TouchableOpacity disabled={!canAct} onPress={() => onCancel(item.id)} style={{ padding: 10, backgroundColor: canAct ? '#eee' : '#f5f5f5', borderRadius: 8 }}>
-                    <Text style={{ color: canAct ? '#000' : '#999' }}>Cancel</Text>
+                  <TouchableOpacity disabled={!canCancel} onPress={() => onCancel(item)} style={{ padding: 10, backgroundColor: canCancel ? '#eee' : '#f5f5f5', borderRadius: 8 }}>
+                    <Text style={{ color: canCancel ? '#000' : '#999' }}>Cancel</Text>
                   </TouchableOpacity>
                   <TouchableOpacity
-                    disabled={!canAct}
+                    disabled={!canReschedule}
                     onPress={() =>
                       (global as any).navigation?.navigate?.('Services', {
                         screen: 'SelectDate',
@@ -97,9 +118,9 @@ export default function MyAppointmentsScreen(): JSX.Element {
                         },
                       })
                     }
-                    style={{ padding: 10, backgroundColor: canAct ? '#e6f2ff' : '#f5f5f5', borderRadius: 8 }}
+                    style={{ padding: 10, backgroundColor: canReschedule ? '#e6f2ff' : '#f5f5f5', borderRadius: 8 }}
                   >
-                    <Text style={{ color: canAct ? '#1e64d4' : '#999' }}>Reschedule</Text>
+                    <Text style={{ color: canReschedule ? '#1e64d4' : '#999' }}>Reschedule</Text>
                   </TouchableOpacity>
                 </View>
               </View>
