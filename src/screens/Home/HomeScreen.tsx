@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { View, Text, TouchableOpacity, ActivityIndicator, ScrollView, Pressable } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import { useSessionStore } from '../../store/useSessionStore';
-import { getMyUpcomingAppointments, getNextAvailableSlots } from '../../services/bookingService';
+import { getMyUpcomingAppointments, getMyAllAppointments, getNextAvailableSlots } from '../../services/bookingService';
 import { supabase } from '../../config/supabaseClient';
 import { getAllActiveServices } from '../../services/serviceCatalogService';
 import { useToast } from '../../components/feedback/useToast';
@@ -27,7 +27,20 @@ export default function HomeScreen({ navigation }: any): JSX.Element {
     }
     setLoading(true);
     try {
-      const list = await getMyUpcomingAppointments(1);
+      let list = await getMyUpcomingAppointments(10, userId);
+      if (!list || list.length === 0) {
+        // Fallback: compute next upcoming from all appointments
+        const all = await getMyAllAppointments();
+        const future = (all as any[]).filter((r) => r.status === 'booked' && r.slot && !isPastSlot(r.slot.date, r.slot.end_time));
+        // Sort by (date, start_time)
+        future.sort((a, b) => {
+          const ad = a.slot.date, bd = b.slot.date;
+          if (ad !== bd) return ad < bd ? -1 : 1;
+          const at = a.slot.start_time, bt = b.slot.start_time;
+          return at < bt ? -1 : at > bt ? 1 : 0;
+        });
+        list = future.slice(0, 10);
+      }
       setUpcoming(list as any[]);
     } catch (e: any) {
       console.debug('[home][upcoming] query-error (silent):', e?.message);
@@ -80,16 +93,7 @@ export default function HomeScreen({ navigation }: any): JSX.Element {
     return () => { cancelled = true; };
   }, []);
 
-  const onCancel = async () => {
-    if (!nextAppt?.id) return;
-    try {
-      await cancelAppointment(nextAppt.id);
-      show('Appointment cancelled');
-      refresh();
-    } catch (e: any) {
-      show(e?.message ?? 'Cancel failed');
-    }
-  };
+  // Cancel handler removed; upcoming card is a link to My Appointments
 
   return (
     <ScrollView style={{ flex: 1 }} contentContainerStyle={{ padding: 16 }}>
@@ -150,14 +154,16 @@ export default function HomeScreen({ navigation }: any): JSX.Element {
             <Text style={{ fontSize: 16, fontWeight: '700', marginBottom: 8 }}>Your Upcoming Appointments ({upcoming.length})</Text>
             <ScrollView horizontal showsHorizontalScrollIndicator={false}>
               <View style={{ flexDirection: 'row' }}>
-                {upcoming.map((item) => (
+                {upcoming.map((item: any) => (
                   <Pressable
                     key={item.id}
                     onPress={() => navigation.navigate('Account', { screen: 'MyAppointments', params: { highlightId: item.id } })}
                     style={({ pressed }) => ({ backgroundColor: '#fff', borderRadius: 12, padding: 12, marginRight: 10, width: 220, opacity: pressed ? 0.9 : 1 })}
                   >
-                    <Text numberOfLines={1} style={{ fontWeight: '600' }}>{item.services?.name || 'Service'} • {item.therapists?.name || 'Therapist'}</Text>
-                    <Text style={{ marginTop: 4 }}>{formatDate(item.availability_slots.date)} • {formatTime(item.availability_slots.start_time)}</Text>
+                    <Text numberOfLines={1} style={{ fontWeight: '600' }}>{item.service_name || 'Service'} • {item.therapist_name || 'Therapist'}</Text>
+                    {!!item.slot && (
+                      <Text style={{ marginTop: 4 }}>{formatDate(item.slot.date)} • {formatTime(item.slot.start_time)}</Text>
+                    )}
                     <View style={{ marginTop: 8, alignSelf: 'flex-start', paddingHorizontal: 8, paddingVertical: 4, borderRadius: 10, backgroundColor: '#e6f7ee' }}>
                       <Text style={{ color: '#2e7d32', fontWeight: '600' }}>{item.status}</Text>
                     </View>

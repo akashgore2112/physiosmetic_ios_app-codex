@@ -35,16 +35,19 @@ export type MyApptItem = {
   isPast?: boolean;
 };
 
-export async function getMyUpcomingAppointments(limit = 3): Promise<MyApptItem[]> {
+export async function getMyUpcomingAppointments(limit = 3, userId?: string): Promise<MyApptItem[]> {
   // fire-and-forget cleanup
   syncMyPastAppointments().catch(() => {});
-  const { data, error } = await supabase
+  let q = supabase
     .from('appointments')
     .select('id,service_id,therapist_id,slot_id,status, availability_slots:slot_id(date,start_time,end_time), services:service_id(name), therapists:therapist_id(name)')
     .eq('status', 'booked')
-    .order('availability_slots.date', { ascending: true })
-    .order('availability_slots.start_time', { ascending: true })
+    // Order by related table columns using foreignTable to satisfy PostgREST
+    .order('date', { ascending: true, foreignTable: 'availability_slots' })
+    .order('start_time', { ascending: true, foreignTable: 'availability_slots' })
     .limit(limit);
+  if (userId) q = q.eq('user_id', userId);
+  const { data, error } = await q;
   if (error) throw error;
   const rows = (data ?? []) as AppointmentRow[];
   // Filter to future-only using end_time

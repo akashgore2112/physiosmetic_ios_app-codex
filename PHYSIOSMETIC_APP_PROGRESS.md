@@ -107,4 +107,40 @@ _Last cleaned: 2025-11-06_
 **QA:**
 - Navigation loads; toasts render in all screens.
 - Gesture-based navigation works on iOS/Android.
-
+### Availability roll (cron) (2025-11-06)
+**Summary:** Added a pg_cron-based daily job to maintain the next 15 days of availability and remove past slots.
+**Files:** scripts/cron_roll_availability_15days.sql
+**Behavior:**
+- Ensures pg_cron extension and unique index on slots for safe upserts.
+- Defines `public.roll_availability_15days()` to delete past slots and insert skeleton future slots for active therapists/services.
+- Schedules daily run at 03:00 UTC; includes one-time immediate run and a verification query.
+**QA:**
+- After running the script in Supabase, verify `slot_count` > 0 for today..+14.
+- Confirm cron job `roll_avail_daily` appears in cron.job table and runs daily.
+### Home upcoming card fix (2025-11-06)
+**Summary:** Upcoming card now reads from the new bookingService shape and refreshes immediately after changes.
+**Files:** src/screens/Home/HomeScreen.tsx
+**Behavior:**
+- Uses `getMyUpcomingAppointments(1)` and renders `service_name`, `therapist_name`, and `slot` fields.
+- Realtime and 60s focus interval already in place; card hides when no upcoming items.
+**QA:**
+- After booking a future appointment, card appears without app restart.
+- After cancel, card hides; on reopen, card reflects current state.
+### Home upcoming card reliability (2025-11-06)
+**Summary:** Ensured next appointment always appears after booking/cancel by filtering for current user and refreshing.
+**Files:** src/services/bookingService.ts, src/screens/Home/HomeScreen.tsx
+**Behavior:**
+- `getMyUpcomingAppointments(limit, userId?)` now accepts `userId` to explicitly scope results; RLS still enforced.
+- Home passes `userId`, keeps realtime + 60s focus refresh, and falls back to `getMyAllAppointments()` to compute next when needed; card hides when none.
+- Increased fetch to up to 10 items; horizontal ScrollView shows multiple upcoming appointments when present.
+**QA:**
+- Book a future appointment; card shows immediately (realtime) and on return to Home (focus refresh).
+- Cancel; card hides promptly and persists across app reopen.
+### Home upcoming card (final fix) (2025-11-06)
+**Summary:** Ensured session bootstraps at app start so Home can fetch user-scoped upcoming immediately after booking.
+**Files:** App.tsx
+**Behavior:**
+- On mount, reads Supabase session and updates `useSessionStore` with `userId`.
+- Subscribes to auth changes to keep session store in sync.
+**QA:**
+- After booking as a logged-in user, upcoming card appears without restart; after logout/login it refreshes correctly.
