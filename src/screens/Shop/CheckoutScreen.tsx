@@ -7,6 +7,9 @@ import { formatPrice } from '../../utils/formatPrice';
 import { placeOrder } from '../../services/orderService';
 import { getAddresses, saveAddress, setDefaultAddress } from '../../services/profileAddressService';
 import { useToast } from '../../components/feedback/useToast';
+import { normalizeToE164 } from '../../utils/phone';
+import { light as hapticLight } from '../../utils/haptics';
+import { useMapPickerStore } from '../../store/useMapPickerStore';
 
 export default function CheckoutScreen({ navigation }: any): JSX.Element {
   const { userId, isLoggedIn } = useSessionStore();
@@ -99,6 +102,21 @@ export default function CheckoutScreen({ navigation }: any): JSX.Element {
     })();
   }, [isLoggedIn, userId]);
 
+  // Apply selection from MapPicker when returning
+  useFocusEffect(
+    React.useCallback(() => {
+      const picked = useMapPickerStore.getState().consumeSelection();
+      if (picked) {
+        if (picked.line1) setLine1(picked.line1);
+        if (picked.line2) setLine2(picked.line2);
+        if (picked.city) setCity(picked.city);
+        if (picked.state) setState(picked.state);
+        if (picked.postal_code) setPincode(picked.postal_code);
+      }
+      return () => {};
+    }, [])
+  );
+
   const applyAddress = (a: any) => {
     setName(a?.name || '');
     setPhone(a?.phone || '');
@@ -140,10 +158,16 @@ export default function CheckoutScreen({ navigation }: any): JSX.Element {
     if (!city.trim()) return 'City is required';
     if (!pincode.trim()) return 'Pincode is required';
     if (!state.trim()) return 'State is required';
+    // Stricter phone and pincode validation for India
+    const e164 = normalizeToE164(phone, '91');
+    if (!e164) return 'Enter a valid phone number';
+    const pinOk = /^[1-9][0-9]{5}$/.test(pincode.trim());
+    if (!pinOk) return 'Enter a valid 6-digit pincode';
     return null;
   };
 
   const onPlaceOrder = async () => {
+    try { hapticLight(); } catch {}
     setError(null);
     const err = validate();
     if (err) { setError(err); return; }
@@ -194,18 +218,16 @@ export default function CheckoutScreen({ navigation }: any): JSX.Element {
       <Text style={{ fontSize: 20, fontWeight: '800' }}>Checkout</Text>
       <Text style={{ marginTop: 6 }}>Subtotal: {formatPrice(total)}</Text>
       {!pickup && currentAddr && (
-        <View style={{ marginTop: 10, borderWidth: 1, borderColor: '#eee', borderRadius: 10, padding: 10 }}>
+        <Pressable onPress={() => setAddrSheetOpen(true)}
+          accessibilityRole="button"
+          accessibilityLabel="Deliver to"
+          style={({ pressed }) => ({ marginTop: 10, borderWidth: 1, borderColor: '#eee', borderRadius: 10, padding: 10, opacity: pressed ? 0.95 : 1 })}>
           <Text style={{ fontWeight: '700' }}>Deliver to</Text>
           <Text style={{ marginTop: 2 }}>{currentAddr.name}{currentAddr.label ? ` • ${currentAddr.label}` : ''} • +91 {currentAddr.phone}</Text>
           <Text style={{ color: '#555', marginTop: 2 }}>{currentAddr.line1}{currentAddr.line2 ? `, ${currentAddr.line2}` : ''}</Text>
           <Text style={{ color: '#555' }}>{currentAddr.city}, {currentAddr.state} {currentAddr.pincode}</Text>
-          <Text style={{ color: '#666', marginTop: 4, fontSize: 12 }}>Delivery estimate: 3–5 days</Text>
-          <View style={{ flexDirection: 'row', marginTop: 8 }}>
-            <Pressable onPress={() => setAddrSheetOpen(true)} style={({ pressed }) => ({ paddingHorizontal: 12, paddingVertical: 8, borderWidth: 1, borderColor: '#ddd', borderRadius: 8, opacity: pressed ? 0.9 : 1 })}>
-              <Text>Change address</Text>
-            </Pressable>
-          </View>
-        </View>
+          <Text style={{ color: '#666', marginTop: 4, fontSize: 12 }}>Tap to change • 3–5 day delivery</Text>
+        </Pressable>
       )}
       <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 12 }}>
         <Pressable accessibilityRole="switch" onPress={() => setPickup((v) => !v)} style={({ pressed }) => ({ paddingHorizontal: 12, paddingVertical: 10, borderWidth: 1, borderColor: '#ddd', borderRadius: 9999, opacity: pressed ? 0.9 : 1 })}>
@@ -257,7 +279,7 @@ export default function CheckoutScreen({ navigation }: any): JSX.Element {
             </View>
           )}
           {/* Choose from map (placeholder) */}
-          <Pressable onPress={() => Alert.alert('Choose from map', 'Map selection will be available soon.')} style={({ pressed }) => ({ marginTop: 8, paddingHorizontal: 12, paddingVertical: 10, borderWidth: 1, borderColor: '#ddd', borderRadius: 8, alignSelf: 'flex-start', opacity: pressed ? 0.9 : 1 })}>
+          <Pressable onPress={() => navigation.navigate('MapPicker')} style={({ pressed }) => ({ marginTop: 8, paddingHorizontal: 12, paddingVertical: 10, borderWidth: 1, borderColor: '#ddd', borderRadius: 8, alignSelf: 'flex-start', opacity: pressed ? 0.9 : 1 })}>
             <Text>Choose from map</Text>
           </Pressable>
         </View>

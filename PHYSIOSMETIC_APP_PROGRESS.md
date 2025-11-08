@@ -932,3 +932,119 @@ _Last cleaned: 2025-11-06_
 - Create two addresses, set one default; Checkout uses default.
 - Delete or edit an address; list updates; default persists.
 - With no addresses, buying navigates to Address Book; after adding, "Continue to Checkout" works.
+
+### Checkout: Address Sheet Polish (2025-11-08)
+**Summary:** Upgraded the Checkout address chooser to a bottom sheet with selectable list, confirmations, and onboarding hint; minor list key fix.
+**Details:**
+- Bottom sheet list with radio dots (●/○), "Default" badge, and one-time swipe hint ("Swipe down to close • Drag to adjust").
+- Added a "Deliver to this address" confirm button; selection also updates default in the address book and shows a toast.
+- Address labels (Home/Work/Other) supported in Address Book; shown next to name in the sheet and the Checkout summary.
+- Checkout summary shows a simple delivery estimate under the selected address.
+- Fixed list keys in Address Book to use stable `id` to silence React key warnings.
+**Files:**
+- src/screens/Shop/CheckoutScreen.tsx (sheet UI, selection confirm, toast, hint, labels, estimate)
+- src/screens/Account/MyAddressesScreen.tsx (label chips, stable keys)
+- src/services/profileAddressService.ts (address `label` support)
+**QA:**
+- Change address → select any entry → press "Deliver to this address" → sheet closes; summary updates; toast appears.
+- First open shows a swipe hint; subsequent opens do not.
+- Address labels appear appropriately; default badge visible on default.
+
+### Checkout: Tappable Summary, Validators, Map Picker Stub (2025-11-08)
+**Summary:** Made "Deliver to" summary tappable to open the address sheet, added stricter phone/pincode validation with light haptics on submit, and scaffolded a Map Picker screen with guidance.
+**Details:**
+- Deliver to summary is now a single tappable row; tap opens bottom sheet for quick switching (also updates hint text: "Tap to change").
+- Validation tightened for India: phone uses libphonenumber to validate E.164; pincode must match 6 digits, non-zero start.
+- Light haptic feedback triggers on form submit in Checkout and on Add/Save in Address Book.
+- Added Map Picker screen and routes (Account/Shop). For now it opens device Maps and documents steps to enable in-app maps (react-native-maps + Google API key).
+**Files:**
+- src/screens/Shop/CheckoutScreen.tsx (tappable summary, validators, haptics, map nav)
+- src/screens/Account/MyAddressesScreen.tsx (validators, haptics, map nav)
+- src/screens/Common/MapPickerScreen.tsx (stub + instructions)
+- src/navigation/AccountStack.tsx, src/navigation/ShopStack.tsx (route wiring)
+**QA:**
+- Tap Deliver to summary → address sheet opens.
+- Enter invalid phone or pincode → error shown; valid input proceeds.
+- Tapping Place Order/Save vibrates lightly.
+- Choose from map navigates to Map Picker screen; external maps can be opened.
+
+### Maps: In‑App Picker (Expo Managed) (2025-11-08)
+**Summary:** Wired an in‑app Google Maps picker with Expo managed config; falls back to setup guidance if module/keys not present.
+**Details:**
+- Added Google Maps API keys in `app.json` (`ios.config.googleMapsApiKey`, `android.config.googleMaps.apiKey`).
+- MapPicker uses `react-native-maps` when available; otherwise shows guidance and detects API key presence via `expo-constants`.
+- “Choose from map” now returns lat/lng back to forms; we prefill `line2` with a "Dropped pin" hint so users can refine.
+**Files:**
+- app.json (maps config keys)
+- src/screens/Common/MapPickerScreen.tsx (MapView + fallback + key detection)
+- src/navigation/ShopStack.tsx, src/navigation/AccountStack.tsx (typed MapPicker params)
+- src/screens/Shop/CheckoutScreen.tsx, src/screens/Account/MyAddressesScreen.tsx (onPicked handler wiring)
+**Setup to complete locally:**
+- npm i react-native-maps
+- npx expo prebuild
+- npx expo run:ios / npx expo run:android
+**QA:**
+- With module + keys: MapPicker shows interactive map; tap to drop pin; "Use this location" returns coords.
+- Without module: guidance screen appears and "Open Maps App" works.
+
+### Maps: Reverse Geocoding + Autofill (2025-11-08)
+**Summary:** Added reverse geocoding on MapPicker selection to prefill checkout/address forms.
+**Details:**
+- Config: reads `EXPO_PUBLIC_GOOGLE_MAPS_GEOCODING_KEY` from env; added placeholder in `app.json → expo.extra`.
+- New util: `src/services/geocoding.ts` calls Google Geocoding API, parses address components into `{ line1, line2, city, state, country, postal_code }` with graceful fallbacks and 8s timeout.
+- Flow: MapPicker shows "Looking up address…" while resolving; debounced confirm to prevent duplicates. On failure after ~6.5s, shows inline message and returns to manual entry.
+- Wiring: Checkout and Address Book now consume the parsed fields and prefill editable inputs.
+**Files:** app.json, src/services/geocoding.ts, src/screens/Common/MapPickerScreen.tsx, src/screens/Shop/CheckoutScreen.tsx, src/screens/Account/MyAddressesScreen.tsx
+**QA:**
+- Select a point on map → Use this location → fields prefill (line1/city/state/pincode).
+- Turn off network or remove key → inline message appears; user can fill manually.
+
+### Maps: Fix MapPicker Invalid Element (2025-11-08)
+**Summary:** Resolved invalid element error by standardizing react-native-maps imports and default exports.
+**Details:**
+- Ensure default export for `MapPickerScreen` and default imports in navigators.
+- Use `import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps'` and render with provider.
+- Added a guard to show guidance UI if `MapView` is unexpectedly undefined.
+- Minor debug log on mount.
+**Files:** src/screens/Common/MapPickerScreen.tsx, src/navigation/ShopStack.tsx, src/navigation/AccountStack.tsx
+**QA:**
+- Navigate to Map Picker: renders MapView without invalid element errors.
+
+### Maps: Remove Non‑Serializable Callback Param (2025-11-08)
+**Summary:** Eliminated React Navigation warning by removing function param from route and using a small Zustand store for selection handoff.
+**Details:**
+- New store: `useMapPickerStore` with `setSelection` and `consumeSelection`.
+- MapPicker sets selection in store and navigates back; callers consume on focus.
+- Updated navigators to remove function from `MapPicker` params; updated Checkout and Address screens to navigate without callbacks and apply selection on focus.
+**Files:**
+- src/store/useMapPickerStore.ts
+- src/screens/Common/MapPickerScreen.tsx
+- src/navigation/ShopStack.tsx, src/navigation/AccountStack.tsx
+- src/screens/Shop/CheckoutScreen.tsx, src/screens/Account/MyAddressesScreen.tsx
+**QA:**
+- No “Non-serializable values” warning.
+- After using MapPicker, returning screen auto-fills address fields.
+
+### Maps: Search UX + Places Autocomplete (2025-11-08)
+**Summary:** Improved MapPicker UX to match apps like Amazon/Noon: added a search bar with Google Places Autocomplete and one-tap selection that centers the map and prepares address details for prefill.
+**Details:**
+- Config: added `EXPO_PUBLIC_GOOGLE_PLACES_KEY` (uses Geocoding key as fallback).
+- New service: `src/services/places.ts` with `placesAutocomplete()` and `placeDetails()`.
+- UI: search bar at top with debounced autocomplete; selecting a suggestion centers the map and stores parsed address; "Use this location" now uses the parsed details (or falls back to reverse geocode/pin text).
+- Haptics on suggestion tap; robust loader states.
+**Files:** app.json (extra key), src/services/places.ts, src/screens/Common/MapPickerScreen.tsx
+**QA:**
+- Type at least 3 chars → suggestions show.
+- Tap a suggestion → map centers, "Use this location" fills address on return.
+
+### Maps: Current Location + Refine Screen (2025-11-08)
+**Summary:** Enhanced MapPicker with a full-width search bar (clear button, submit selects top result), a "Use current location" action (Expo Location), a compact address preview, and a post-pick Refine Address screen.
+**Details:**
+- Full-width search with clear (✕) and submit-to-top-suggestion.
+- "Use current" requests permission, centers on GPS, and reverse geocodes.
+- Compact preview renders parsed address above the confirm button.
+- New `RefineAddressScreen` allows final edits before saving; MapPicker navigates here after selection; refined values then prefill forms on return.
+**Files:** src/screens/Common/MapPickerScreen.tsx, src/screens/Common/RefineAddressScreen.tsx, src/navigation/ShopStack.tsx, src/navigation/AccountStack.tsx
+**QA:**
+- Press Use current → map centers; preview appears; Use this location → Refine → Save → fields prefill.
+- Search, pick top suggestion via keyboard submit → preview shows → Use this location → Refine → Save → prefill.

@@ -2,6 +2,7 @@ import { supabase } from '../config/supabaseClient';
 import type { AvailabilitySlot } from '../types/AvailabilitySlot';
 import type { Appointment } from '../types/appointment';
 import { getClinicDateWindow, isPastSlot } from '../utils/clinicTime';
+import { ensureProfileExists } from './profileService';
 
 export type SlotWithTherapist = AvailabilitySlot & { therapist?: { id: string; name: string } };
 
@@ -450,6 +451,9 @@ export async function bookAppointment(params: {
   if (await hasUserApptAtDateTime(params.userId, slot.date, slot.start_time)) {
     throw new Error('You already have an appointment at this time.');
   }
+
+  // Ensure the user has a corresponding profiles row to satisfy FK constraints
+  try { await ensureProfileExists(params.userId, null, null); } catch {}
 
   const { data, error } = await supabase.rpc('book_appointment', {
     p_user_id: params.userId,

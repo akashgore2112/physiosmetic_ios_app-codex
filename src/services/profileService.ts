@@ -12,47 +12,51 @@ export async function ensureProfileExists(
   fullName?: string | null,
   phone?: string | null
 ): Promise<EnsureProfileResult> {
-  // 1) Try to find an existing profile first
-  const existing = await sb<any>(
-    supabase
-      .from('profiles')
-      .select('id, full_name')
-      .eq('id', userId)
-      .single() as any
-  );
-
-  if (!existingErr && existing?.id) {
-    return { id: existing.id, full_name: (existing as any).full_name ?? null, created: false };
-  }
-
-  // 2) Not found: try to insert
-  const inserted = await sb<any>(
-    supabase
-      .from('profiles')
-      .insert({ id: userId, full_name: fullName ?? null, phone: phone ?? null, role: 'patient' })
-      .select('id, full_name')
-      .single() as any
-  );
-
-  if (!insertErr && inserted?.id) {
-    return { id: inserted.id, full_name: (inserted as any).full_name ?? null, created: true };
-  }
-
-  // 3) Insert failed. If RLS blocked (42501), re-check once then proceed if found.
-  const code = undefined as any; // sb threw; if we got here, we are handling fallback
-  if (code === '42501') {
-    const after = await sb<any>(
+  // 1) Try to find an existing profile first (tolerate missing row)
+  try {
+    const existing = await sb<any>(
       supabase
         .from('profiles')
         .select('id, full_name')
         .eq('id', userId)
+        .maybeSingle() as any
+    );
+    if (existing && existing.id) {
+      return { id: existing.id, full_name: (existing as any).full_name ?? null, created: false };
+    }
+  } catch {}
+
+  // 2) Not found: try to insert
+  try {
+    const inserted = await sb<any>(
+      supabase
+        .from('profiles')
+        .insert({ id: userId, full_name: fullName ?? null, phone: phone ?? null, role: 'patient' })
+        .select('id, full_name')
         .single() as any
     );
-    if (after?.id) return { id: after.id, full_name: (after as any).full_name ?? null, created: false };
+    if (inserted && inserted.id) {
+      return { id: inserted.id, full_name: (inserted as any).full_name ?? null, created: true };
+    }
+  } catch (err: any) {
+    // 3) Insert failed. If RLS blocked or conflict, re-check once then proceed if found.
+    try {
+      const after = await sb<any>(
+        supabase
+          .from('profiles')
+          .select('id, full_name')
+          .eq('id', userId)
+          .maybeSingle() as any
+      );
+      if (after && after.id) {
+        return { id: after.id, full_name: (after as any).full_name ?? null, created: false };
+      }
+    } catch {}
+    throw err;
   }
 
   // If we get here, we truly cannot confirm or create a profile.
-  throw insertErr ?? existingErr ?? new Error('Failed to ensure profile exists');
+  throw new Error('Failed to ensure profile exists');
 }
 
 export async function fetchProfile(userId: string): Promise<{ id: string; full_name?: string | null; phone?: string | null } | null> {
@@ -62,9 +66,9 @@ export async function fetchProfile(userId: string): Promise<{ id: string; full_n
         .from('profiles')
         .select('id, full_name, phone')
         .eq('id', userId)
-        .single() as any
+        .maybeSingle() as any
     );
-    return data as any;
+    return (data ?? null) as any;
   } catch (e) {
     console.error('fetchProfile error', e);
     return null;

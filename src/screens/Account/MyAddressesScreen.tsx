@@ -3,6 +3,9 @@ import { View, Text, Pressable, ScrollView, Alert, Modal, KeyboardAvoidingView, 
 import { useSessionStore } from '../../store/useSessionStore';
 import { getAddresses, saveAddress, updateAddress, deleteAddress, setDefaultAddress } from '../../services/profileAddressService';
 import { TextInput } from 'react-native';
+import { useMapPickerStore } from '../../store/useMapPickerStore';
+import { normalizeToE164 } from '../../utils/phone';
+import { light as hapticLight } from '../../utils/haptics';
 
 export default function MyAddressesScreen({ navigation }: any): JSX.Element {
   const { userId, isLoggedIn } = useSessionStore();
@@ -44,6 +47,24 @@ export default function MyAddressesScreen({ navigation }: any): JSX.Element {
     return () => { cancelled = true; };
   }, [isLoggedIn, userId]);
 
+  // Apply selection from MapPicker on focus
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      const picked = useMapPickerStore.getState().consumeSelection();
+      if (picked) {
+        setForm((f: any) => ({
+          ...f,
+          line1: picked.line1 ?? f.line1,
+          line2: picked.line2 ?? f.line2,
+          city: picked.city ?? f.city,
+          state: picked.state ?? f.state,
+          pincode: picked.postal_code ?? f.pincode,
+        }));
+      }
+    });
+    return unsubscribe;
+  }, [navigation]);
+
   return (
     <ScrollView style={{ flex: 1 }} contentContainerStyle={{ padding: 16 }}>
       <Text style={{ fontSize: 20, fontWeight: '800' }}>My Addresses</Text>
@@ -60,7 +81,7 @@ export default function MyAddressesScreen({ navigation }: any): JSX.Element {
             <Text>Add address</Text>
           </Pressable>
           {addrs.map((a, idx) => (
-            <View key={`addr-${idx}`} style={{ borderWidth: 1, borderColor: '#eee', borderRadius: 10, padding: 12, marginBottom: 10 }}>
+            <View key={`addr-${a?.id ?? idx}`} style={{ borderWidth: 1, borderColor: '#eee', borderRadius: 10, padding: 12, marginBottom: 10 }}>
               <Text style={{ fontWeight: '700' }}>{a.name}</Text>
               <Text style={{ color: '#555', marginTop: 2 }}>+91 {a.phone}</Text>
               <Text style={{ color: '#555', marginTop: 2 }}>{a.line1}{a.line2 ? `, ${a.line2}` : ''}</Text>
@@ -129,14 +150,19 @@ export default function MyAddressesScreen({ navigation }: any): JSX.Element {
               <Pressable accessibilityRole="switch" onPress={() => setForm({ ...form, is_default: !form.is_default })} style={({ pressed }) => ({ paddingHorizontal: 10, paddingVertical: 8, borderWidth: 1, borderColor: '#ddd', borderRadius: 8, marginRight: 8, opacity: pressed ? 0.9 : 1 })}>
                 <Text>{form.is_default ? '✓ Default' : 'Set as default'}</Text>
               </Pressable>
-              <Pressable onPress={() => Alert.alert('Choose from map', 'Map selection will be available soon.')} style={({ pressed }) => ({ paddingHorizontal: 10, paddingVertical: 8, borderWidth: 1, borderColor: '#ddd', borderRadius: 8, opacity: pressed ? 0.9 : 1 })}>
+              <Pressable onPress={() => navigation.navigate('MapPicker')} style={({ pressed }) => ({ paddingHorizontal: 10, paddingVertical: 8, borderWidth: 1, borderColor: '#ddd', borderRadius: 8, opacity: pressed ? 0.9 : 1 })}>
                 <Text>Choose from map</Text>
               </Pressable>
             </View>
             <View style={{ flexDirection: 'row', marginTop: 12 }}>
               <Pressable onPress={async () => {
+                try { hapticLight(); } catch {}
                 if (!userId) return;
                 if (!form.name || !form.phone || !form.line1 || !form.city || !form.pincode || !form.state) { Alert.alert('Missing fields', 'Please fill all required fields'); return; }
+                const e164 = normalizeToE164(form.phone, '91');
+                if (!e164) { Alert.alert('Invalid phone', 'Please enter a valid phone number'); return; }
+                const pinOk = /^[1-9][0-9]{5}$/.test((form.pincode || '').trim());
+                if (!pinOk) { Alert.alert('Invalid pincode', 'Please enter a valid 6-digit pincode'); return; }
                 if (editing) {
                   const next = await updateAddress(userId, form, { setDefault: !!form.is_default });
                   setAddrs(next);

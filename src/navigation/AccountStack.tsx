@@ -11,6 +11,8 @@ import TermsScreen from '../screens/Legal/TermsScreen';
 import PrivacyScreen from '../screens/Legal/PrivacyScreen';
 import SignInScreen from '../screens/Auth/SignInScreen';
 import SignUpScreen from '../screens/Auth/SignUpScreen';
+import MapPickerScreen from '../screens/Common/MapPickerScreen';
+import RefineAddressScreen from '../screens/Common/RefineAddressScreen';
 
 export type AccountStackParamList = {
   AccountMain: undefined;
@@ -24,6 +26,8 @@ export type AccountStackParamList = {
   OrderDetail: { id: string } | undefined;
   Terms: undefined;
   Privacy: undefined;
+  MapPicker: { initial?: { latitude?: number; longitude?: number } } | undefined;
+  RefineAddress: undefined;
 };
 
 const Stack = createNativeStackNavigator<AccountStackParamList>();
@@ -42,6 +46,8 @@ export default function AccountStackNavigator(): JSX.Element {
       <Stack.Screen name="OrderDetail" component={OrderDetailScreen} options={{ title: 'Order Detail' }} />
       <Stack.Screen name="Terms" component={TermsScreen} options={{ title: 'Terms & Conditions' }} />
       <Stack.Screen name="Privacy" component={PrivacyScreen} options={{ title: 'Privacy Policy' }} />
+      <Stack.Screen name="MapPicker" component={MapPickerScreen} options={{ title: 'Choose From Map' }} />
+      <Stack.Screen name="RefineAddress" component={RefineAddressScreen} options={{ title: 'Refine Address' }} />
     </Stack.Navigator>
   );
 }

@@ -9,6 +9,7 @@ export async function signIn(email: string, password: string) {
   if (!user) throw new Error('No user session');
   // hydrate store
   useSessionStore.getState().setSession(user.id, user.email ?? null);
+  try { await ensureProfileExists(user.id, null, null); } catch {}
   const prof = await fetchProfile(user.id);
   useSessionStore.getState().setProfile(prof, { email: user.email ?? null, user_metadata: user.user_metadata as any });
 }
