@@ -9,6 +9,8 @@ type Props = {
   ctaLabel?: string;
   onPressCta: () => void;
   disabled?: boolean;
+  secondaryCtaLabel?: string;
+  onPressSecondaryCta?: () => void;
 };
 
 export default function StickyBookingBar({
@@ -17,6 +19,8 @@ export default function StickyBookingBar({
   ctaLabel = 'Book This Service',
   onPressCta,
   disabled = false,
+  secondaryCtaLabel,
+  onPressSecondaryCta,
 }: Props): JSX.Element {
   return (
     <SafeAreaView edges={['bottom']} style={styles.wrap} pointerEvents="box-none">
@@ -24,19 +28,34 @@ export default function StickyBookingBar({
         <View style={{ flex: 1, paddingRight: 12 }}>
           <PriceTag price={price ?? null} durationMinutes={durationMinutes ?? null} />
         </View>
-        <Pressable
-          accessibilityRole="button"
-          accessibilityLabel={ctaLabel}
-          onPress={onPressCta}
-          disabled={disabled}
-          style={({ pressed }) => [
-            styles.cta,
-            disabled && styles.ctaDisabled,
-            pressed && !disabled && { opacity: 0.9 },
-          ]}
-        >
-          <Text style={styles.ctaText}>{ctaLabel}</Text>
-        </Pressable>
+        <View style={{ flexDirection: 'row', gap: 8 }}>
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel={ctaLabel}
+            onPress={onPressCta}
+            disabled={disabled}
+            style={({ pressed }) => [
+              styles.cta,
+              disabled && styles.ctaDisabled,
+              pressed && !disabled && { opacity: 0.9 },
+            ]}
+          >
+            <Text style={styles.ctaText}>{ctaLabel}</Text>
+          </Pressable>
+          {!!secondaryCtaLabel && !!onPressSecondaryCta && (
+            <Pressable
+              accessibilityRole="button"
+              accessibilityLabel={secondaryCtaLabel}
+              onPress={onPressSecondaryCta}
+              style={({ pressed }) => [
+                styles.ctaSecondary,
+                pressed && { opacity: 0.9 },
+              ]}
+            >
+              <Text style={styles.ctaSecondaryText}>{secondaryCtaLabel}</Text>
+            </Pressable>
+          )}
+        </View>
       </View>
     </SafeAreaView>
   );
@@ -76,6 +95,20 @@ const styles = StyleSheet.create({
   },
   ctaText: {
     color: '#fff',
+    fontWeight: '700',
+  },
+  ctaSecondary: {
+    backgroundColor: '#fff',
+    borderWidth: 1,
+    borderColor: '#ddd',
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    borderRadius: 10,
+    minHeight: 44,
+    justifyContent: 'center',
+  },
+  ctaSecondaryText: {
+    color: '#111',
     fontWeight: '700',
   },
 });

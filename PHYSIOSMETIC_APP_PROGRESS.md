@@ -169,6 +169,137 @@ _Last cleaned: 2025-11-06_
 **QA:**
 - Turn off network: offline banner shows; Home keeps previous data; if none, skeletons render. Pull-to-refresh after reconnect reloads sections. VoiceOver/TalkBack announce tappables clearly; all buttons/cards have ~44px min height.
 
+### Services data layer (2025-11-07)
+**Summary:** Added active-only services fetch and grouping helper with optional popularity sorting.
+**Files:** src/services/serviceCatalogService.ts
+**Behavior:**
+- getAllActiveServices(): selects id, name, category, description, duration_minutes, base_price, is_online_allowed, image_url, and optionally popularity_score (if column exists); filters is_active=true; sorts by popularity_score desc when present, otherwise name asc.
+- getServicesGroupedByCategory(): groups into fixed order categories (Sports Performance Studio, Physio Care, Skin Care, Hair Care, Body Care, Nutrition Care), with an optional "Other" bucket appended if needed.
+**QA:**
+- If popularity_score exists, ordering reflects it; if not, alphabetical by name. Grouped categories appear in the defined order with only non-empty groups.
+
+### Services UI: large cards + sections (2025-11-07)
+**Summary:** Added ServiceCardLarge and updated ServicesScreen to render 6 ordered sections with vertical lists.
+**Files:** src/components/ServiceCardLarge.tsx, src/screens/Services/ServicesScreen.tsx
+**Behavior:**
+- Card layout: cover image, name (2 lines), short desc (2 lines), meta line (From ₹X • ~Y min), and an "Online consult" pill when applicable; full-card press navigates to Service Detail.
+- Screen groups services into the 6 categories in fixed order; each shows a vertical list of ServiceCardLarge; empty categories display a friendly message.
+**QA:**
+- Each category shows expected services; long names/descriptions truncate cleanly; tapping a card opens Service Detail.
+
+### Services search (2025-11-07)
+**Summary:** Added a debounced search bar that filters across all services (name + description). While searching, shows a flat list of matching ServiceCardLarge and hides category sections.
+**Files:** src/screens/Services/ServicesScreen.tsx
+**Behavior:**
+- Debounce ~250ms; keyword match is case-insensitive across name and description. Clearing the query restores grouped category view.
+**QA:**
+- Type part of a service name or a keyword from description; results list updates after a short delay; clearing search returns to the sectioned layout.
+
+### Services: next availability on cards (2025-11-07)
+**Summary:** Show earliest future slot on service cards. Added bookingService helper and lazy fetch on visible cards.
+**Files:** src/services/bookingService.ts, src/components/ServiceCardLarge.tsx, src/screens/Services/ServicesScreen.tsx
+**Behavior:**
+- bookingService.getNextSlotForService(serviceId) returns earliest future unbooked slot { date, start_time } or null.
+- ServiceCardLarge renders a bottom line "Next slot: <date> <time>" when provided.
+- ServicesScreen lazily fetches next slot for each visible card (both grouped view and search results) and passes formatted text when ready.
+**QA:**
+- Open Services: cards show next slot when available; Search view also shows next slot for results. If no future slot exists, the line stays hidden.
+
+### Services: Book CTA with login guard (2025-11-07)
+**Summary:** Added a Book button on service cards with login-aware flow and post-login resume into the booking flow.
+**Files:** src/components/ServiceCardLarge.tsx, src/screens/Services/ServicesScreen.tsx, src/store/useSessionStore.ts, src/screens/Auth/SignInScreen.tsx
+**Behavior:**
+- If not logged in: tapping Book sets a postLoginIntent action (book_service) with serviceId/name and navigates to SignIn. After successful login, user is redirected to SelectTherapist for that service.
+- If logged in: Book navigates directly to SelectTherapist({ serviceId, serviceName }). Card tap still opens Service Detail.
+**QA:**
+- As guest, tap Book on any service → Sign In → after sign-in, lands on SelectTherapist for the tapped service. As logged-in user, Book jumps straight to therapist selection.
+
+### Services: disable full-card tap (2025-11-07)
+**Summary:** Disabled full-card navigation to Service Detail so users initiate booking via the dedicated Book button only.
+**Files:** src/components/ServiceCardLarge.tsx, src/screens/Services/ServicesScreen.tsx
+**Behavior:**
+- ServiceCardLarge now renders as a non-pressable container unless an explicit onPress is provided. ServicesScreen no longer passes onPress to these cards.
+**QA:**
+- On Services screen, tapping the card body does nothing; tapping Book follows the login-guarded booking flow.
+
+### Services: offline handling + retry (2025-11-07)
+**Summary:** Added offline awareness on Services: shows a local note and Retry button; displays last-known data when available, else neutral skeletons.
+**Files:** src/screens/Services/ServicesScreen.tsx
+**Behavior:**
+- If offline, displays “You’re offline—tap retry” and a Retry button near the top to re-fetch data when connectivity is back.
+- When cached data exists, it remains visible; otherwise, neutral skeleton cards are shown.
+- Search continues to work against cached services; list header includes the retry controls while offline.
+**QA:**
+- Turn on airplane mode: note + Retry appear; existing lists remain; if first load with no cache, skeletons appear. After reconnect, tap Retry to refresh services.
+
+### Services: pull-to-refresh (2025-11-07)
+**Summary:** Added pull-to-refresh to reload services in both grouped view and search results.
+**Files:** src/screens/Services/ServicesScreen.tsx
+**Behavior:**
+- Pull down to trigger a unified reload (groups + all services); works offline-safe with existing cached data.
+**QA:**
+- Pull to refresh while online updates the list; while offline, pull shows spinner and restores when connection returns and retry/refresh are invoked.
+
+### Deep links: services + book (2025-11-07)
+**Summary:** Added deep link support for `physiosmetic://services/<serviceId>` and `physiosmetic://book/<serviceId>` with login-aware routing.
+**Files:** App.tsx
+**Behavior:**
+- `physiosmetic://services/<id>` opens Service Detail for the id.
+- `physiosmetic://book/<id>`: if logged in → SelectTherapist; if guest → SignIn, then resume to SelectTherapist via postLoginIntent.
+- Registered scheme in NavigationContainer linking config; also handle incoming URLs via listener and initial URL.
+**QA:**
+- From cold start or while app is open, opening both link types navigates appropriately; guest flow resumes after login.
+
+### Services: list perf + memoization (2025-11-07)
+**Summary:** Improved performance for potentially long service lists and memoized large card rendering.
+**Files:** src/screens/Services/ServicesScreen.tsx, src/components/ServiceCardLarge.tsx
+**Behavior:**
+- Grouped category lists now use FlatList with stable keys and tuned settings: initialNumToRender=8, maxToRenderPerBatch=8, windowSize=5, removeClippedSubViews on Android.
+- ServiceCardLarge wrapped with React.memo to reduce unnecessary re-renders.
+**QA:**
+- Navigating and scrolling Services remains smooth even with large categories; cards do not re-render unnecessarily when unrelated state changes.
+
+### Services QA checklist (2025-11-07)
+**Summary:** Added a QA checklist to validate Services screen flows and states.
+**Checklist:**
+- Search filters correctly across name/description; clearing search restores grouped category view.
+- Each visible service card shows "Next slot: <date> <time>" if a future unbooked slot exists; hidden when none.
+- "Book" CTA enforces login guard: guest → Sign In → continues to SelectTherapist; logged-in → goes directly to SelectTherapist.
+- Offline mode: shows global OfflineBanner (or local note) and Retry; last-known services list appears when available; otherwise neutral skeletons render.
+- Deep links:
+  - `physiosmetic://services/<serviceId>` opens Service Detail
+  - `physiosmetic://book/<serviceId>` opens SelectTherapist if logged in, or Sign In then continues
+- Empty categories render friendly text: "No active services here. See other categories."
+
+### Services micro‑polish (2025-11-07)
+**Summary:** Improved search UX, resilient empty/error states, batched next-slot fetch with caching, login guard toast, deeplink hardening, accessibility, and list perf verification.
+**Files:** src/screens/Services/ServicesScreen.tsx, src/services/bookingService.ts, src/components/ServiceCardLarge.tsx, src/screens/Auth/SignInScreen.tsx, src/screens/Services/ServiceDetailScreen.tsx
+**Behavior:**
+- Search UX: clear (×) button; simple fuzzy matching (subsequence) across name+description; recent searches (max 5) below the bar with “Clear history”.
+- Empty/error states: “No services match.” on zero results; inline Retry on fetch errors (no toast spam).
+- Next-slot performance: batched fetch `primeNextSlotsForServices(serviceIds)` + 3‑min cache; cards consume cached `nextSlotText`.
+- Login guard: after SignIn, shows small toast “You’re signed in — continue booking.” and auto-continues to SelectTherapist.
+- Deeplink hardening: ServiceDetail shows “Service not available” with Back CTA when id invalid/inactive.
+- Accessibility + tap targets: ensured labels/roles and ≥44px for tappables.
+- List perf: FlatList props verified (stable keys, initialNumToRender=8, maxToRenderPerBatch=8, windowSize=5, removeClippedSubViews on Android).
+**QA:**
+- Search, recent history, clear, offline retry, error‑retry, deeplinks, next-slot presence, Book flow, and list performance validated interactively.
+
+### Services: SectionList grouped view (2025-11-07)
+**Summary:** Converted grouped categories to a single SectionList with sticky headers; search mode remains a FlatList.
+**Files:** src/screens/Services/ServicesScreen.tsx
+**Behavior:**
+- Sections ordered: Sports Performance Studio, Physio Care, Skin Care, Hair Care, Body Care, Nutrition Care. Sticky headers ON; headers use accessibilityRole="header".
+- Removed nested FlatLists/ScrollViews. Search mode (when query present) continues to render a FlatList with results.
+**QA:**
+- Grouped view scrolls smoothly with sticky category headers; search renders a flat list; no nested list warnings.
+### Home quick actions: direct service open (2025-11-07)
+**Summary:** Quick actions for service categories on Home now open a relevant Service Detail directly instead of just highlighting the list; falls back to grouped view if none found.
+**Files:** src/screens/Home/HomeScreen.tsx
+**Behavior:**
+- For a tapped category (and Online Consultation), fetches active services and opens the first matching service detail (prefers `is_online_allowed` when requested). If no match, navigates to Services with the category highlighted.
+**QA:**
+- Tap “Book Physio Care”, “Sports Performance Studio”, or “Aesthetic Care”: opens a service detail directly; if category empty, opens Services with that category highlighted.
 ### Confirm screen expiry guard (2025-11-06)
 **Summary:** Prevents booking a slot that already ended using shared time helper.
 **Files:** src/screens/Booking/ConfirmBookingScreen.tsx
@@ -180,6 +311,52 @@ _Last cleaned: 2025-11-06_
 - Select a slot and wait past end_time; Confirm shows expiry toast.
 - Selecting a valid future slot proceeds to booking.
 
+### Services: header polish + separators (2025-11-07)
+**Summary:** Added compact spacing and neutral separators under sticky headers; unified item spacing via a list separator.
+**Files:** src/screens/Services/ServicesScreen.tsx
+**Behavior:**
+- Sticky headers now include a thin divider; list items separated by an 8px spacer. No theming changes.
+**QA:**
+- Scroll grouped view: headers stick with a subtle divider; items have consistent vertical rhythm.
+### Home quick actions: online consult routing (2025-11-07)
+**Summary:** Improved the Online Consultation quick action to route directly into the online booking flow for the first eligible service.
+**Files:** src/screens/Home/HomeScreen.tsx
+**Behavior:**
+- Tapping Online Consultation now finds the first active service with `is_online_allowed` outside Sports Performance Studio and Physio Care, and navigates directly to SelectTherapist with `isOnline=true`. Falls back to Services main if none found.
+**QA:**
+- Tap Online Consultation on Home: lands in SelectTherapist for an online‑eligible service; if none available, opens Services main.
+### Service detail: online consult CTA restored (2025-11-07)
+**Summary:** Reintroduced a clear "Book Online Consultation" button on Service Detail when `is_online_allowed` is true.
+**Files:** src/screens/Services/ServiceDetailScreen.tsx
+**Behavior:**
+- Shows a visible "Book Online Consultation" button under the header when online consult is available; tapping navigates to SelectTherapist for the same service (online flag can be handled in a later phase).
+**QA:**
+- Open a service with online consult enabled; the button appears and routes into the booking flow.
+
+### Services: quick filters (2025-11-07)
+**Summary:** Added an "Online only" toggle and a "Sort" chooser to filter/sort services in both grouped and search views.
+**Files:** src/screens/Services/ServicesScreen.tsx
+**Behavior:**
+- Online only toggles services with `is_online_allowed=true`.
+- Sort ActionSheet/Alert offers: Name A→Z (default), Price (low→high), Duration (short→long).
+- Filters apply consistently to SectionList (grouped) and FlatList (search) results.
+**QA:**
+- Toggle Online only on → only online-eligible services remain; sorting updates immediately in both grouped and search views.
+### Home: Online Consultation service chooser (2025-11-07)
+**Summary:** Added a simple chooser UX so users pick which service they want to book an online consultation for.
+**Files:** src/screens/Home/HomeScreen.tsx
+**Behavior:**
+- Tapping Online Consultation presents a list of online‑eligible services (excluding Sports Performance Studio and Physio Care). Selecting one navigates directly to SelectTherapist with `isOnline=true`. Falls back to Services main if no eligible services.
+**QA:**
+- Tap Online Consultation: sheet lists multiple services when available; selecting one routes to therapist selection; Cancel returns to Home.
+### Service detail: dual booking options (2025-11-07)
+**Summary:** Replaced the simple tag with explicit dual booking options (In‑Clinic vs Online) on Service Detail for categories except Sports Performance Studio and Physio Care.
+**Files:** src/screens/Services/ServiceDetailScreen.tsx
+**Behavior:**
+- For Skin/Hair/Body/Nutrition (and other non‑excluded categories) where `is_online_allowed` is true, shows two buttons: “Book In‑Clinic” and “Book Online”.
+- For Sports Performance Studio and Physio Care, only the in‑clinic sticky CTA remains.
+**QA:**
+- Open a non‑excluded, online‑enabled service: both options appear; each routes to SelectTherapist with an `isOnline` hint param.
 ### MyAppointments: future-only + auto-complete (2025-11-06)
 **Summary:** Auto-sync appointments; mark past as completed, disable actions; periodic refresh.
 **Files:** src/screens/Account/MyAppointmentsScreen.tsx, src/services/bookingService.ts
@@ -191,6 +368,20 @@ _Last cleaned: 2025-11-06_
 - Approaching end_time automatically completes row on next tick.
 - Cancel disabled within 60 minutes of start; reschedule disabled after end.
 
+### Services: persist filters + recent searches (2025-11-07)
+**Summary:** Persisted Online-only, Sort option, and recent searches across app restarts; loaded on mount; added recent chips with Clear history.
+**Files:** src/screens/Services/ServicesScreen.tsx
+**Behavior:**
+- Saves `onlineOnly`, `sortKey`, and `recent` (LRU, max 5) to AsyncStorage and restores them when the screen loads. Recent searches appear under the search bar; tap to apply; Clear history erases them.
+**QA:**
+- Set Online-only and a Sort order, enter a few searches, restart the app; verify settings and recent searches are restored; chips apply search on tap; Clear history removes them.
+### Service detail: sticky dual CTAs (2025-11-07)
+**Summary:** Consolidated booking actions into the sticky footer — two options (In‑Clinic as primary orange, Online as secondary outline) alongside price/duration; removed inline buttons.
+**Files:** src/components/StickyBookingBar.tsx, src/screens/Services/ServiceDetailScreen.tsx
+**Behavior:**
+- For eligible categories with online consult, the footer shows both CTAs; for Sports Performance Studio and Physio Care, only In‑Clinic appears. Layout keeps price and duration on the left, CTAs on the right.
+**QA:**
+- Open eligible service: footer shows “Book In‑Clinic” (orange) and “Book Online” (outline). No third button on page; tapping each goes to SelectTherapist with the correct `isOnline` hint.
 ### Home upcoming refactor (2025-11-06)
 **Summary:** Uses unified upcoming fetcher with auto-refresh while focused.
 **Files:** src/screens/Home/HomeScreen.tsx, src/services/bookingService.ts
@@ -202,6 +393,22 @@ _Last cleaned: 2025-11-06_
 - Upcoming card hides when none; shows on next booking without app restart.
 - Realtime changes reflect within a second or after focus refresh.
 
+### Services: next-slot batch + freshness (2025-11-07)
+**Summary:** Batched earliest-slot fetch across services with in-memory cache + lastUpdated timestamp; progressive warm-up for visible sections and a freshness label.
+**Files:** src/services/bookingService.ts, src/screens/Services/ServicesScreen.tsx
+**Behavior:**
+- bookingService.getNextSlotsForServices(serviceIds) returns earliest FUTURE slot per id in one call; results cached for ~3 minutes; exposes getNextSlotsLastUpdated().
+- On mount/grouped view: warms cache for the first two categories immediately, then progressively fetches remaining categories. Search mode batches for visible results.
+- Header shows “Updated <Xm> ago” near Retry; counter updates every 60s.
+**QA:**
+- Scroll grouped view; slots appear quickly for top sections; freshness label reflects time since last fetch; searching still shows next slots with minimal delay.
+### Services: card tap opens dual‑CTA detail (2025-11-07)
+**Summary:** Re‑enabled card tap to open Service Detail so users see the two booking options (In‑Clinic/Online) there; Book button still provides direct flow.
+**Files:** src/screens/Services/ServicesScreen.tsx
+**Behavior:**
+- Tapping a service card opens Service Detail with the sticky dual CTAs; tapping Book on the card still goes directly to booking with login guard.
+**QA:**
+- From Services list or search, tap any card → detail opens with two options (where applicable). Book button continues to jump into SelectTherapist.
 ### Release checklist (2025-11-06)
 **Summary:** DEV-only ActionSheet to validate release readiness on device.
 **Files:** src/dev/releaseChecklist.ts, src/screens/Home/HomeScreen.tsx
@@ -212,6 +419,23 @@ _Last cleaned: 2025-11-06_
 **QA:**
 - In dev, rapid triple-tap opens the sheet; no effect in production builds.
 
+### Services accessibility + deep link hardening (2025-11-07)
+**Summary:** Improved accessibility of search and book flows, and hardened deep link behavior when a service is unavailable.
+**Files:** src/components/ServiceCardLarge.tsx, src/screens/Services/ServicesScreen.tsx, src/screens/Services/ServiceDetailScreen.tsx
+**Behavior:**
+- Accessibility: Search input labeled “Search services”; Book buttons use labels “Book <service name>” with a hint “Opens chooser to book online or in‑clinic.” Tap targets kept ≥44px.
+- Live region: Added a freshness label (“Updated Xm ago”) that refreshes every 60s (no theming) to signal data recency.
+- Deep links: Unavailable service now shows a simple screen with “Back to Services” and “Browse online‑eligible services” (sheet to pick an alternative service) controls.
+**QA:**
+- Screen readers announce search and book buttons clearly; next‑slot freshness shows and updates; deep link to a bad id shows the alternate flow with functional actions.
+### Services: Book button shows dual options (2025-11-07)
+**Summary:** Updated the Book CTA on service cards to present a choice between In‑Clinic and Online (when applicable) via ActionSheet/Alert instead of navigating directly.
+**Files:** src/screens/Services/ServicesScreen.tsx
+**Behavior:**
+- Sports Performance Studio / Physio Care: Book goes straight to In‑Clinic.
+- Other categories with `is_online_allowed`: Book opens a chooser; selection routes to SelectTherapist with `isOnline` hint and login guard respected.
+**QA:**
+- From Services list/search, tap Book → chooser appears (if eligible); choosing In‑Clinic or Online routes correctly; guests are redirected to Sign In and resume booking afterward.
 ### Legal & consent (2025-11-06)
 **Summary:** Added Terms/Privacy screens and a one-time consent modal after first login.
 **Files:** src/screens/Legal/TermsScreen.tsx, src/screens/Legal/PrivacyScreen.tsx, src/navigation/AccountStack.tsx, src/screens/Account/AccountScreen.tsx
@@ -352,3 +576,219 @@ _Last cleaned: 2025-11-06_
 - Uses `isPastSlot(date, start_time)` to determine “completed” display and disable actions.
 **QA:**
 - At 16:12 for a 16:00 booking, row shows “completed” without manual refresh (interval/focus refresh ensure update).
+
+### Accessibility + Deep Link Hardening (2025-11-08)
+**Summary:** Accessibility polish for Services search and Book CTAs; deep-link fallback when service is missing/inactive.
+**Files:** src/screens/Services/ServicesScreen.tsx, src/components/ServiceCardLarge.tsx, src/screens/Services/ServiceDetailScreen.tsx, src/services/serviceCatalogService.ts, App.tsx (verification)
+**Changes:**
+- Search input labeled; added live region announcing result count ("Showing N services").
+- Ensured tap targets >=44px for Book button, filters, and recent-search chips.
+- Book button has accessibilityLabel="Book <service name>" and hint.
+- getServiceById now enforces is_active=true so inactive services trigger fallback.
+- ServiceDetail shows "Service not available" screen with buttons: Back to Services, Browse online-eligible services (ActionSheet). Buttons have accessibility labels.
+**QA:**
+- Screen reader announces "Showing N services" when search results change.
+- All tappables measure >=44px (inspect via accessibility inspector).
+- Open physiosmetic://services/<bad-or-inactive-id> → fallback screen appears; browse chooser lists online-eligible services and navigates correctly.
+
+### Category Jump Chips (2025-11-08)
+**Summary:** Added horizontal category chips under Services filters; tapping jumps to the respective SectionList section.
+**Files:** src/screens/Services/ServicesScreen.tsx
+**Details:**
+- Chips for: Sports Performance Studio, Physio Care, Skin Care, Hair Care, Body Care, Nutrition Care.
+- Uses SectionList.scrollToLocation({ sectionIndex, itemIndex: 0, animated: true }).
+- Chips are accessible (role=button, label="Jump to <Category>"); tap targets ≥44px.
+**QA:**
+- Scroll list, tap any chip; the list scrolls to that category header.
+- VoiceOver reads "Jump to <Category>".
+
+### Category Chips Fix (2025-11-08)
+**Summary:** Made category chips robust by scrolling to nearest non-empty section if the chosen category has no items, preventing scrollToLocation failures.
+**Files:** src/screens/Services/ServicesScreen.tsx
+**QA:**
+- If a category has 0 services, tapping its chip still scrolls to the nearest category with items.
+- If all empty, tap does nothing gracefully.
+
+### Category Chips Robust Scroll (2025-11-08)
+**Summary:** Improved chip click reliability by switching SectionList ref to , wiring ref directly, and adding  with a retry + header offset. Also added  to avoid header overlap.
+**Files:** src/screens/Services/ServicesScreen.tsx
+**QA:**
+- Tap any chip repeatedly; scroll should always occur.
+- No crash when a section header isn’t measured yet — retry kicks in.
+### Category Chips Robust Scroll (2025-11-08)
+**Summary:** Improved chip click reliability by switching SectionList ref to any, wiring ref directly, and adding onScrollToIndexFailed with a retry + header offset. Also added viewOffset to avoid header overlap.
+**Files:** src/screens/Services/ServicesScreen.tsx
+**QA:**
+- Tap any chip repeatedly; scroll should always occur.
+- No crash when a section header isn’t measured yet — retry kicks in.
+### Category Chips Retry + Keyboard Handling (2025-11-08)
+**Summary:** Ensured chips work even with keyboard open and when SectionList hasn’t measured items yet.
+**Details:**
+- Added keyboardShouldPersistTaps="handled" on both chips row and SectionList.
+- Added lastJumpCatRef and robust retry in onScrollToIndexFailed.
+- Added viewOffset to avoid sticky-header overlap.
+**QA:**
+- With keyboard open from search, chip taps still scroll.
+- Tapping chips right after screen shows still scrolls reliably after a brief tick.
+### Category Chips Tap Handling (2025-11-08)
+**Summary:** Made chips reliably tappable by using TouchableOpacity, adding hitSlop, nestedScrollEnabled on Android, and using requestAnimationFrame for scroll.
+**Files:** src/screens/Services/ServicesScreen.tsx
+**QA:**
+- Chips scroll horizontally and each tap triggers a jump.
+- Test with keyboard open; taps still work.
+### Category Chips: FlatList Implementation (2025-11-08)
+**Summary:** Switched chips row to a FlatList horizontal to improve tap reliability inside the SectionList header. Added hitSlop and stable keyExtractor.
+**Files:** src/screens/Services/ServicesScreen.tsx
+**QA:**
+- Chips are fully tappable; jump triggers consistently.
+- Horizontal scrolling still works; taps register even during slight scrolls.
+### Category Chips: Tap Capture (2025-11-08)
+**Summary:** Forced tap capture on chips to avoid horizontal pan swallowing taps: added onStartShouldSetResponder, pressRetentionOffset, and delayPressIn=0 on each chip.
+**Files:** src/screens/Services/ServicesScreen.tsx
+**QA:**
+- Light taps on any chip trigger reliably, even with slight finger movement.
+- You can still horizontally scroll by dragging between chips or with longer drags.
+### Category Chips: Z-order and Pointer Events (2025-11-08)
+**Summary:** Ensured chips receive taps by placing ListHeader above sticky headers and disabling pointer events on section headers.
+**Changes:**
+- renderSectionHeader now uses pointerEvents="none" so sticky headers never block touches.
+- ListHeaderComponentStyle sets zIndex above headers and white background.
+- Marked header and chips list as collapsable={false} to avoid Android view flattening.
+**QA:**
+- Taps on chips work even when a sticky header is present.
+### Services: Category Jump Chips (Exact Spec) (2025-11-08)
+**Summary:** Implemented category chips per exact steps: typed SectionList ref; memoized sections in fixed order; memoized `sectionIndexByCategory`; added `handleJump` with `requestAnimationFrame`; wired chips as Pressables; ensured touch settings and empty-section safety; added `console.debug` probe.
+**Files:** src/screens/Services/ServicesScreen.tsx
+**Details:**
+- `const sectionListRef = useRef<SectionList<Service, CategorySection>>(null)` with `CategorySection = { category: string; data: Service[] }`.
+- `sections` memoized in order [Sports Performance Studio, Physio Care, Skin Care, Hair Care, Body Care, Nutrition Care].
+- `sectionIndexByCategory` built from `sections`.
+- `handleJump(category)` uses `requestAnimationFrame` and skips scroll when target section is empty.
+- Chips: Pressable, accessibilityRole="button", label "Jump to <Category>", hitSlop=10, min tap target ≥44.
+- Header placed above sticky headers; section headers don’t intercept touches.
+**QA:**
+- Tapping a chip scrolls to the correct section header; if empty, no scroll.
+- `console.debug('Jump chip pressed:', category)` logs on tap (temporary probe).
+### Services: Chips Jump Reliability (2025-11-08)
+**Summary:** Improved jump reliability with repeated scrollToLocation attempts and consistent viewOffset; aligned onScrollToIndexFailed to new section index map.
+**Files:** src/screens/Services/ServicesScreen.tsx
+**QA:**
+- Tapping a chip logs and jumps; if initial attempt fails due to layout timing, subsequent retries succeed.
+
+### Services: Summary + Reset (2025-11-08)
+**Summary:** Added a tiny summary under filters showing the number of visible services and a Reset button.
+**Details:**
+- Search mode: "Showing N services" (polite live region) with a Reset button that clears search text, online-only, sort, and recent.
+- Grouped view: Same summary under filters; updates on search text, Online toggle, and Sort changes.
+- Chips row remains; active chip highlights and centers on selection.
+**Files:** src/screens/Services/ServicesScreen.tsx
+**QA:**
+- Toggle Online only / change Sort / type in Search — the summary updates immediately.
+- Screen readers announce the updated count (accessibilityLiveRegion=polite).
+- Press Reset — search clears, onlineOnly off, sort resets to Name, recent cleared, and summary reflects the full count.
+
+### Services: Search Highlight (2025-11-08)
+**Summary:** Bolded the matched search tokens in service name and description for search results.
+**Details:**
+- Case-insensitive, simple substring highlight. Multi-word queries split on spaces; each token is highlighted.
+- Works with existing debounce pipeline. No theming added; uses fontWeight '700'.
+- Implemented by allowing `ServiceCardLarge` to accept optional `nameNode` and `descriptionNode` for rich text.
+**Files:** src/screens/Services/ServicesScreen.tsx, src/components/ServiceCardLarge.tsx
+**QA:**
+- Type a multi-word query like "skin peel"; both "skin" and "peel" are bold wherever they appear in names/descriptions.
+- Clear search with Reset; highlights go away.
+
+### Services: Next Slot Formatting (2025-11-08)
+**Summary:** Formatted next slot in ServiceCardLarge as Today/Tomorrow or DD Mon HH:MM.
+**Details:**
+- If slot date equals today → "Today HH:MM"; if tomorrow → "Tomorrow HH:MM"; else → "DD Mon HH:MM".
+- Uses existing formatDate/formatTime; trims weekday from formatDate to get "DD Mon".
+- ServicesScreen now passes raw next slot date/time; ServiceCardLarge computes display.
+**Files:** src/components/ServiceCardLarge.tsx, src/screens/Services/ServicesScreen.tsx
+**QA:**
+- A slot later today shows "Today <time>"; tomorrow shows "Tomorrow <time>"; future shows "DD Mon <time>".
+
+### Services: Recently Viewed MRU (2025-11-08)
+**Summary:** Track last 5 viewed serviceIds (MRU) and surface as chips under the search UI.
+**Details:**
+- Stores MRU in AsyncStorage at key `recent_services_mru_v1`, most-recent-first, deduped, max 5.
+- ServiceDetailScreen updates MRU on mount from any entry path (card or deeplink).
+- ServicesScreen loads MRU on focus and renders a "Recently viewed" chip row under the search input (both grouped and search modes).
+- Tapping a chip opens ServiceDetail for that serviceId.
+**Files:** src/screens/Services/ServiceDetailScreen.tsx, src/screens/Services/ServicesScreen.tsx
+**QA:**
+- Open 3+ service details via different paths; go back to Services → chips show those services in MRU order.
+- Tap a chip → navigates to the correct ServiceDetail.
+- Opening an already-seen service moves it to the front; list never exceeds 5.
+
+### Services: Quick Price/Duration Filters (2025-11-08)
+**Summary:** Added optional quick filters for price and duration; applied to grouped view and search results; persisted in AsyncStorage; Reset clears them.
+**Details:**
+- Price ranges: [₹0–999], [₹1k–1.9k], [₹2k+]
+- Duration ranges: [≤30m], [≤45m], [≤60m], [>60m]
+- Filters render under the existing Online/Sort row in both grouped and search headers.
+- Persisted keys: `services_price_filter_v1` and `services_duration_filter_v1` (single-select per group, tap again to clear).
+- Filters are applied before sort; search results inherit same filters.
+- Reset button also clears these filters and their storage entries.
+**Files:** src/screens/Services/ServicesScreen.tsx
+**QA:**
+- Toggle any price/duration chip — list updates; search results respect filters.
+- Close/reopen tab — previous selections restore from storage.
+- Press Reset — chips clear; list returns to unfiltered.
+
+### Services: Search List getItemLayout (2025-11-08)
+**Summary:** Added `getItemLayout` to search results FlatList with an approximate uniform row height for `ServiceCardLarge` to improve scroll-to-index performance.
+**Details:**
+- Measures search header height and uses it to offset rows in `getItemLayout`.
+- Stable `keyExtractor` remains `item.id` to avoid warnings.
+- Grouped view remains non-virtualized ScrollView (no change to SectionList elsewhere).
+**Files:** src/screens/Services/ServicesScreen.tsx
+**QA:**
+- No warnings about missing keys or getItemLayout.
+- Scrolling/search remains smooth; pull-to-refresh works.
+
+### Services: Empty Category Note + Clear Filters (2025-11-08)
+**Summary:** Hide empty category bodies; when user jumps to an empty category via chip, show an inline note with a quick action to clear filters.
+**Details:**
+- Grouped view no longer renders an empty list for categories with 0 items after filters.
+- If the user taps a category chip that has 0 items, an inline message appears under that category header: "No active services in <Category>." and a "View all services" button.
+- The action clears active filters (price, duration, online-only) and persists removal in AsyncStorage.
+**Files:** src/screens/Services/ServicesScreen.tsx
+**QA:**
+- Apply filters so a category becomes empty; tap that chip → see the inline message and action.
+- Tap "View all services" → filters clear and items reappear.
+
+### Services: Light Haptics (2025-11-08)
+**Summary:** Added light haptic feedback for key interactions using a lightweight helper.
+**Details:**
+- Triggers on: pressing Book, pressing a category jump chip, applying Sort, and toggling quick filters (price/duration, online-only).
+- Helper tries `react-native-haptic-feedback` if available; falls back to a short vibration.
+- No theming or UI changes.
+**Files:** src/utils/haptics.ts, src/components/ServiceCardLarge.tsx, src/screens/Services/ServicesScreen.tsx
+**QA:**
+- Tap Book → feel light haptic.
+- Tap a category chip → light haptic + jump.
+- Change Sort or toggle Price/Duration/Online filters → light haptic.
+
+### ServiceCardLarge: Image Placeholder + Fade-in (2025-11-08)
+**Summary:** Improved ServiceCardLarge image loading with a placeholder and a short fade-in once loaded. Keeps offline placeholder behavior.
+**Details:**
+- CachedImage now wraps images with a placeholder background and adds a light fade-in on `onLoadEnd`.
+- Uses `expo-image` when available with `transition`; falls back to RN Animated.Image with opacity animation otherwise.
+- ServiceCardLarge passes `fadeIn` and retains the grey placeholder when `image_url` is missing.
+**Files:** src/components/CachedImage.tsx, src/components/ServiceCardLarge.tsx
+**QA:**
+- On slow networks, a grey placeholder shows before the image.
+- When the image finishes loading, it fades in smoothly.
+- With no `image_url` or offline, the grey placeholder remains.
+
+### Linking: Category Jump (2025-11-08)
+**Summary:** Added deep link support for `physiosmetic://services?category=<encodedName>` to preselect and jump to a category on the Services screen.
+**Details:**
+- Parses the `category` query param and navigates to `ServicesMain` with `highlightCategory`.
+- ServicesScreen uses the existing jump mechanism to scroll to that category.
+- If the category is invalid or empty, the screen opens normally (no jump).
+**Files:** App.tsx, src/screens/Services/ServicesScreen.tsx (existing support for highlightCategory)
+**QA:**
+- Open `physiosmetic://services?category=Skin%20Care` → Services opens and jumps to “Skin Care”.
+- Open `physiosmetic://services?category=Unknown` → Services opens without jumping.

@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { View, Text, ActivityIndicator, Image, Pressable, ScrollView } from 'react-native';
+import { View, Text, ActivityIndicator, Image, Pressable, ScrollView, Platform, ActionSheetIOS, Alert } from 'react-native';
 import { getServiceById } from '../../services/serviceCatalogService';
 import { getNextSlotsForService } from '../../services/bookingService';
 import PriceTag from '../../components/PriceTag';
@@ -49,6 +49,24 @@ export default function ServiceDetailScreen({ route, navigation }: any): JSX.Ele
     return () => { cancelled = true; };
   }, [load]);
 
+  // Track MRU of last 5 viewed serviceIds in AsyncStorage
+  useEffect(() => {
+    if (!routeServiceId) return;
+    (async () => {
+      try {
+        const AsyncStorage = require('@react-native-async-storage/async-storage').default;
+        const key = 'recent_services_mru_v1';
+        const raw = await AsyncStorage.getItem(key);
+        let arr: string[] = [];
+        if (raw) {
+          try { arr = JSON.parse(raw) || []; } catch { arr = []; }
+        }
+        const next = [String(routeServiceId), ...arr.filter((id) => id !== String(routeServiceId))].slice(0, 5);
+        await AsyncStorage.setItem(key, JSON.stringify(next));
+      } catch {}
+    })();
+  }, [routeServiceId]);
+
   const onPressSlot = useCallback((slot: any) => {
     if (!service?.id) return;
     navigation.navigate('SelectTimeSlot', {
@@ -79,10 +97,51 @@ export default function ServiceDetailScreen({ route, navigation }: any): JSX.Ele
   if (!service) {
     return (
       <View style={{ flex: 1, padding: 16 }}>
-        <Text style={{ marginBottom: 12 }}>{error ?? 'Service not found'}</Text>
-        <Pressable onPress={load} style={({ pressed }) => ({ padding: 12, backgroundColor: '#eee', borderRadius: 8, opacity: pressed ? 0.9 : 1 })}>
-          <Text>Retry</Text>
-        </Pressable>
+        <Text accessibilityRole="header" style={{ marginBottom: 12, fontWeight: '700', fontSize: 18 }}>{error ?? 'Service not available'}</Text>
+        <View style={{ flexDirection: 'row', gap: 8 }}>
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel="Back to Services"
+            onPress={() => navigation.navigate('Services', { screen: 'ServicesMain' })}
+            style={({ pressed }) => ({ padding: 12, backgroundColor: '#eee', borderRadius: 8, minHeight: 44, justifyContent: 'center', opacity: pressed ? 0.9 : 1 })}
+          >
+            <Text>Back to Services</Text>
+          </Pressable>
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel="Browse online-eligible services"
+            onPress={async () => {
+            try {
+              const all = await getServiceById(''); // placeholder to ensure import stays; real fetch below
+            } catch {}
+            try {
+              const { getAllActiveServices } = require('../../services/serviceCatalogService');
+              const list = await getAllActiveServices();
+              const elig = list.filter((s: any) => !!s.is_online_allowed);
+              if (elig.length === 0) { navigation.navigate('Services', { screen: 'ServicesMain' }); return; }
+              const names = elig.map((s: any) => s.name);
+              const onPick = (idx: number | undefined | null) => {
+                if (idx == null || idx < 0 || idx >= names.length) return;
+                const svc = elig[idx];
+                navigation.navigate('Services', { screen: 'ServiceDetail', params: { serviceId: svc.id, serviceName: svc.name } });
+              };
+              if (Platform.OS === 'ios' && ActionSheetIOS) {
+                ActionSheetIOS.showActionSheetWithOptions({ title: 'Browse online‑eligible services', options: [...names, 'Cancel'], cancelButtonIndex: names.length }, onPick);
+              } else {
+                const max = Math.min(names.length, 6);
+                const buttons = names.slice(0, max).map((n: string, i: number) => ({ text: n, onPress: () => onPick(i) }));
+                buttons.push({ text: 'Cancel', style: 'cancel' } as any);
+                Alert.alert('Browse online‑eligible services', '', buttons);
+              }
+            } catch {
+              navigation.navigate('Services', { screen: 'ServicesMain' });
+            }
+          }}
+            style={({ pressed }) => ({ padding: 12, backgroundColor: '#eee', borderRadius: 8, minHeight: 44, justifyContent: 'center', opacity: pressed ? 0.9 : 1 })}
+          >
+            <Text>Browse online‑eligible services</Text>
+          </Pressable>
+        </View>
       </View>
     );
   }
@@ -109,11 +168,7 @@ export default function ServiceDetailScreen({ route, navigation }: any): JSX.Ele
           <View style={{ marginTop: 6 }}>
             <PriceTag price={service.base_price} durationMinutes={service.duration_minutes} />
           </View>
-          {!!service.is_online_allowed && (
-            <View style={{ alignSelf: 'flex-start', marginTop: 8, paddingHorizontal: 8, paddingVertical: 4, backgroundColor: '#e6f2ff', borderRadius: 12 }}>
-              <Text style={{ color: '#1e64d4', fontWeight: '600', fontSize: 12 }}>Online consult available</Text>
-            </View>
-          )}
+          {/* Dual options now move to sticky footer for aesthetics */}
 
           {!!service.description && (
             <View style={{ marginTop: 12 }}>
@@ -134,11 +189,30 @@ export default function ServiceDetailScreen({ route, navigation }: any): JSX.Ele
       </ScrollView>
 
       {/* Sticky footer booking bar */}
-      <StickyBookingBar
-        price={service.base_price}
-        durationMinutes={service.duration_minutes}
-        onPressCta={onPressBook}
-      />
+      {(() => {
+        const cat = service?.category || '';
+        const showDual = cat !== 'Sports Performance Studio' && cat !== 'Physio Care' && !!service?.is_online_allowed;
+        if (showDual) {
+          return (
+            <StickyBookingBar
+              price={service.base_price}
+              durationMinutes={service.duration_minutes}
+              ctaLabel="Book In‑Clinic"
+              onPressCta={() => navigation.navigate('SelectTherapist', { serviceId: service.id, serviceName: service.name, isOnline: false })}
+              secondaryCtaLabel="Book Online"
+              onPressSecondaryCta={() => navigation.navigate('SelectTherapist', { serviceId: service.id, serviceName: service.name, isOnline: true })}
+            />
+          );
+        }
+        return (
+          <StickyBookingBar
+            price={service.base_price}
+            durationMinutes={service.duration_minutes}
+            ctaLabel="Book In‑Clinic"
+            onPressCta={onPressBook}
+          />
+        );
+      })()}
     </View>
   );
 }

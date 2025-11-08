@@ -348,6 +348,77 @@ export async function getNextSlotForTherapist(serviceId: string, therapistId: st
   return { date: (data[0] as any).date, start_time: (data[0] as any).start_time };
 }
 
+// Earliest FUTURE, unbooked slot for a given service across any therapist
+export async function getNextSlotForService(serviceId: string): Promise<{ date: string; start_time: string } | null> {
+  const { data, error } = await supabase
+    .from('availability_slots')
+    .select('date,start_time')
+    .eq('service_id', serviceId)
+    .eq('is_booked', false)
+    .order('date')
+    .order('start_time')
+    .limit(20);
+  if (error) throw error;
+  const rows = (data ?? []).filter((r: any) => !isPastSlot(r.date, r.start_time));
+  if (rows.length === 0) return null;
+  return { date: rows[0].date, start_time: rows[0].start_time };
+}
+
+// Simple in-memory cache for next slots by service (TTL ~3 minutes)
+type NextCacheEntry = { date: string; start_time: string; expires: number };
+const nextSlotCache: Record<string, NextCacheEntry> = {};
+let nextSlotsLastUpdated: number | null = null;
+
+export function getCachedNextSlot(serviceId: string): { date: string; start_time: string } | null {
+  const e = nextSlotCache[serviceId];
+  if (e && e.expires > Date.now()) return { date: e.date, start_time: e.start_time };
+  return null;
+}
+
+export async function primeNextSlotsForServices(serviceIds: string[]): Promise<Record<string, { date: string; start_time: string }>> {
+  const ids = Array.from(new Set(serviceIds.filter(Boolean)));
+  if (ids.length === 0) return {};
+  // Filter out ids that are still fresh
+  const now = Date.now();
+  const missing = ids.filter((id) => !(nextSlotCache[id] && nextSlotCache[id].expires > now));
+  if (missing.length === 0) {
+    const out: Record<string, { date: string; start_time: string }> = {};
+    ids.forEach((id) => { const e = nextSlotCache[id]; if (e) out[id] = { date: e.date, start_time: e.start_time }; });
+    return out;
+  }
+  const { data, error } = await supabase
+    .from('availability_slots')
+    .select('service_id,date,start_time')
+    .in('service_id', missing)
+    .eq('is_booked', false)
+    .order('service_id')
+    .order('date')
+    .order('start_time')
+    .limit(1000);
+  if (error) return {};
+  const byService: Record<string, { date: string; start_time: string }> = {};
+  for (const r of (data ?? [])) {
+    if (!r?.service_id || !r?.date || !r?.start_time) continue;
+    if (isPastSlot(r.date, r.start_time)) continue;
+    if (!byService[r.service_id]) byService[r.service_id] = { date: r.date, start_time: r.start_time };
+  }
+  const ttl = 3 * 60 * 1000;
+  Object.entries(byService).forEach(([sid, val]) => {
+    nextSlotCache[sid] = { ...val, expires: Date.now() + ttl };
+  });
+  nextSlotsLastUpdated = Date.now();
+  return byService;
+}
+
+// Batched getter that returns earliest FUTURE slot per serviceId
+export async function getNextSlotsForServices(serviceIds: string[]): Promise<Record<string, { date: string; start_time: string }>> {
+  return primeNextSlotsForServices(serviceIds);
+}
+
+export function getNextSlotsLastUpdated(): number | null {
+  return nextSlotsLastUpdated;
+}
+
 // Double-book guard: block if user has any appointment at same date+time already
 async function hasUserApptAtDateTime(userId: string, date: string, startTime: string): Promise<boolean> {
   const { data, error } = await supabase

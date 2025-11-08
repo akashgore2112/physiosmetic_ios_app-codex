@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { View, Text, TouchableOpacity, ActivityIndicator, ScrollView, Pressable, useWindowDimensions, Linking, Image, RefreshControl } from 'react-native';
+import { View, Text, TouchableOpacity, ActivityIndicator, ScrollView, Pressable, useWindowDimensions, Linking, Image, RefreshControl, ActionSheetIOS, Alert, Platform } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useFocusEffect } from '@react-navigation/native';
 import { useSessionStore } from '../../store/useSessionStore';
@@ -282,7 +282,57 @@ export default function HomeScreen({ navigation }: any): JSX.Element {
             key={qa.label}
             onPress={() => {
               if (qa.category) {
-                navigation.navigate('Services', { screen: 'ServicesMain', params: { highlightCategory: qa.category } });
+                (async () => {
+                  try {
+                    const all = await getAllActiveServices();
+                    if (qa.online) {
+                      const excluded = ['Sports Performance Studio', 'Physio Care'];
+                      const eligible = all.filter((s: any) => !!s.is_online_allowed && !excluded.includes(s.category));
+                      if (!eligible || eligible.length === 0) {
+                        navigation.navigate('Services', { screen: 'ServicesMain' });
+                        return;
+                      }
+                      if (eligible.length === 1) {
+                        const svc = eligible[0];
+                        navigation.navigate('Services', { screen: 'SelectTherapist', params: { serviceId: svc.id, serviceName: svc.name, isOnline: true } });
+                        return;
+                      }
+                      const showChooser = (list: any[]) => {
+                        const names = list.map((s) => s.name);
+                        if (Platform.OS === 'ios' && ActionSheetIOS) {
+                          ActionSheetIOS.showActionSheetWithOptions(
+                            { title: 'Choose service for online consultation', options: [...names, 'Cancel'], cancelButtonIndex: names.length },
+                            (idx) => {
+                              if (idx != null && idx >= 0 && idx < names.length) {
+                                const svc = list[idx];
+                                navigation.navigate('Services', { screen: 'SelectTherapist', params: { serviceId: svc.id, serviceName: svc.name, isOnline: true } });
+                              }
+                            }
+                          );
+                        } else {
+                          const max = Math.min(names.length, 6);
+                          const buttons = names.slice(0, max).map((n, i) => ({ text: n, onPress: () => {
+                            const svc = list[i];
+                            navigation.navigate('Services', { screen: 'SelectTherapist', params: { serviceId: svc.id, serviceName: svc.name, isOnline: true } });
+                          }}));
+                          buttons.push({ text: 'Cancel', style: 'cancel' } as any);
+                          Alert.alert('Choose service for online consultation', '', buttons);
+                        }
+                      };
+                      showChooser(eligible);
+                      return;
+                    }
+                    // Non-online quick actions: open a relevant service detail within the category
+                    let svc = all.find((s: any) => s.category === qa.category);
+                    if (svc) {
+                      navigation.navigate('Services', { screen: 'ServiceDetail', params: { serviceId: svc.id, serviceName: svc.name } });
+                    } else {
+                      navigation.navigate('Services', { screen: 'ServicesMain', params: { highlightCategory: qa.category } });
+                    }
+                  } catch {
+                    navigation.navigate('Services', { screen: 'ServicesMain', params: { highlightCategory: qa.category } });
+                  }
+                })();
               } else {
                 navigation.navigate('Shop');
               }

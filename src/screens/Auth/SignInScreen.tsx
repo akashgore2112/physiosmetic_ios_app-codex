@@ -2,6 +2,7 @@ import React, { useRef, useState } from 'react';
 import { View, Text, TextInput, Pressable, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { signIn } from '../../services/authService';
+import { useSessionStore } from '../../store/useSessionStore';
 import { useToast } from '../../components/feedback/useToast';
 
 export default function SignInScreen(): JSX.Element {
@@ -16,7 +17,16 @@ export default function SignInScreen(): JSX.Element {
     setLoading(true);
     try {
       await signIn(email.trim(), password);
-      show('Signed in');
+      show("You're signed in — continue booking.");
+      // Handle post-login intent (e.g. continue booking)
+      const intent = useSessionStore.getState().consumePostLoginIntent();
+      if (intent?.action === 'book_service') {
+        const { serviceId, serviceName } = intent.params || {};
+        if (serviceId) {
+          navigation.navigate('Services', { screen: 'SelectTherapist', params: { serviceId, serviceName: serviceName ?? 'Service' } });
+          return;
+        }
+      }
       navigation.navigate('AccountMain');
     } catch (e: any) {
       show(e?.message ?? 'Sign in failed');
