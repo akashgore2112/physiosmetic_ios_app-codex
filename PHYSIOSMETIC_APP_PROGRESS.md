@@ -792,3 +792,143 @@ _Last cleaned: 2025-11-06_
 **QA:**
 - Open `physiosmetic://services?category=Skin%20Care` → Services opens and jumps to “Skin Care”.
 - Open `physiosmetic://services?category=Unknown` → Services opens without jumping.
+
+### Shop: Data Layer (2025-11-08)
+**Summary:** Implemented product catalog service with grouped fetch, search, and bestsellers.
+**Details:**
+- `getAllActiveProducts()` → returns `{ id, name, description, price, in_stock, category, image_url, has_variants? }` for `is_active=true`. Tries `has_variants` column if available; otherwise returns `null` for it.
+- `getProductsGroupedByCategory()` → builds a dynamic category map from DB and orders categories by name (asc). Filters `is_active=true` and preserves `in_stock` flags.
+- `searchProducts(query)` → case-insensitive match across name + description (`ilike` on both), filters `is_active=true`.
+- `getBestsellers(limit=10)` → joins `order_items → products`, aggregates qty client-side, filters active products, returns sorted by total quantity desc.
+**Files:** src/services/productCatalogService.ts
+**QA:**
+- Call `getAllActiveProducts()`; items have core fields and optional `has_variants`.
+- `getProductsGroupedByCategory()` keys sorted A→Z; arrays contain products from that category.
+- `searchProducts('serum')` matches both name and description.
+- `getBestsellers(5)` returns up to 5 active products with `total_qty` in desc order.
+
+### Shop: Screen Overhaul (2025-11-08)
+**Summary:** Rebuilt Shop screen with global search + debounced results and category SectionList.
+**Details:**
+- Top search bar with ~250ms debounce. When query present, renders a FlatList of results via `searchProducts`; otherwise shows a SectionList grouped by DB categories via `getProductsGroupedByCategory`.
+- ProductCard (compact): name (2 lines), short description (2 lines), price, stock badge (In stock/Out of stock), and thumbnail. Pressing a card opens `ProductDetail(productId)`.
+- Empty states: search no results → "No products found. Try a different keyword."; categories with 0 products auto-collapse (do not render).
+- Pull-to-refresh refreshes current mode (search or grouped).
+**Files:** src/screens/Shop/ShopScreen.tsx, src/components/ProductCardCompact.tsx
+**QA:**
+- Typing into search shows debounced results; clearing search restores category sections.
+- Category sections show only non-empty categories.
+- Tapping a product navigates to its detail page.
+
+### Shop: Filters + Sort + Persist (2025-11-08)
+**Summary:** Added filter/sort row above Shop lists; applied to both search results and category sections; persisted selections; added Reset.
+**Details:**
+- Filters: In stock only toggle; Price steps [₹0–999], [₹1k–1.9k], [₹2k+].
+- Sort: ActionSheet with Bestsellers, Price low→high, Newest.
+- Applies to FlatList search results and SectionList grouped view. Categories with 0 items after filters are auto-collapsed.
+- Persistence via AsyncStorage keys: `shop_in_stock_only_v1`, `shop_price_step_v1`, `shop_sort_option_v1`.
+- Reset clears all filters and search, and removes storage entries.
+**Files:** src/screens/Shop/ShopScreen.tsx, src/services/productCatalogService.ts (added created_at optional for Newest sort)
+**QA:**
+- Toggle "In stock only" and price steps — both views reflect changes.
+- Choose sort; Bestsellers uses a rank map; Price sorts ascending; Newest uses created_at if available.
+- Kill/relaunch app — previous selections restored.
+- Press Reset — search clears and filters reset.
+
+### Product Detail: Gallery + FBT (2025-11-08)
+**Summary:** Enhanced ProductDetail with a swipeable image gallery, richer content sections, and a Frequently Bought Together row.
+**Details:**
+- Header: swipeable image gallery with dots (falls back to single image), name, price, and stock badge.
+- Content blocks (accordions): Description; Usage & Contraindications; Ingredients — sections render only when data is present.
+- Frequently bought together: uses `productCatalogService.getFrequentlyBoughtTogether(productId, limit=4)` (order co‑occurrence) and shows a horizontal list of small ProductCard tiles; tapping opens the other product’s detail.
+- Related products by category retained below FBT.
+**Files:** src/screens/Shop/ProductDetailScreen.tsx, src/services/productCatalogService.ts
+**QA:**
+- Swipe the header images; dots update. Tap to preview still works.
+- Accordions expand/collapse; sections hide when no data.
+- FBT shows co‑purchased items; tapping navigates to that product detail.
+
+### Product Variants (2025-11-08)
+**Summary:** Added product variants support: selection chips, dynamic price/stock, and variant id stored in cart lines.
+**Details:**
+- If `product.has_variants` is true, fetches variants `{ id, label, price, in_stock }` via `productCatalogService.getVariants(productId)`.
+- Renders variant chips; selecting a variant updates the displayed price and availability.
+- Cart lines store `variant_id` and use a unique `line_id` (productId::variantId) so multiple variants of the same product can coexist in the cart.
+- Cart store updated to use `line_id` for key/merge, while keeping `id` as the product id for checkout compatibility.
+**Files:** src/services/productCatalogService.ts, src/store/useCartStore.ts, src/screens/Shop/ProductDetailScreen.tsx, src/screens/Shop/CartScreen.tsx
+**QA:**
+- Open a product with variants → chips render; selecting toggles price/stock; Add to Cart uses variant.
+- Add two different variants → cart shows two separate lines; increment/decrement/remove each line independently.
+
+### Cart Behavior: Guest Flow + Buy Now (2025-11-08)
+**Summary:** Implemented guest redirection with post-login continuation for cart actions; Buy Now single-line checkout; improved cart line display.
+**Details:**
+- If guest taps Add to Cart or Buy Now → navigates to SignIn and stores intent `{ action: 'add_to_cart' | 'buy_now', params: { productId, variantId, qty } }`.
+- After successful sign-in, the intent is consumed:
+  - add_to_cart → adds the specified product/variant/qty to cart then navigates to Account.
+  - buy_now → clears cart, adds the single specified line, navigates to Cart (checkout).
+- Cart items now include `variant_label` when applicable; list shows name, variant label, qty stepper, price, and Remove.
+**Files:** src/screens/Shop/ProductDetailScreen.tsx, src/screens/Auth/SignInScreen.tsx, src/screens/Shop/CartScreen.tsx, src/store/useCartStore.ts
+**QA:**
+- As a guest, tap Add to Cart → SignIn → after sign-in, cart contains the selected product (with variant if chosen).
+- As a guest, tap Buy Now → SignIn → after sign-in, navigates to Cart with only that single line.
+- As logged-in, Add to Cart adds to existing cart; Buy Now clears and proceeds to Cart.
+
+### Checkout Basics (2025-11-08)
+**Summary:** Added Checkout screen with Shipping Address form and Pickup toggle; validates required fields and saves address to profile.
+**Details:**
+- ShippingAddress form: name, phone, line1, line2, city, pincode, state, country. Pre-fills from last saved profile address if present. Saves the most recent address back to `profiles.addresses` (JSON) after order placement.
+- Pickup at clinic toggle: hides the address form and sets `pickup=true` in the order payload.
+- Validation: enforces required fields when Pickup is OFF; address optional when Pickup is ON.
+- Order submission: `placeOrder` now accepts optional `{ pickup, address }` and attempts to include them; falls back to minimal insert if schema lacks columns.
+- Navigation: Cart’s Checkout goes to new `Checkout` screen; Buy Now paths also go to Checkout (or, if guest, redirect to SignIn and then to Checkout).
+**Files:**
+- src/screens/Shop/CheckoutScreen.tsx (new)
+- src/services/profileAddressService.ts (new)
+- src/services/orderService.ts (enhanced)
+- src/navigation/ShopStack.tsx (added Checkout route)
+- src/screens/Shop/CartScreen.tsx (navigate to Checkout)
+- src/screens/Shop/ProductDetailScreen.tsx, src/screens/Auth/SignInScreen.tsx (Buy Now continuation to Checkout)
+**QA:**
+- Toggle Pickup ON → form hides; order places without address.
+- Pickup OFF → incomplete form shows an error; completing fields allows order to place.
+- After placing with an address, it appears pre-filled next time.
+
+### Checkout: Address UX Polish (2025-11-08)
+**Summary:** Refined the address experience similar to Amazon.
+**Details:**
+- Required fields: name, phone, line1, city, pincode, state, country (line2 optional). Country locked to India.
+- Phone section: defaults to registered number; shows +91 dial code; “Use my registered number” quick-fill; supports “Order for someone else” toggle.
+- State selection: action sheet with full India states/UTs list.
+- Saved addresses: shows address book entries from profile; tap to apply; “Save to address book” toggle on form (default ON).
+- Map selection: placeholder action present; ready to wire to a map picker in future.
+**Files:** src/screens/Shop/CheckoutScreen.tsx
+**QA:**
+- Toggle “Order for someone else” and change phone; validation still enforces required fields.
+- Tap “Use my registered number” fills phone from profile.
+- State picker lists Indian states/UTs; selection persists.
+- Saved addresses appear and can be applied with one tap.
+
+### Account: Address Book (2025-11-08)
+**Summary:** Added an Address Book in Account to view saved shipping addresses.
+**Details:**
+- New screen under Account: My Addresses — lists addresses saved from checkout (from `profiles.addresses`).
+- Accessible from Account main via “My Addresses”. Shows name, phone (+91), full address.
+- Basic Details action per card; future enhancements can include edit/delete.
+**Files:** src/screens/Account/MyAddressesScreen.tsx, src/navigation/AccountStack.tsx, src/screens/Account/AccountScreen.tsx
+**QA:**
+- After placing an order with “Save to address book” enabled, the address appears under Account → My Addresses.
+
+### Address Book: CRUD + Default + Checkout Integration (2025-11-08)
+**Summary:** Completed address book with add/edit/delete, default selection, and deep integration with checkout and buy-now flows.
+**Details:**
+- Add Address: manual entry with required fields (line2 optional) and "Choose from map" placeholder; can set as default on save.
+- Edit/Delete: manage saved entries; default indicator and "Set as default" action.
+- Default address: Checkout and Buy Now auto-apply default; users can change via Address Book.
+- No addresses: Buy Now/Checkout routes user to Address Book with “Continue to Checkout/Cart” actions shown.
+- Tap to use: Address cards show a "Use this address" action when invoked from checkout.
+**Files:** src/services/profileAddressService.ts, src/screens/Account/MyAddressesScreen.tsx, src/screens/Shop/CheckoutScreen.tsx
+**QA:**
+- Create two addresses, set one default; Checkout uses default.
+- Delete or edit an address; list updates; default persists.
+- With no addresses, buying navigates to Address Book; after adding, "Continue to Checkout" works.

@@ -55,15 +55,28 @@ export async function getReorderItems(orderId: string): Promise<ReorderCartItem[
     }));
 }
 
-export async function placeOrder(userId: string, items: ReorderCartItem[]): Promise<{ id: string }> {
+export async function placeOrder(
+  userId: string,
+  items: ReorderCartItem[],
+  opts?: { pickup?: boolean; address?: any }
+): Promise<{ id: string }> {
   const total = items.reduce((sum, it) => sum + it.price * it.qty, 0);
-  const order = await sb<any>(
-    supabase
-      .from('orders')
-      .insert({ user_id: userId, total_amount: total, status: 'placed' })
-      .select('id')
-      .single() as any
-  );
+  // Try insert with pickup/address if columns exist; on failure, fallback to minimal insert
+  const tryInsert = async (payload: any) => {
+    return await sb<any>(
+      supabase
+        .from('orders')
+        .insert(payload)
+        .select('id')
+        .single() as any
+    );
+  };
+  let order: any;
+  try {
+    order = await tryInsert({ user_id: userId, total_amount: total, status: 'placed', pickup: !!opts?.pickup, shipping_address: opts?.address ?? null });
+  } catch (_e) {
+    order = await tryInsert({ user_id: userId, total_amount: total, status: 'placed' });
+  }
   const orderId = order.id as string;
   if (items.length > 0) {
     const rows = items.map((it) => ({ order_id: orderId, product_id: it.id, qty: it.qty, price_each: it.price }));

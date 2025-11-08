@@ -4,6 +4,7 @@ import AccountScreen from '../screens/Account/AccountScreen';
 import MyAppointmentsScreen from '../screens/Account/MyAppointmentsScreen';
 import MyProfileScreen from '../screens/Account/MyProfileScreen';
 import MyOrdersScreen from '../screens/Account/MyOrdersScreen';
+import MyAddressesScreen from '../screens/Account/MyAddressesScreen';
 import OrderDetailScreen from '../screens/Account/OrderDetailScreen';
 import AppointmentDetailScreen from '../screens/Account/AppointmentDetailScreen';
 import TermsScreen from '../screens/Legal/TermsScreen';
@@ -19,6 +20,7 @@ export type AccountStackParamList = {
   AppointmentDetail: { id: string };
   MyProfile: undefined;
   MyOrders: undefined;
+  MyAddresses: undefined;
   OrderDetail: { id: string } | undefined;
   Terms: undefined;
   Privacy: undefined;
@@ -36,6 +38,7 @@ export default function AccountStackNavigator(): JSX.Element {
       <Stack.Screen name="AppointmentDetail" component={AppointmentDetailScreen} options={{ title: 'Appointment Detail' }} />
       <Stack.Screen name="MyProfile" component={MyProfileScreen} options={{ title: 'My Profile' }} />
       <Stack.Screen name="MyOrders" component={MyOrdersScreen} options={{ title: 'My Orders' }} />
+      <Stack.Screen name="MyAddresses" component={MyAddressesScreen} options={{ title: 'My Addresses' }} />
       <Stack.Screen name="OrderDetail" component={OrderDetailScreen} options={{ title: 'Order Detail' }} />
       <Stack.Screen name="Terms" component={TermsScreen} options={{ title: 'Terms & Conditions' }} />
       <Stack.Screen name="Privacy" component={PrivacyScreen} options={{ title: 'Privacy Policy' }} />

@@ -87,6 +87,7 @@ export default function AccountScreen(): JSX.Element {
             <Button title="My Profile" onPress={() => navigation.navigate('MyProfile')} />
             <Button title="My Appointments" onPress={() => navigation.navigate('MyAppointments')} />
             <Button title="My Orders" onPress={() => navigation.navigate('MyOrders')} />
+            <Button title="My Addresses" onPress={() => navigation.navigate('MyAddresses')} />
           </View>
 
           <View style={{ marginTop: 16 }}>

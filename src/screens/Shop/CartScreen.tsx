@@ -21,21 +21,21 @@ export default function CartScreen({ navigation }: any): JSX.Element {
 
   const onCheckout = async () => {
     if (!canCheckout) return;
-    if (!isLoggedIn || !userId) { show('Please sign in to checkout'); return; }
-    try {
-      await placeOrder(userId, items);
-      clear();
-      navigation.navigate('OrderSuccess');
-    } catch (e: any) {
-      show(e?.message ?? 'Checkout failed');
+    if (!isLoggedIn || !userId) {
+      show('Please sign in to checkout');
+      const { useSessionStore } = require('../../store/useSessionStore');
+      useSessionStore.getState().setPostLoginIntent({ action: 'checkout' });
+      navigation.navigate('Account', { screen: 'SignIn' });
+      return;
     }
+    navigation.navigate('Checkout');
   };
 
   return (
     <View style={{ flex: 1, padding: 12 }}>
       <FlatList
         data={items}
-        keyExtractor={(i) => i.id}
+        keyExtractor={(i) => i.line_id}
         initialNumToRender={8}
         maxToRenderPerBatch={8}
         windowSize={5}
@@ -43,15 +43,16 @@ export default function CartScreen({ navigation }: any): JSX.Element {
         renderItem={({ item }) => (
           <View style={{ backgroundColor: '#fff', borderRadius: 10, padding: 12, marginBottom: 8 }}>
             <Text style={{ fontWeight: '700' }}>{item.name}</Text>
+            {!!item.variant_label && <Text style={{ color: '#555', marginTop: 2 }}>{item.variant_label}</Text>}
             <Text style={{ color: '#666', marginTop: 4 }}>{formatPrice(item.price)} x {item.qty}</Text>
             <View style={{ flexDirection: 'row', gap: 8, marginTop: 10 }}>
-              <TouchableOpacity onPress={() => dec(item.id)} style={{ paddingHorizontal: 12, paddingVertical: 8, backgroundColor: '#eee', borderRadius: 6 }}>
+              <TouchableOpacity onPress={() => dec(item.line_id)} style={{ paddingHorizontal: 12, paddingVertical: 8, backgroundColor: '#eee', borderRadius: 6 }}>
                 <Text>-</Text>
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => inc(item.id)} style={{ paddingHorizontal: 12, paddingVertical: 8, backgroundColor: '#eee', borderRadius: 6 }}>
+              <TouchableOpacity onPress={() => inc(item.line_id)} style={{ paddingHorizontal: 12, paddingVertical: 8, backgroundColor: '#eee', borderRadius: 6 }}>
                 <Text>+</Text>
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => remove(item.id)} style={{ paddingHorizontal: 12, paddingVertical: 8, backgroundColor: '#fdecea', borderRadius: 6 }}>
+              <TouchableOpacity onPress={() => remove(item.line_id)} style={{ paddingHorizontal: 12, paddingVertical: 8, backgroundColor: '#fdecea', borderRadius: 6 }}>
                 <Text>Remove</Text>
               </TouchableOpacity>
             </View>

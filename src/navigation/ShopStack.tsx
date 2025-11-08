@@ -3,6 +3,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import ShopScreen from '../screens/Shop/ShopScreen';
 import ProductDetailScreen from '../screens/Shop/ProductDetailScreen';
 import CartScreen from '../screens/Shop/CartScreen';
+import CheckoutScreen from '../screens/Shop/CheckoutScreen';
 import OrderSuccessScreen from '../screens/Shop/OrderSuccessScreen';
 import { Pressable, Text } from 'react-native';
 import { useCartStore } from '../store/useCartStore';
@@ -11,6 +12,7 @@ export type ShopStackParamList = {
   ProductsList: undefined;
   ProductDetail: { id: string } | undefined;
   Cart: undefined;
+  Checkout: undefined;
   OrderSuccess: undefined;
 };
 
@@ -31,6 +33,7 @@ export default function ShopStackNavigator(): JSX.Element {
       <Stack.Screen name="ProductsList" component={ShopScreen} options={{ title: 'Products' }} />
       <Stack.Screen name="ProductDetail" component={ProductDetailScreen} options={{ title: 'Product' }} />
       <Stack.Screen name="Cart" component={CartScreen} options={{ title: 'Cart' }} />
+      <Stack.Screen name="Checkout" component={CheckoutScreen} options={{ title: 'Checkout' }} />
       <Stack.Screen name="OrderSuccess" component={OrderSuccessScreen} options={{ title: 'Success' }} />
     </Stack.Navigator>
   );

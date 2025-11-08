@@ -4,6 +4,9 @@ import { useNavigation } from '@react-navigation/native';
 import { signIn } from '../../services/authService';
 import { useSessionStore } from '../../store/useSessionStore';
 import { useToast } from '../../components/feedback/useToast';
+import { useCartStore } from '../../store/useCartStore';
+import { getProduct } from '../../services/productService';
+import { getVariants } from '../../services/productCatalogService';
 
 export default function SignInScreen(): JSX.Element {
   const navigation = useNavigation<any>();
@@ -26,6 +29,34 @@ export default function SignInScreen(): JSX.Element {
           navigation.navigate('Services', { screen: 'SelectTherapist', params: { serviceId, serviceName: serviceName ?? 'Service' } });
           return;
         }
+      }
+      if (intent?.action === 'add_to_cart' || intent?.action === 'buy_now' || intent?.action === 'checkout') {
+        try {
+          const { productId, variantId, qty } = intent.params || {};
+          if (productId) {
+            const p = await getProduct(productId);
+            if (p) {
+              let variantLabel: string | null = null;
+              let price = p.price;
+              if (variantId) {
+                const vars = await getVariants(productId);
+                const v = (vars || []).find((vv) => vv.id === variantId);
+                if (v) { variantLabel = v.label ?? null; if (typeof v.price === 'number') price = v.price; }
+              }
+              const add = useCartStore.getState().addItem;
+              if (intent.action === 'buy_now') {
+                useCartStore.getState().clearCart();
+              }
+              add({ id: p.id, line_id: `${p.id}${variantId ? `::${variantId}` : ''}`, variant_id: variantId ?? null, variant_label: variantLabel, name: p.name, price: price, qty: Math.max(1, Number(qty || 1)), image_url: p.image_url });
+              if (intent.action === 'buy_now' || intent.action === 'checkout') {
+                navigation.navigate('Shop', { screen: 'Checkout' });
+                return;
+              }
+            }
+          }
+        } catch {}
+        navigation.navigate('AccountMain');
+        return;
       }
       navigation.navigate('AccountMain');
     } catch (e: any) {
