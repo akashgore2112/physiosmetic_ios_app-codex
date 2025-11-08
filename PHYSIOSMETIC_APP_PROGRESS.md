@@ -1048,3 +1048,82 @@ _Last cleaned: 2025-11-06_
 **QA:**
 - Press Use current → map centers; preview appears; Use this location → Refine → Save → fields prefill.
 - Search, pick top suggestion via keyboard submit → preview shows → Use this location → Refine → Save → prefill.
+
+### Maps: Key Resolution + Fallback Prefill (2025-11-08)
+**Summary:** Ensured Google keys are read reliably in native builds and added formatted-address fallback to populate fields if structured components are missing.
+**Details:**
+- Geocoding/Places now read keys from `process.env` and `Constants.expoConfig.extra`.
+- When only `formatted_address` is available, we set `line1` from it to avoid empty prefills.
+**Files:** src/services/geocoding.ts, src/services/places.ts, src/screens/Shop/CheckoutScreen.tsx, src/screens/Account/MyAddressesScreen.tsx
+**QA:**
+- With only `formatted_address` from API, `line1` still gets filled.
+
+### Maps: Idle Auto-Select + Session Tokens (2025-11-08)
+**Summary:** Auto-selects top autocomplete suggestion after user pauses typing; uses Google Places session tokens for cohesive billing and better results.
+**Details:**
+- Autocomplete throttled (250ms) and idle submit (1s) to pick top suggestion automatically.
+- Places requests include `sessiontoken`; details share the same token; token resets after selection.
+**Files:** src/screens/Common/MapPickerScreen.tsx, src/services/places.ts
+**QA:**
+- Type an address and pause → top suggestion is auto-selected and preview shows.
+
+### Maps: Amazon-like Polish (2025-11-08)
+**Summary:** Added a first-row “Use current location”, a fixed center pin with a drag-to-adjust guideline, and session token expiry.
+**Details:**
+- Suggestions list now begins with 📍 Use current location for quick access.
+- Fixed center pin overlays the map so users can drag the map to adjust the exact point.
+- Added “Drag map to adjust” hint near the top.
+- Session token expires after 3 minutes of inactivity and resets after selection.
+**Files:** src/screens/Common/MapPickerScreen.tsx
+**QA:**
+- Open Map Picker → Suggestions visible → first row is “Use current location”.
+- Drag map → pin stays centered; Use this location uses center.
+- Wait 3+ minutes idle → new search creates a new session token.
+
+### MapPicker: Reliable Current Location + Provider Fallback (2025-11-08)
+**Summary:** Made “Use current” robust with expo-location util (permission flow, timeouts, last known fallback) and ensured search uses Google Places when keys are present, with Nominatim fallback otherwise. Added dev diagnostics.
+**Details:**
+- App config: wired `EXPO_PUBLIC_GOOGLE_PLACES_KEY` and `EXPO_PUBLIC_GOOGLE_MAPS_GEOCODING_KEY` under `expo.extra` (placeholders); code reads from `expo-constants.expoConfig.extra` or env.
+- Dependencies: added `expo-location` to package.json.
+- Location util: `src/services/location.ts` with permission, primary getCurrentPosition + last-known fallback, explicit error codes.
+- Places/Geocode: Google-first with debug logs; Nominatim fallback for dev when keys missing.
+- MapPicker: “Use current” shows locating state + inline hints; confirm always reverse-geocodes map center; dev-only header shows PLACES/GEOCODE ON|OFF and provider.
+**Files:** app.json, package.json, src/services/location.ts, src/services/places.ts, src/services/geocoding.ts, src/screens/Common/MapPickerScreen.tsx
+**QA:**
+- Keys present → search via Google; keys absent → search via Nominatim; both return suggestions.
+- “Use current” centers and shows preview; permission denied/timeouts show inline hints.
+
+### MapPicker: Persistent Recent Searches (2025-11-08)
+**Summary:** Added AsyncStorage dependency so recent searches persist across app reinstalls and cold starts.
+**Details:**
+- Dependency: @react-native-async-storage/async-storage added to package.json.
+- MapPicker loads it lazily; when present, recent suggestions are saved to `map_recents_v1` and restored on launch.
+**Files:** package.json, src/screens/Common/MapPickerScreen.tsx
+**Setup:**
+- npx expo install @react-native-async-storage/async-storage
+- npx expo prebuild --clean && npx expo run:ios / run:android
+**QA:**
+- Pick/search a few addresses; relaunch app → Recent searches list shows previous items.
+### MapPicker: Fixed Search + Current (2025-11-08)
+**Summary:** Resolved issues where "Search address" returned no suggestions and "Use current" appeared unresponsive. Added inline progress, friendly errors, and strict center-based confirm.
+**Details:**
+- Debounce ~350ms, min query length 3, deduped requests, provider diagnostics, and inline "Searching…" or "Search unavailable. Try again." messages.
+- "Use current" now shows "Locating…", requests permission, centers map (animate), reverse-geocodes, and previews inline. Inline hints on simulator/denied/timeouts.
+- Confirm always reverse-geocodes current map center; failure shows a friendly inline message while keeping lat/lng.
+- Dev logs: concise console.debug for search start and use-current success.
+**Files:** src/screens/Common/MapPickerScreen.tsx, src/services/places.ts, src/services/geocoding.ts, src/services/location.ts
+**QA:**
+- Type ≥3 chars → see suggestions within ~1s.
+- Tap "Use current" → see Locating…, then center + preview.
+- Move map and confirm → prefill matches visible center.
+MapPicker: Fixed ‘Search address’ — suggestions load, select recenters + preview, return selects top, graceful inline errors, debounce & cancellation.
+### MapPicker: POIs/Buildings in Search (2025-11-08)
+**Summary:** Added POIs/buildings to search results via Google Places Autocomplete (mixed) with Google Text Search fallback; retained Nominatim fallback; unified suggestions.
+**Details:**
+- Autocomplete no longer restricted to geocode; optional country bias; session token preserved.
+- If Autocomplete returns 0, fallback to Places Text Search (name + formatted_address + geometry) before Nominatim.
+- Unified suggestions so selection centers map and shows preview; pressing Return selects top.
+- Dev logs: `[places] q='<q>' provider=<google|textsearch|nominatim> results=<n>`.
+**Files:** src/services/places.ts
+**QA:**
+- Typing “Burj Khalifa”, “Kokilaben Hospital”, “City Centre Deira” shows relevant POIs within ~1s; selecting recenters and previews.

@@ -60,6 +60,9 @@ export default function MyAddressesScreen({ navigation }: any): JSX.Element {
           state: picked.state ?? f.state,
           pincode: picked.postal_code ?? f.pincode,
         }));
+        if (!picked.line1 && !picked.city && picked.formatted_address) {
+          setForm((f: any) => ({ ...f, line1: picked.formatted_address }));
+        }
       }
     });
     return unsubscribe;

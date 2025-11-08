@@ -1,6 +1,12 @@
+import Constants from 'expo-constants';
+
 type PlaceSuggestion = {
   place_id: string;
   description: string;
+  lat?: number;
+  lng?: number;
+  details?: PlaceDetails;
+  provider?: 'google' | 'textsearch' | 'nominatim';
 };
 
 type PlaceDetails = {
@@ -36,47 +42,157 @@ function parseComponents(components: any[]): Omit<PlaceDetails, 'latitude' | 'lo
   };
 }
 
-function getKey(): string | null {
-  return process.env.EXPO_PUBLIC_GOOGLE_PLACES_KEY || process.env.EXPO_PUBLIC_GOOGLE_MAPS_GEOCODING_KEY || null;
+export function getPlacesProvider(): 'google' | 'nominatim' {
+  const expoConfig = (Constants as any)?.expoConfig as any;
+  const PLACES_KEY = expoConfig?.extra?.EXPO_PUBLIC_GOOGLE_PLACES_KEY || (process.env as any)?.EXPO_PUBLIC_GOOGLE_PLACES_KEY;
+  return PLACES_KEY ? 'google' : 'nominatim';
 }
 
-export async function placesAutocomplete(input: string): Promise<PlaceSuggestion[]> {
+function getKey(): string | null {
+  const expoConfig = (Constants as any)?.expoConfig as any;
+  const PLACES_KEY = expoConfig?.extra?.EXPO_PUBLIC_GOOGLE_PLACES_KEY || (process.env as any)?.EXPO_PUBLIC_GOOGLE_PLACES_KEY;
+  const GEOCODE_KEY = expoConfig?.extra?.EXPO_PUBLIC_GOOGLE_MAPS_GEOCODING_KEY || (process.env as any)?.EXPO_PUBLIC_GOOGLE_MAPS_GEOCODING_KEY;
+  return PLACES_KEY || GEOCODE_KEY || null;
+}
+
+function getRegionBias(): string | null {
+  const expoConfig = (Constants as any)?.expoConfig as any;
+  const bias = expoConfig?.extra?.PLACES_REGION || null;
+  return typeof bias === 'string' && bias.length <= 3 ? bias.toLowerCase() : null;
+}
+
+export async function placesAutocomplete(input: string, opts?: { sessionToken?: string; signal?: AbortSignal; location?: { lat: number; lng: number } }): Promise<PlaceSuggestion[]> {
   const key = getKey();
-  if (!key) return [];
-  const url = `https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${encodeURIComponent(input)}&types=geocode&key=${encodeURIComponent(key)}`;
+  const provider = getPlacesProvider();
+  if (provider === 'google' && key) {
+    const regionBias = getRegionBias();
+    // Request mixed results (addresses + establishments). Avoid restricting to geocode only.
+    const loc = opts?.location ? `&location=${opts.location.lat},${opts.location.lng}&radius=50000` : '';
+    const url = `https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${encodeURIComponent(input)}${regionBias ? `&components=country:${regionBias}` : ''}${loc}&key=${encodeURIComponent(key)}${opts?.sessionToken ? `&sessiontoken=${encodeURIComponent(opts.sessionToken)}` : ''}`;
+    try {
+      const res = await fetch(url, { signal: opts?.signal });
+      const json = await res.json();
+      if (!json || json.status !== 'OK' || !Array.isArray(json.predictions)) {
+        if (__DEV__) console.debug(`[places] q='${input}' provider=google results=0`);
+        // Try Google Text Search for POIs before Nominatim
+        try {
+          const ts = await googleTextSearch(input, key, regionBias);
+          if (ts.length > 0) {
+            if (__DEV__) console.debug(`[places] q='${input}' provider=textsearch results=${ts.length}`);
+            return ts;
+          }
+          const fb = await nominatimSuggestions(input);
+          if (__DEV__) console.debug(`[places] q='${input}' provider=nominatim results=${fb.length}`);
+          return fb;
+        } catch {
+          return [];
+        }
+      }
+      const results = json.predictions.map((p: any) => ({ place_id: p.place_id, description: p.description, provider: 'google' as const }));
+      if (__DEV__) console.debug(`[places] q='${input}' provider=${provider} results=${results.length}`);
+      return results;
+    } catch (e: any) {
+      if (e?.name === 'AbortError') return [];
+      // Network/other error → fallback to Nominatim
+      try {
+        const ts = await googleTextSearch(input, key, getRegionBias(), opts?.signal, opts?.location);
+        if (ts.length > 0) {
+          if (__DEV__) console.debug(`[places] q='${input}' provider=textsearch results=${ts.length}`);
+          return ts;
+        }
+        const fb = await nominatimSuggestions(input, opts?.signal);
+        if (__DEV__) console.debug(`[places] q='${input}' provider=nominatim results=${fb.length}`);
+        return fb;
+      } catch {
+        return [];
+      }
+    }
+  }
+  // Fallback to Nominatim (dev)
   try {
-    const res = await fetch(url);
+    const results = await nominatimSuggestions(input, opts?.signal);
+    if (__DEV__) console.debug(`[places] q='${input}' provider=${provider} results=${results.length}`);
+    return results;
+  } catch (e: any) {
+    return [];
+  }
+}
+
+export async function placeDetails(placeId: string, opts?: { sessionToken?: string; signal?: AbortSignal }): Promise<PlaceDetails | null> {
+  const key = getKey();
+  if (getPlacesProvider() === 'google' && key) {
+    const url = `https://maps.googleapis.com/maps/api/place/details/json?place_id=${encodeURIComponent(placeId)}&fields=formatted_address,geometry,address_component&key=${encodeURIComponent(key)}${opts?.sessionToken ? `&sessiontoken=${encodeURIComponent(opts.sessionToken)}` : ''}`;
+    try {
+      const res = await fetch(url, { signal: opts?.signal });
+      const json = await res.json();
+      if (!json || json.status !== 'OK' || !json.result) return null;
+      const r = json.result;
+      const lat = r.geometry?.location?.lat;
+      const lng = r.geometry?.location?.lng;
+      if (typeof lat !== 'number' || typeof lng !== 'number') return null;
+      const parsed = parseComponents(r.address_components || []);
+      const out = {
+        latitude: lat,
+        longitude: lng,
+        formatted_address: r.formatted_address,
+        ...parsed,
+      };
+      if (__DEV__) console.debug('[places]', { provider: 'google', details: true });
+      return out;
+    } catch (e: any) {
+      if (e?.name === 'AbortError') return null;
+      return null;
+    }
+  }
+  // Fallback for osm:* ids cannot fetch more details without another call; return null and rely on suggestion.details
+  return null;
+}
+
+async function nominatimSuggestions(input: string, signal?: AbortSignal): Promise<PlaceSuggestion[]> {
+  const url = `https://nominatim.openstreetmap.org/search?format=jsonv2&q=${encodeURIComponent(input)}&addressdetails=1&limit=5`;
+  const res = await fetch(url, { headers: { 'User-Agent': 'physiosmetic-app' } as any, signal });
+  const rows = await res.json();
+  if (!Array.isArray(rows)) return [];
+  return rows.map((r: any) => ({
+    place_id: `osm:${r.place_id}`,
+    description: r.display_name,
+    lat: parseFloat(r.lat),
+    lng: parseFloat(r.lon),
+    details: {
+      latitude: parseFloat(r.lat),
+      longitude: parseFloat(r.lon),
+      formatted_address: r.display_name,
+      city: r.address?.city || r.address?.town || r.address?.village,
+      state: r.address?.state,
+      country: r.address?.country,
+      postal_code: r.address?.postcode,
+    } as PlaceDetails,
+    provider: 'nominatim' as const,
+  }));
+}
+
+async function googleTextSearch(input: string, key: string | null, region?: string | null, signal?: AbortSignal, location?: { lat: number; lng: number } | null): Promise<PlaceSuggestion[]> {
+  if (!key) return [];
+  const loc = location ? `&location=${location.lat},${location.lng}&radius=50000` : '';
+  const url = `https://maps.googleapis.com/maps/api/place/textsearch/json?query=${encodeURIComponent(input)}${region ? `&region=${encodeURIComponent(region)}` : ''}${loc}&key=${encodeURIComponent(key)}`;
+  try {
+    const res = await fetch(url, { signal });
     const json = await res.json();
-    if (!json || json.status !== 'OK' || !Array.isArray(json.predictions)) return [];
-    return json.predictions.map((p: any) => ({ place_id: p.place_id, description: p.description }));
+    if (!json || json.status !== 'OK' || !Array.isArray(json.results)) return [];
+    return json.results.slice(0, 8).map((r: any) => {
+      const lat = r.geometry?.location?.lat;
+      const lng = r.geometry?.location?.lng;
+      const name = r.name || '';
+      const addr = r.formatted_address || '';
+      const description = addr ? `${name} — ${addr}` : name;
+      const details: PlaceDetails | undefined = (typeof lat === 'number' && typeof lng === 'number')
+        ? { latitude: lat, longitude: lng, formatted_address: addr }
+        : undefined;
+      return { place_id: r.place_id || `text:${name}:${addr}`, description, lat, lng, details, provider: 'textsearch' as const } as PlaceSuggestion;
+    });
   } catch {
     return [];
   }
 }
 
-export async function placeDetails(placeId: string): Promise<PlaceDetails | null> {
-  const key = getKey();
-  if (!key) return null;
-  const url = `https://maps.googleapis.com/maps/api/place/details/json?place_id=${encodeURIComponent(placeId)}&fields=formatted_address,geometry,address_component&key=${encodeURIComponent(key)}`;
-  try {
-    const res = await fetch(url);
-    const json = await res.json();
-    if (!json || json.status !== 'OK' || !json.result) return null;
-    const r = json.result;
-    const lat = r.geometry?.location?.lat;
-    const lng = r.geometry?.location?.lng;
-    if (typeof lat !== 'number' || typeof lng !== 'number') return null;
-    const parsed = parseComponents(r.address_components || []);
-    return {
-      latitude: lat,
-      longitude: lng,
-      formatted_address: r.formatted_address,
-      ...parsed,
-    };
-  } catch {
-    return null;
-  }
-}
-
 export type { PlaceSuggestion, PlaceDetails };
-

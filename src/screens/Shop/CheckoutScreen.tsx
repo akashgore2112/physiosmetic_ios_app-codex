@@ -112,6 +112,10 @@ export default function CheckoutScreen({ navigation }: any): JSX.Element {
         if (picked.city) setCity(picked.city);
         if (picked.state) setState(picked.state);
         if (picked.postal_code) setPincode(picked.postal_code);
+        // If structured fields missing but formatted address present, use it as line1
+        if (!picked.line1 && !picked.city && picked.formatted_address) {
+          setLine1(picked.formatted_address);
+        }
       }
       return () => {};
     }, [])
@@ -269,7 +273,7 @@ export default function CheckoutScreen({ navigation }: any): JSX.Element {
             <View style={{ marginTop: 12 }}>
               <Text style={{ fontWeight: '700', marginBottom: 6 }}>Saved addresses</Text>
               {savedAddrs.map((a, idx) => (
-                <Pressable key={`addr-${idx}`} onPress={() => applyAddress(a)} style={({ pressed }) => ({ borderWidth: 1, borderColor: '#ddd', borderRadius: 8, padding: 10, marginBottom: 8, opacity: pressed ? 0.9 : 1 })}>
+                <Pressable key={`addr-${a?.id ?? idx}`} onPress={() => applyAddress(a)} style={({ pressed }) => ({ borderWidth: 1, borderColor: '#ddd', borderRadius: 8, padding: 10, marginBottom: 8, opacity: pressed ? 0.9 : 1 })}>
                   <Text style={{ fontWeight: '700' }}>{a.name}</Text>
                   <Text style={{ color: '#555' }}>{a.line1}{a.line2 ? `, ${a.line2}` : ''}</Text>
                   <Text style={{ color: '#555' }}>{a.city}, {a.state} {a.pincode}</Text>

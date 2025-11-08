@@ -756,25 +756,12 @@ export default function ServicesScreen({ navigation }: any): JSX.Element {
             <Text>Reset</Text>
           </Pressable>
         </View>
-        {/* Chips row */}
-          <FlatList
-            ref={chipsListRef as any}
-            data={order}
-            keyExtractor={(c) => c}
-            horizontal
-            keyboardShouldPersistTaps="handled"
-            showsHorizontalScrollIndicator={false}
-            nestedScrollEnabled
-            contentContainerStyle={{ paddingBottom: 8 }}
-            onScrollToIndexFailed={(info) => {
-              // Fallback: scroll near the desired index
-              try {
-                const approxIndex = Math.max(0, Math.min(order.length - 1, info.index));
-                chipsListRef.current?.scrollToIndex?.({ index: approxIndex, animated: true });
-              } catch {}
-            }}
-            renderItem={({ item: cat }) => (
+        {/* Chips row (avoid FlatList inside ScrollView) */}
+        <ScrollView horizontal keyboardShouldPersistTaps="handled" showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 8 }}>
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+            {order.map((cat) => (
               <Pressable
+                key={`chip-${cat}`}
                 onPress={() => handleJump(cat)}
                 onStartShouldSetResponder={() => true}
                 delayPressIn={0}
@@ -798,8 +785,9 @@ export default function ServicesScreen({ navigation }: any): JSX.Element {
               >
                 <Text>{cat}</Text>
               </Pressable>
-            )}
-          />
+            ))}
+          </View>
+        </ScrollView>
         {!isOnline && (
           <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 8 }}>
             <Text style={{ color: '#666', marginRight: 10 }}>You’re offline—tap retry</Text>
