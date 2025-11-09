@@ -2,6 +2,52 @@
 _Maintained automatically; newest first._
 _Last cleaned: 2025-11-09_
 
+### Stripe (TEST) PaymentSheet Integration (2025-11-09)
+**Summary:** Stripe (TEST) PaymentSheet scaffold + Edge Functions created; deploy + secrets pending.
+**Files:**
+- `supabase/.env.local` (Stripe placeholders added)
+- `supabase/.gitignore` (created)
+- `supabase/functions/create_payment_intent/index.ts` (new Edge Function)
+- `supabase/functions/stripe_webhook/index.ts` (new Edge Function)
+- `app.json` (added EXPO_PUBLIC_STRIPE_PUBLISHABLE_KEY)
+- `src/services/paymentsApi.ts` (added createStripePaymentIntent)
+- `src/components/StripePaymentSheet.ts` (new utility)
+- `src/screens/Shop/CheckoutScreen.tsx` (added Stripe payment option)
+- `supabase/DEPLOYMENT_STEPS.md` (updated with Stripe deployment guide)
+
+**Implementation Details:**
+- **Edge Functions**: Created flat-named functions `create_payment_intent` and `stripe_webhook` following existing Razorpay pattern
+- **JWT Authentication**: Both functions verify JWT tokens; create_payment_intent requires Bearer token
+- **PaymentIntent Creation**: Uses Stripe SDK (npm:stripe@14.11.0), supports INR/AED/USD, automatic_payment_methods enabled
+- **Webhook Handling**: Signature verification with STRIPE_WEBHOOK_SECRET, handles payment_intent.succeeded/failed/canceled events
+- **Client Integration**: React Native PaymentSheet via @stripe/stripe-react-native, minimal UI (no theming)
+- **Payment Flow**: Create intent → Init sheet → Present sheet → Place order on success
+
+**Configuration:**
+- Environment variables in `.env.local`: STRIPE_SECRET_KEY, STRIPE_WEBHOOK_SECRET, STRIPE_MODE=TEST
+- Publishable key in `app.json`: EXPO_PUBLIC_STRIPE_PUBLISHABLE_KEY (placeholder: pk_test_xxx)
+- All secrets excluded from git via `.gitignore`
+
+**Deployment Requirements:**
+1. Set Stripe secrets: `supabase secrets set --env-file supabase/.env.local`
+2. Deploy functions: `supabase functions deploy create_payment_intent stripe_webhook`
+3. Create webhook endpoint in Stripe dashboard pointing to `/stripe_webhook`
+4. Update `app.json` with actual Stripe publishable key
+
+**Testing:**
+- Test card: 4242 4242 4242 4242 (Stripe)
+- Payment method appears as "Stripe (Test)" in checkout
+- TODO comments added for server-side re-pricing and order marking in webhook
+
+**QA Checklist:**
+- [ ] Deploy Edge Functions to Supabase
+- [ ] Set secrets in Supabase
+- [ ] Configure Stripe webhook endpoint
+- [ ] Update app.json with real publishable key
+- [ ] Install @stripe/stripe-react-native: `npx expo install @stripe/stripe-react-native`
+- [ ] Test payment flow end-to-end
+- [ ] Verify webhook receives events
+
 ### Payment Fix: Razorpay Receipt ID Length Exceeded (2025-11-09)
 **Summary:** Fixed critical Razorpay payment error caused by receipt ID exceeding 40-character limit.
 **Files:** supabase/functions/create_razorpay_order/index.ts, src/services/paymentsApiFallback.ts, src/screens/Shop/CheckoutScreen.tsx

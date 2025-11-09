@@ -5,16 +5,18 @@ import { useSessionStore } from '../../store/useSessionStore';
 import { useCartStore } from '../../store/useCartStore';
 import { formatPrice } from '../../utils/formatPrice';
 import { placeOrder } from '../../services/orderService';
-import { createRazorpayOrder, verifyRazorpayPayment } from '../../services/paymentsApi';
+import { createRazorpayOrder, verifyRazorpayPayment, createStripePaymentIntent } from '../../services/paymentsApi';
 import { createRazorpayOrderFallback } from '../../services/paymentsApiFallback';
 import { getRazorpayKeyId } from '../../services/razorpay';
 import RazorpayWebView, { type RazorpayOptions, type RazorpaySuccess } from '../../components/RazorpayWebView';
+import { initStripePaymentSheet, presentStripePaymentSheet } from '../../components/StripePaymentSheet';
 import { getAddresses, saveAddress, setDefaultAddress } from '../../services/profileAddressService';
 import { useToast } from '../../components/feedback/useToast';
 import { normalizeToE164 } from '../../utils/phone';
 import { light as hapticLight } from '../../utils/haptics';
 import { useMapPickerStore } from '../../store/useMapPickerStore';
 import { RZP_KEY_ID } from '../../config/payments';
+import Constants from 'expo-constants';
 
 export default function CheckoutScreen({ navigation }: any): JSX.Element {
   const { userId, isLoggedIn } = useSessionStore();
@@ -49,8 +51,9 @@ export default function CheckoutScreen({ navigation }: any): JSX.Element {
   const snapHigh = screenH * 0.25; // ~75% visible
   const [pendingAddrId, setPendingAddrId] = useState<string | null>(null);
   const [showHint, setShowHint] = useState(false);
-  const [paymentMethod, setPaymentMethod] = useState<'online' | 'cod'>('online');
+  const [paymentMethod, setPaymentMethod] = useState<'online' | 'stripe' | 'cod'>('online');
   const [placingMsg, setPlacingMsg] = useState<string | null>(null);
+  const STRIPE_KEY = Constants.expoConfig?.extra?.EXPO_PUBLIC_STRIPE_PUBLISHABLE_KEY;
   const pan = React.useRef(PanResponder.create({
     onStartShouldSetPanResponder: () => true,
     onMoveShouldSetPanResponder: () => true,
@@ -315,6 +318,66 @@ export default function CheckoutScreen({ navigation }: any): JSX.Element {
         });
         setShowRazorpay(true);
         return; // Payment flow continues in WebView callbacks
+      } else if (paymentMethod === 'stripe') {
+        setPlacingMsg('Initiating Stripe payment…');
+        const amountPaise = Math.round(total * 100);
+        console.debug('[Checkout] Stripe payment request:', { amountPaise, userId });
+
+        let clientSecret: string;
+        try {
+          const result = await createStripePaymentIntent(amountPaise, 'INR');
+          clientSecret = result.clientSecret;
+          console.debug('[Checkout] Got client secret');
+        } catch (e: any) {
+          const msg = e?.message || 'Stripe payment unavailable. Try another method.';
+          setError(msg);
+          setSaving(false);
+          setPlacingMsg(null);
+          return;
+        }
+
+        // Initialize PaymentSheet
+        setPlacingMsg('Loading payment sheet…');
+        const initResult = await initStripePaymentSheet(clientSecret);
+        if (!initResult.success) {
+          setError(initResult.error || 'Failed to initialize payment');
+          setSaving(false);
+          setPlacingMsg(null);
+          return;
+        }
+
+        // Present PaymentSheet
+        setPlacingMsg(null);
+        setSaving(false);
+        const paymentResult = await presentStripePaymentSheet();
+
+        if (!paymentResult.success) {
+          if (paymentResult.error === 'Payment canceled') {
+            setError('Payment canceled. Try again when ready.');
+          } else {
+            setError(paymentResult.error || 'Payment failed');
+          }
+          return;
+        }
+
+        // Payment successful, place order
+        setSaving(true);
+        setPlacingMsg('Placing order…');
+        const res = await placeOrder(userId, items, {
+          pickup,
+          address,
+          payment: {
+            payment_method: 'stripe',
+            payment_status: 'paid',
+            payment_gateway: 'stripe',
+            gateway_payment_id: 'stripe_payment' // Will be updated by webhook
+          }
+        });
+        if (!pickup && address && saveToBook) {
+          try { await saveAddress(userId, address, { setDefault: true }); } catch {}
+        }
+        clear();
+        navigation.replace('OrderSuccess', { id: res.id, method: 'stripe' });
       } else {
         setPlacingMsg('Placing order…');
         const res = await placeOrder(userId, items, { pickup, address, payment: { payment_method: 'cod', payment_status: 'pending' } });
@@ -358,16 +421,19 @@ export default function CheckoutScreen({ navigation }: any): JSX.Element {
       {/* Payment method */}
       <View style={{ marginTop: 10, borderWidth: 1, borderColor: '#eee', borderRadius: 10, padding: 10 }}>
         <Text style={{ fontWeight: '700', marginBottom: 6 }}>Payment</Text>
-        <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 6 }}>
-          <Pressable disabled={!RZP_KEY_ID} onPress={() => setPaymentMethod('online')} style={({ pressed }) => ({ marginRight: 12, paddingHorizontal: 10, paddingVertical: 8, borderWidth: 1, borderColor: paymentMethod==='online' ? '#1e64d4' : '#ddd', backgroundColor: paymentMethod==='online' ? '#e6f2ff' : '#fff', borderRadius: 8, opacity: pressed ? 0.9 : 1 })}>
-            <Text>{paymentMethod==='online' ? '● ' : '○ '}Pay Online (Razorpay)</Text>
+        <View style={{ flexDirection: 'row', alignItems: 'center', flexWrap: 'wrap', marginBottom: 6 }}>
+          <Pressable disabled={!RZP_KEY_ID} onPress={() => setPaymentMethod('online')} style={({ pressed }) => ({ marginRight: 8, marginBottom: 8, paddingHorizontal: 10, paddingVertical: 8, borderWidth: 1, borderColor: paymentMethod==='online' ? '#1e64d4' : '#ddd', backgroundColor: paymentMethod==='online' ? '#e6f2ff' : '#fff', borderRadius: 8, opacity: pressed ? 0.9 : 1 })}>
+            <Text>{paymentMethod==='online' ? '● ' : '○ '}Razorpay</Text>
           </Pressable>
-          <Pressable onPress={() => setPaymentMethod('cod')} style={({ pressed }) => ({ paddingHorizontal: 10, paddingVertical: 8, borderWidth: 1, borderColor: paymentMethod==='cod' ? '#1e64d4' : '#ddd', backgroundColor: paymentMethod==='cod' ? '#e6f2ff' : '#fff', borderRadius: 8, opacity: pressed ? 0.9 : 1 })}>
+          <Pressable disabled={!STRIPE_KEY} onPress={() => setPaymentMethod('stripe')} style={({ pressed }) => ({ marginRight: 8, marginBottom: 8, paddingHorizontal: 10, paddingVertical: 8, borderWidth: 1, borderColor: paymentMethod==='stripe' ? '#1e64d4' : '#ddd', backgroundColor: paymentMethod==='stripe' ? '#e6f2ff' : '#fff', borderRadius: 8, opacity: pressed ? 0.9 : 1 })}>
+            <Text>{paymentMethod==='stripe' ? '● ' : '○ '}Stripe (Test)</Text>
+          </Pressable>
+          <Pressable onPress={() => setPaymentMethod('cod')} style={({ pressed }) => ({ marginBottom: 8, paddingHorizontal: 10, paddingVertical: 8, borderWidth: 1, borderColor: paymentMethod==='cod' ? '#1e64d4' : '#ddd', backgroundColor: paymentMethod==='cod' ? '#e6f2ff' : '#fff', borderRadius: 8, opacity: pressed ? 0.9 : 1 })}>
             <Text>{paymentMethod==='cod' ? '● ' : '○ '}Cash on Delivery</Text>
           </Pressable>
         </View>
         <Text style={{ color: '#666', fontSize: 12 }}>Test Mode</Text>
-        {!RZP_KEY_ID && (
+        {!RZP_KEY_ID && !STRIPE_KEY && (
           <Text style={{ color: '#b45309', marginTop: 4 }}>Payment temporarily unavailable.</Text>
         )}
       </View>

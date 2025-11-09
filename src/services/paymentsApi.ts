@@ -85,3 +85,49 @@ export async function verifyRazorpayPayment(payload: { razorpay_order_id: string
   if (error) throw error;
   return data as { ok: boolean };
 }
+
+// Stripe Payment Intent
+export async function createStripePaymentIntent(amountInPaise: number, currency: 'INR' | 'AED' | 'USD' = 'INR') {
+  const { data: sess } = await supabase.auth.getSession();
+  const token = sess.session?.access_token;
+
+  console.debug('[paymentsApi] Creating Stripe PaymentIntent:', {
+    amount: amountInPaise,
+    currency,
+    has_token: !!token,
+  });
+
+  const { data, error } = await supabase.functions.invoke('create_payment_intent', {
+    body: { amountInPaise, currency },
+    headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+  });
+
+  console.debug('[paymentsApi] Stripe response:', { data, error });
+
+  if (error) {
+    console.error('[paymentsApi] Stripe Edge Function error:', error);
+    let errorMessage = 'Failed to create payment intent';
+
+    // Extract error message from response
+    if (error.context && typeof error.context.json === 'function') {
+      try {
+        const errorBody = await error.context.json();
+        if (errorBody.error) errorMessage = errorBody.error;
+      } catch (e) {
+        console.error('[paymentsApi] Failed to parse error body:', e);
+      }
+    }
+
+    if (data?.error) errorMessage = data.error;
+
+    throw new Error(errorMessage);
+  }
+
+  if (data?.error) {
+    console.error('[paymentsApi] Stripe response has error:', data.error);
+    throw new Error(data.error);
+  }
+
+  console.debug('[paymentsApi] PaymentIntent created successfully');
+  return data as { clientSecret: string };
+}
