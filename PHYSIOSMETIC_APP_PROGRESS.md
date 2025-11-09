@@ -2,6 +2,14 @@
 _Maintained automatically; newest first._
 _Last cleaned: 2025-11-09_
 
+- **2025-11-10**: DB schema migration created: orders/order_items enhanced (pickup, payment fields, variants), coupons table, indexes
+- **2025-11-10**: RLS policies cleaned up: orders (3 policies), order_items (2 policies), duplicates removed
+- **2025-11-10**: Server-side place_order RPC v2 created with pricing validation, stock check, tax/shipping calc, idempotency
+- **2025-11-10**: Coupon system: apply_coupon RPC with validation (dates, min amount, usage limit, discount calc)
+- **2025-11-10**: orderService.ts updated: client-side pricing REMOVED, now uses server-side RPCs for security
+- **2025-11-10**: CheckoutScreen: coupon UI (apply/remove), TotalsCard (subtotal/discount/tax/shipping/total), idempotency keys
+- **2025-11-10**: RLS tightened: order_items INSERT blocked, only via place_order RPC (SECURITY DEFINER), immutable records
+
 ### Stripe (TEST) PaymentSheet Integration (2025-11-09)
 **Summary:** Stripe (TEST) PaymentSheet scaffold + Edge Functions created; deploy + secrets pending.
 **Files:**

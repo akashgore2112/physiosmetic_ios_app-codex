@@ -58,32 +58,110 @@ export async function getReorderItems(orderId: string): Promise<ReorderCartItem[
     }));
 }
 
+/**
+ * Apply a coupon code to the cart (server-side validation)
+ */
+export async function applyCoupon(
+  code: string,
+  cart: Array<{ id: string; variant_id?: string | null; qty: number }>
+): Promise<{
+  valid: boolean;
+  discount?: number;
+  subtotal?: number;
+  total_after?: number;
+  note?: string;
+  error?: string;
+  message: string;
+}> {
+  // Convert cart to RPC format
+  const cartPayload = cart.map((item) => ({
+    product_id: item.id,
+    variant_id: item.variant_id || null,
+    qty: item.qty,
+  }));
+
+  const { data, error } = await supabase.rpc('apply_coupon', {
+    p_code: code,
+    p_cart: cartPayload as any,
+  });
+
+  if (error) {
+    console.error('[orderService] applyCoupon error:', error);
+    throw new Error(error.message || 'Failed to apply coupon');
+  }
+
+  return data as any;
+}
+
+/**
+ * Place order using server-side RPC (with server-side pricing validation)
+ * SECURITY: This replaces client-side pricing with server-side validation
+ */
 export async function placeOrder(
   userId: string,
   items: ReorderCartItem[],
-  opts?: { pickup?: boolean; address?: any; payment?: any }
-): Promise<{ id: string }> {
-  const total = items.reduce((sum, it) => sum + it.price * it.qty, 0);
-  // Try insert with pickup/address if columns exist; on failure, fallback to minimal insert
-  const tryInsert = async (payload: any) => {
-    return await sb<any>(
-      supabase
-        .from('orders')
-        .insert(payload)
-        .select('id')
-        .single() as any
-    );
+  opts?: {
+    pickup?: boolean;
+    address?: any;
+    payment?: {
+      payment_method?: string;
+      payment_status?: string;
+      payment_gateway?: string;
+      gateway_order_id?: string;
+      gateway_payment_id?: string;
+    };
+    couponCode?: string;
+    idempotencyKey?: string;
+  }
+): Promise<{
+  id: string;
+  total?: number;
+  subtotal?: number;
+  discount?: number;
+  tax?: number;
+  shipping?: number;
+}> {
+  // Convert cart items to RPC format
+  const cart = items.map((item) => ({
+    product_id: item.id,
+    variant_id: item.variant_id || null,
+    qty: item.qty,
+  }));
+
+  // Call server-side place_order RPC
+  const { data, error } = await supabase.rpc('place_order', {
+    p_cart: cart as any,
+    p_shipping_address: opts?.address || null,
+    p_pickup: opts?.pickup || false,
+    p_payment_method: opts?.payment?.payment_method || 'cod',
+    p_coupon_code: opts?.couponCode || null,
+    p_idempotency_key: opts?.idempotencyKey || null,
+    p_payment_gateway: opts?.payment?.payment_gateway || null,
+    p_gateway_order_id: opts?.payment?.gateway_order_id || null,
+    p_gateway_payment_id: opts?.payment?.gateway_payment_id || null,
+  });
+
+  if (error) {
+    console.error('[orderService] placeOrder RPC error:', error);
+    throw new Error(error.message || 'Failed to place order');
+  }
+
+  // Handle response from RPC
+  const result = data as any;
+
+  if (!result.success) {
+    // Server returned error in response body
+    const errorMessage = result.message || 'Failed to place order';
+    console.error('[orderService] placeOrder failed:', result);
+    throw new Error(errorMessage);
+  }
+
+  return {
+    id: result.order_id,
+    total: result.total,
+    subtotal: result.subtotal,
+    discount: result.discount,
+    tax: result.tax,
+    shipping: result.shipping,
   };
-  let order: any;
-  try {
-    order = await tryInsert({ user_id: userId, total_amount: total, status: 'placed', pickup: !!opts?.pickup, shipping_address: opts?.address ?? null, ...((opts as any)?.payment || {}) });
-  } catch (_e) {
-    order = await tryInsert({ user_id: userId, total_amount: total, status: 'placed' });
-  }
-  const orderId = order.id as string;
-  if (items.length > 0) {
-    const rows = items.map((it) => ({ order_id: orderId, product_id: it.id, qty: it.qty, price_each: it.price }));
-    await sb<any>(supabase.from('order_items').insert(rows) as any);
-  }
-  return { id: orderId };
 }

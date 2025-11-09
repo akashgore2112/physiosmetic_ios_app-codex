@@ -1,15 +1,16 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { View, Text, TextInput, Pressable, ScrollView, Platform, ActionSheetIOS, Alert, Animated, PanResponder, Dimensions } from 'react-native';
+import { View, Text, TextInput, Pressable, ScrollView, Platform, ActionSheetIOS, Alert, Animated, PanResponder, Dimensions, ActivityIndicator } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import { useSessionStore } from '../../store/useSessionStore';
 import { useCartStore } from '../../store/useCartStore';
 import { formatPrice } from '../../utils/formatPrice';
-import { placeOrder } from '../../services/orderService';
+import { placeOrder, applyCoupon as applyCouponRPC } from '../../services/orderService';
 import { createRazorpayOrder, verifyRazorpayPayment, createStripePaymentIntent } from '../../services/paymentsApi';
 import { createRazorpayOrderFallback } from '../../services/paymentsApiFallback';
 import { getRazorpayKeyId } from '../../services/razorpay';
 import RazorpayWebView, { type RazorpayOptions, type RazorpaySuccess } from '../../components/RazorpayWebView';
 import { initStripePaymentSheet, presentStripePaymentSheet } from '../../components/StripePaymentSheet';
+import TotalsCard from '../../components/TotalsCard';
 import { getAddresses, saveAddress, setDefaultAddress } from '../../services/profileAddressService';
 import { useToast } from '../../components/feedback/useToast';
 import { normalizeToE164 } from '../../utils/phone';
@@ -54,6 +55,18 @@ export default function CheckoutScreen({ navigation }: any): JSX.Element {
   const [paymentMethod, setPaymentMethod] = useState<'online' | 'stripe' | 'cod'>('online');
   const [placingMsg, setPlacingMsg] = useState<string | null>(null);
   const STRIPE_KEY = Constants.expoConfig?.extra?.EXPO_PUBLIC_STRIPE_PUBLISHABLE_KEY;
+
+  // Coupon state
+  const [couponCode, setCouponCode] = useState('');
+  const [appliedCoupon, setAppliedCoupon] = useState<{
+    code: string;
+    discount: number;
+    subtotal: number;
+    total_after: number;
+    note: string;
+  } | null>(null);
+  const [couponError, setCouponError] = useState<string | null>(null);
+  const [applyingCoupon, setApplyingCoupon] = useState(false);
   const pan = React.useRef(PanResponder.create({
     onStartShouldSetPanResponder: () => true,
     onMoveShouldSetPanResponder: () => true,
@@ -184,6 +197,76 @@ export default function CheckoutScreen({ navigation }: any): JSX.Element {
     return null;
   };
 
+  // Calculate totals with tax and shipping
+  const totals = useMemo(() => {
+    const subtotal = appliedCoupon?.subtotal ?? total;
+    const discount = appliedCoupon?.discount ?? 0;
+    const subtotalAfterDiscount = subtotal - discount;
+    const tax = Math.round(subtotalAfterDiscount * 0.10 * 100) / 100; // 10% tax
+    const shipping = pickup ? 0 : 50; // Free for pickup, ₹50 for delivery
+    const finalTotal = subtotalAfterDiscount + tax + shipping;
+
+    return { subtotal, discount, tax, shipping, total: finalTotal };
+  }, [total, appliedCoupon, pickup]);
+
+  // Apply coupon
+  const onApplyCoupon = async () => {
+    if (!couponCode.trim()) {
+      setCouponError('Please enter a coupon code');
+      return;
+    }
+
+    try {
+      hapticLight();
+    } catch {}
+
+    setCouponError(null);
+    setApplyingCoupon(true);
+
+    try {
+      const cart = items.map((item) => ({
+        id: item.id,
+        variant_id: item.variant_id ?? null,
+        qty: item.qty,
+      }));
+
+      const result = await applyCouponRPC(couponCode.trim(), cart);
+
+      if (result.valid) {
+        setAppliedCoupon({
+          code: result.code || couponCode.trim(),
+          discount: result.discount || 0,
+          subtotal: result.subtotal || total,
+          total_after: result.total_after || total,
+          note: result.note || 'Coupon applied',
+        });
+        setCouponCode('');
+        setCouponError(null);
+        show(result.message || 'Coupon applied successfully!');
+      } else {
+        setCouponError(result.message || 'Invalid coupon code');
+        setAppliedCoupon(null);
+      }
+    } catch (e: any) {
+      console.error('[Checkout] Apply coupon error:', e);
+      setCouponError(e?.message || 'Failed to apply coupon');
+      setAppliedCoupon(null);
+    } finally {
+      setApplyingCoupon(false);
+    }
+  };
+
+  // Remove coupon
+  const onRemoveCoupon = () => {
+    try {
+      hapticLight();
+    } catch {}
+    setAppliedCoupon(null);
+    setCouponCode('');
+    setCouponError(null);
+    show('Coupon removed');
+  };
+
   // Razorpay WebView callbacks
   const handleRazorpaySuccess = async (response: RazorpaySuccess) => {
     console.log('[Checkout] Razorpay payment success:', response);
@@ -220,12 +303,14 @@ export default function CheckoutScreen({ navigation }: any): JSX.Element {
         pickup,
         address,
         payment: {
-          payment_method: 'online',
+          payment_method: 'razorpay',
           payment_status: 'paid',
           payment_gateway: 'razorpay',
           gateway_order_id: response.razorpay_order_id,
           gateway_payment_id: response.razorpay_payment_id,
         },
+        couponCode: appliedCoupon?.code ?? undefined,
+        idempotencyKey: `rzp_${response.razorpay_order_id}`,
       });
       // Save address if needed
       if (!pickup && address && saveToBook) {
@@ -363,6 +448,7 @@ export default function CheckoutScreen({ navigation }: any): JSX.Element {
         // Payment successful, place order
         setSaving(true);
         setPlacingMsg('Placing order…');
+        const idempotencyKey = `stripe_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
         const res = await placeOrder(userId, items, {
           pickup,
           address,
@@ -370,8 +456,10 @@ export default function CheckoutScreen({ navigation }: any): JSX.Element {
             payment_method: 'stripe',
             payment_status: 'paid',
             payment_gateway: 'stripe',
-            gateway_payment_id: 'stripe_payment' // Will be updated by webhook
-          }
+            gateway_payment_id: 'stripe_payment', // Will be updated by webhook
+          },
+          couponCode: appliedCoupon?.code ?? undefined,
+          idempotencyKey,
         });
         if (!pickup && address && saveToBook) {
           try { await saveAddress(userId, address, { setDefault: true }); } catch {}
@@ -380,7 +468,14 @@ export default function CheckoutScreen({ navigation }: any): JSX.Element {
         navigation.replace('OrderSuccess', { id: res.id, method: 'stripe' });
       } else {
         setPlacingMsg('Placing order…');
-        const res = await placeOrder(userId, items, { pickup, address, payment: { payment_method: 'cod', payment_status: 'pending' } });
+        const idempotencyKey = `cod_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+        const res = await placeOrder(userId, items, {
+          pickup,
+          address,
+          payment: { payment_method: 'cod', payment_status: 'pending' },
+          couponCode: appliedCoupon?.code ?? undefined,
+          idempotencyKey,
+        });
         if (!pickup && address && saveToBook) { try { await saveAddress(userId, address, { setDefault: true }); } catch {} }
         clear();
         navigation.replace('OrderSuccess', { id: res.id, method: 'cod' });
@@ -417,7 +512,89 @@ export default function CheckoutScreen({ navigation }: any): JSX.Element {
   return (
     <ScrollView style={{ flex: 1 }} contentContainerStyle={{ padding: 12 }} keyboardShouldPersistTaps="handled">
       <Text style={{ fontSize: 20, fontWeight: '800' }}>Checkout</Text>
-      <Text style={{ marginTop: 6 }}>Subtotal: {formatPrice(total)}</Text>
+
+      {/* Coupon Section */}
+      <View style={{ marginTop: 12, borderWidth: 1, borderColor: '#eee', borderRadius: 10, padding: 10 }}>
+        <Text style={{ fontWeight: '700', marginBottom: 6 }}>Have a coupon code?</Text>
+        {!appliedCoupon ? (
+          <>
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+              <TextInput
+                placeholder="Enter code"
+                value={couponCode}
+                onChangeText={(text) => {
+                  setCouponCode(text.toUpperCase());
+                  setCouponError(null);
+                }}
+                style={{
+                  flex: 1,
+                  borderWidth: 1,
+                  borderColor: couponError ? '#dc2626' : '#ddd',
+                  padding: 10,
+                  borderRadius: 8,
+                  marginRight: 8,
+                }}
+                autoCapitalize="characters"
+                editable={!applyingCoupon}
+              />
+              <Pressable
+                onPress={onApplyCoupon}
+                disabled={applyingCoupon || !couponCode.trim()}
+                style={({ pressed }) => ({
+                  paddingHorizontal: 16,
+                  paddingVertical: 10,
+                  borderRadius: 8,
+                  backgroundColor: applyingCoupon || !couponCode.trim() ? '#ccc' : '#1e64d4',
+                  opacity: pressed ? 0.9 : 1,
+                  minWidth: 70,
+                  alignItems: 'center',
+                })}
+              >
+                {applyingCoupon ? (
+                  <ActivityIndicator size="small" color="#fff" />
+                ) : (
+                  <Text style={{ color: '#fff', fontWeight: '600' }}>Apply</Text>
+                )}
+              </Pressable>
+            </View>
+            {couponError && (
+              <Text style={{ color: '#dc2626', fontSize: 12, marginTop: 4 }}>{couponError}</Text>
+            )}
+          </>
+        ) : (
+          <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', backgroundColor: '#dcfce7', padding: 10, borderRadius: 8 }}>
+            <View style={{ flex: 1 }}>
+              <Text style={{ fontWeight: '600', color: '#16a34a' }}>{appliedCoupon.code}</Text>
+              <Text style={{ fontSize: 12, color: '#15803d', marginTop: 2 }}>{appliedCoupon.note}</Text>
+            </View>
+            <Pressable
+              onPress={onRemoveCoupon}
+              style={({ pressed }) => ({
+                paddingHorizontal: 12,
+                paddingVertical: 6,
+                borderRadius: 6,
+                backgroundColor: pressed ? '#bbf7d0' : '#dcfce7',
+              })}
+            >
+              <Text style={{ color: '#16a34a', fontSize: 12, fontWeight: '600' }}>Remove</Text>
+            </Pressable>
+          </View>
+        )}
+      </View>
+
+      {/* Totals Card */}
+      <View style={{ marginTop: 10 }}>
+        <TotalsCard
+          subtotal={totals.subtotal}
+          discount={totals.discount}
+          tax={totals.tax}
+          shipping={totals.shipping}
+          total={totals.total}
+          couponCode={appliedCoupon?.code}
+          pickup={pickup}
+        />
+      </View>
+
       {/* Payment method */}
       <View style={{ marginTop: 10, borderWidth: 1, borderColor: '#eee', borderRadius: 10, padding: 10 }}>
         <Text style={{ fontWeight: '700', marginBottom: 6 }}>Payment</Text>
