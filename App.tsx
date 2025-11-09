@@ -10,6 +10,7 @@ import useNetworkStore from './src/store/useNetworkStore';
 import AppTabs from './src/navigation/AppTabs';
 import { ToastProvider } from './src/components/feedback/ToastProvider';
 import OfflineBanner from './src/components/feedback/OfflineBanner';
+import ErrorBoundary from './src/components/ErrorBoundary';
 
 export default function App() {
   useAppNetwork(); // keep network listener alive
@@ -108,19 +109,21 @@ export default function App() {
   }, [handleDeepLink]);
 
   return (
-    <ToastProvider>
-      <SafeAreaProvider>
-        <NavigationContainer
-          ref={navRef as any}
-          linking={linking}
-          onReady={() => { navReadyRef.current = true; }}
-        >
-          <StatusBar barStyle="dark-content" />
-          <OfflineBanner />
-          {/* Root tabs (Booking/Shop/Account etc.) */}
-          <AppTabs />
-        </NavigationContainer>
-      </SafeAreaProvider>
-    </ToastProvider>
+    <ErrorBoundary>
+      <ToastProvider>
+        <SafeAreaProvider>
+          <NavigationContainer
+            ref={navRef as any}
+            linking={linking}
+            onReady={() => { navReadyRef.current = true; }}
+          >
+            <StatusBar barStyle="dark-content" />
+            <OfflineBanner />
+            {/* Root tabs (Booking/Shop/Account etc.) */}
+            <AppTabs />
+          </NavigationContainer>
+        </SafeAreaProvider>
+      </ToastProvider>
+    </ErrorBoundary>
   );
 }

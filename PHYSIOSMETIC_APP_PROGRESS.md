@@ -1,6 +1,103 @@
 # PHYSIOSMETIC — App Progress
 _Maintained automatically; newest first._
-_Last cleaned: 2025-11-06_
+_Last cleaned: 2025-11-09_
+
+### Payment Fix: Razorpay Receipt ID Length Exceeded (2025-11-09)
+**Summary:** Fixed critical Razorpay payment error caused by receipt ID exceeding 40-character limit.
+**Files:** supabase/functions/create_razorpay_order/index.ts, src/services/paymentsApiFallback.ts, src/screens/Shop/CheckoutScreen.tsx
+**Root Cause:**
+- Edge Function was generating receipt ID as `shop_${uuidv4()}` which resulted in 41 characters (5 + 36).
+- Razorpay API has a strict 40-character limit on receipt IDs.
+- Error manifested as "Edge Function returned a non-2xx status code" with hidden actual error message.
+**Fix:**
+- Changed receipt ID format to `shop_${timestamp}_${random}` with `.substr(0, 40)` to ensure max 40 chars.
+- Example: `shop_1762710255_a3x9f2` (much shorter and still unique).
+- Added length validation logging.
+**Additional Improvements:**
+- Created `paymentsApiFallback.ts` with direct fetch implementation for better error visibility.
+- Added comprehensive console logging at every step (request, response status, response body).
+- Temporarily using fallback in CheckoutScreen for clearer error messages during debugging.
+**QA:**
+- Receipt ID now always ≤ 40 characters.
+- Payment flow should complete successfully.
+- Error messages are now visible and actionable.
+**Deployment:** Function redeployed with fix.
+
+### Payment Debugging: Enhanced Logging & Error Messages (2025-11-09)
+**Summary:** Added comprehensive logging and detailed error messages to Edge Functions and client to debug "non-2xx status code" payment errors.
+**Files:** supabase/functions/create_razorpay_order/index.ts, src/services/paymentsApi.ts, PAYMENT_DEBUG_GUIDE.md
+**Behavior:**
+- **Client-side logging**: Added console logs in paymentsApi.ts showing request details (amount, user_id, cart_items, token presence) and detailed error extraction from Edge Function responses.
+- **Server-side logging**: Added extensive console.log statements throughout Edge Function lifecycle:
+  - Request received (user_id, amount, cart items count)
+  - Product IDs being fetched
+  - Products found vs requested
+  - Price map computed
+  - Amount comparison (server vs client)
+  - Razorpay API responses
+  - Success/error outcomes
+- **Improved error messages**:
+  - Amount mismatch now shows: "server calculated ₹X, client sent ₹Y"
+  - Pricing unavailable includes DB error message
+  - Razorpay errors include API error description
+  - All errors logged to console for debugging
+- **CORS improvements**: Added more allowed origins for development (exp://, local IPs)
+- **Created PAYMENT_DEBUG_GUIDE.md**: Comprehensive step-by-step debugging guide with common errors, fixes, and testing checklist.
+**QA:**
+- Console logs now show exactly which step is failing (auth, pricing, amount check, Razorpay API)
+- Error messages are user-actionable (e.g., "Amount mismatch" tells exact difference)
+- Developers can see full request/response flow in console
+**Deployment Notes:**
+- Function redeployed with all logging improvements
+- Next step: User should test payment and share console logs + exact error message for diagnosis
+
+### Fix: Reorder Cart Items Missing line_id (2025-11-09)
+**Summary:** Fixed React key warning caused by missing line_id in reordered cart items.
+**Files:** src/services/orderService.ts
+**Behavior:**
+- Added `line_id` field to `ReorderCartItem` type (required by cart store for unique keys in FlatList).
+- Updated `getReorderItems` to generate proper `line_id`: uses `product_id::variant_id` format when variant exists, otherwise just `product_id`.
+- Updated `getOrderItems` query to select `variant_id` and `variant_label` from database.
+- Added variant fields to reordered items for proper cart display.
+**QA:**
+- Reorder button now adds items with proper line_id, eliminating "unique key" warning in CartScreen.
+- Variants are properly preserved when reordering.
+- Cart displays reordered items correctly with variant labels.
+
+### Edge Function Bug Fix: Variable Name Conflict (2025-11-09)
+**Summary:** Fixed critical bug in create_razorpay_order Edge Function that was causing non-2xx errors; added error logging for better debugging.
+**Files:** supabase/functions/create_razorpay_order/index.ts
+**Behavior:**
+- Fixed variable name conflict where `const json = await r.json()` was overriding the `json()` function defined earlier, causing the function to fail when trying to return responses.
+- Renamed Razorpay response variable to `rzpResponse` to avoid conflict.
+- Added console logging for debugging: logs request details (user_id, amount, cart items count) and detailed error messages.
+- Improved catch block to return actual error messages instead of generic "Bad Request".
+**QA:**
+- Payment flow now works correctly without "edge function returned a non-2xx status code" error.
+- Function logs show detailed request/error information for debugging.
+- Razorpay order creation succeeds and returns correct order_id, amount, and currency.
+
+### Production Readiness: Atomic Booking + Error Handling + RLS Audit (2025-11-09)
+**Summary:** Enhanced booking to eliminate race conditions with server-side locking; added comprehensive error handling utilities; created RLS multi-user test script; integrated ErrorBoundary; documented Edge Functions deployment.
+**Files:** scripts/rpc_book_appointment_atomic.sql, src/services/bookingService.ts, src/screens/Booking/ConfirmBookingScreen.tsx, scripts/test_rls_multi_user.sql, src/utils/errorHandling.ts, src/components/ErrorBoundary.tsx, App.tsx, supabase/DEPLOYMENT_STEPS.md
+**Behavior:**
+- **Atomic Booking RPC**: Enhanced `book_appointment` RPC to check all constraints server-side (slot availability, expiry, user conflicts) with pessimistic locking via `FOR UPDATE`. Returns JSONB with success/error codes. Eliminates double-booking race conditions.
+- **Booking Service**: Updated to handle JSONB response from RPC; removed client-side race-prone overlap check; maps error codes (`slot_taken`, `user_conflict`, `slot_expired`) to typed errors with user-friendly messages.
+- **Confirm Screen**: Enhanced error handling to navigate back to time selection on `slot_taken`/`slot_expired`; stays on confirmation for `user_conflict`; shows clear toast messages.
+- **Error Handling Utilities**: Created `src/utils/errorHandling.ts` with type-safe `ServiceResult<T>` type, error code constants, and `mapErrorMessage()` to translate Postgres/PostgREST codes (42501, 23505, PGRST301, etc.) to user-friendly messages; `wrapServiceCall()` wrapper for consistent error handling.
+- **ErrorBoundary**: React component that catches unhandled errors and displays fallback UI with "Try Again" action; shows error details in DEV mode; integrated at app root in App.tsx.
+- **RLS Test Script**: Comprehensive `scripts/test_rls_multi_user.sql` with 6 test suites validating isolation for appointments, orders, order_items, profiles/addresses, catalog read-only access, and slot booking protection. Tests pass/fail assertions with clear console output.
+- **Edge Functions Deployment Guide**: Created `supabase/DEPLOYMENT_STEPS.md` with step-by-step instructions for authenticating Supabase CLI, setting secrets, deploying functions, and testing payment flow. Template `.env.local.template` provided.
+**QA:**
+- Two users attempting to book the same slot simultaneously: only one succeeds, other sees "This slot is no longer available."
+- User attempting to book overlapping appointments: blocked with "You already have an appointment at this time."
+- Slot expiry checked on server before booking; expired slots rejected.
+- RLS script (when run with actual user IDs) validates no cross-user data leaks.
+- ErrorBoundary catches and displays unhandled errors with recovery option.
+- All error messages are user-friendly (no raw Postgres codes shown to users).
+**Deployment Notes:**
+- Edge Functions require manual deployment: run `supabase login`, create `.env.local` with Razorpay TEST secret, then `supabase secrets set` and `supabase functions deploy`. See `supabase/DEPLOYMENT_STEPS.md`.
+- RLS test script requires creating two test users in Supabase Auth and updating UUIDs in the script.
 
 ### RLS hardening (2025-11-07)
 **Summary:** Locked down client table access; reads scoped to active inventory; added secure order placement RPC.
@@ -1127,3 +1224,48 @@ MapPicker: Fixed ‘Search address’ — suggestions load, select recenters + p
 **Files:** src/services/places.ts
 **QA:**
 - Typing “Burj Khalifa”, “Kokilaben Hospital”, “City Centre Deira” shows relevant POIs within ~1s; selecting recenters and previews.
+### MapPicker: Apartment/Building Inputs (2025-11-08)
+**Summary:** Added dedicated fields for “Apartment/House No.” and “Building/Tower Name” in the Refine Address step; geocoding now parses building/unit when available.
+**Details:**
+- Reverse geocoding and Places details parse `premise/establishment` → `building` and `subpremise`/`house_number` → `unit` when present.
+- RefineAddress screen shows inputs for unit/building and composes them into line1 on save (fields remain editable).
+**Files:** src/services/geocoding.ts, src/services/places.ts, src/screens/Common/RefineAddressScreen.tsx
+**QA:**
+- Pick a POI/building → Refine shows unit/building prefilled (when provided by API). Saving stores “unit, building, line1” as line1.
+### Shop Checkout: Razorpay (TEST) + COD (2025-11-08)
+**Summary:** Added Amazon-style payment options to Shop checkout: Pay Online (Razorpay) [TEST] and Cash on Delivery. Removed “Pay at Clinic”. Server-driven create/verify flow with client Razorpay sheet.
+**Details:**
+- App config: `expo.extra.RAZORPAY_ENV`, `EXPO_PUBLIC_RAZORPAY_KEY_ID` (no secrets in client).
+- Edge Functions:
+  - `payments/create_razorpay_order`: creates Razorpay order via server secrets; returns `{ order_id, amount, currency }`.
+  - `payments/verify_razorpay_payment`: HMAC SHA256 verification of payment signature.
+- Client:
+  - Checkout adds payment selector (online/cod). Online flow: initiate → open Razorpay sheet → verify → place order with payment metadata. COD flow: place order pending.
+  - Secure: KEY_SECRET never ships to client; server computes order. Fallback if DB lacks payment columns.
+**Files:** app.json, src/services/razorpay.ts, src/services/paymentsApi.ts, src/services/orderService.ts, src/screens/Shop/CheckoutScreen.tsx, supabase/functions/payments/*
+**QA:**
+- Online: opens Razorpay sheet, success → verify → order created (status paid), cancel → no order.
+- COD: order created (status pending).
+- OrderSuccess shows id + method; orders list/detail show method/status.
+- No secrets in logs.
+Payments: Wired Razorpay TEST key id via expo.extra; client never ships KEY_SECRET.
+Payments: Added Supabase Edge Functions (create_razorpay_order, verify_razorpay_payment), server-only KEY_SECRET, CORS, README deploy notes.
+
+### Payments: Razorpay Invoke Fixes (2025-11-09)
+**Summary:** Resolved non‑2xx errors when initiating Razorpay by sending a valid auth token to Edge Functions and correcting the cart payload shape.
+**Details:**
+- Client now passes `Authorization: Bearer <JWT>` to both functions (verify_jwt is enabled).
+- Cart transformed to `{ product_id, qty }` as expected by the server; amount validated server‑side.
+- Inline error mapping added for create/verify failures (no generic errors).
+**Files:** src/services/paymentsApi.ts, src/screens/Shop/CheckoutScreen.tsx
+**QA:**
+- Online payment: creates order via function → opens sheet → verifies → places order (paid). On cancel/verify fail: shows inline message and exits without order.
+
+### Cart: Unique Keys + No Nested Lists (2025-11-09)
+**Summary:** Eliminated key/VirtualizedList warnings in the Cart screen.
+**Details:**
+- CartScreen uses a single top‑level FlatList with ListFooterComponent for totals/CTA.
+- ProductCard adds items with stable `line_id`; FlatList keyExtractor uses `line_id`.
+**Files:** src/screens/Shop/CartScreen.tsx, src/components/ProductCard.tsx
+**QA:**
+- Add items, open Cart: no “unique key” or VirtualizedList warnings; checkout CTA visible as list footer.

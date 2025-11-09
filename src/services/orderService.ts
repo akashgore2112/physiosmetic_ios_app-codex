@@ -14,11 +14,11 @@ export async function getMyOrders(userId: string): Promise<Order[]> {
   return data ?? [];
 }
 
-export async function getOrderItems(orderId: string): Promise<(OrderItem & { product?: { id: string; name: string; price: number; image_url?: string | null; in_stock?: boolean } })[]> {
+export async function getOrderItems(orderId: string): Promise<(OrderItem & { product?: { id: string; name: string; price: number; image_url?: string | null; in_stock?: boolean }; variant_id?: string | null; variant_label?: string | null })[]> {
   const data = await sb<any[]>(
     supabase
       .from('order_items')
-      .select('id,order_id,product_id,qty,price_each, products:product_id(id,name,price,image_url,in_stock)')
+      .select('id,order_id,product_id,variant_id,variant_label,qty,price_each, products:product_id(id,name,price,image_url,in_stock)')
       .eq('order_id', orderId) as any
   );
   return (data ?? []) as any;
@@ -39,7 +39,7 @@ export async function cancelOrder(orderId: string): Promise<void> {
   await sb<any>(supabase.from('orders').update({ status: 'cancelled' }).eq('id', orderId) as any);
 }
 
-export type ReorderCartItem = { id: string; name: string; price: number; qty: number; image_url?: string | null };
+export type ReorderCartItem = { id: string; line_id: string; name: string; price: number; qty: number; image_url?: string | null; variant_id?: string | null; variant_label?: string | null };
 
 export async function getReorderItems(orderId: string): Promise<ReorderCartItem[]> {
   const items = await getOrderItems(orderId);
@@ -48,17 +48,20 @@ export async function getReorderItems(orderId: string): Promise<ReorderCartItem[
     .filter((it) => it.products?.in_stock !== false)
     .map((it) => ({
       id: it.product_id,
+      line_id: it.variant_id ? `${it.product_id}::${it.variant_id}` : it.product_id,
       name: it.products?.name ?? 'Product',
       price: it.products?.price ?? it.price_each ?? 0,
       qty: it.qty,
       image_url: it.products?.image_url ?? null,
+      variant_id: it.variant_id ?? null,
+      variant_label: it.variant_label ?? null,
     }));
 }
 
 export async function placeOrder(
   userId: string,
   items: ReorderCartItem[],
-  opts?: { pickup?: boolean; address?: any }
+  opts?: { pickup?: boolean; address?: any; payment?: any }
 ): Promise<{ id: string }> {
   const total = items.reduce((sum, it) => sum + it.price * it.qty, 0);
   // Try insert with pickup/address if columns exist; on failure, fallback to minimal insert
@@ -73,7 +76,7 @@ export async function placeOrder(
   };
   let order: any;
   try {
-    order = await tryInsert({ user_id: userId, total_amount: total, status: 'placed', pickup: !!opts?.pickup, shipping_address: opts?.address ?? null });
+    order = await tryInsert({ user_id: userId, total_amount: total, status: 'placed', pickup: !!opts?.pickup, shipping_address: opts?.address ?? null, ...((opts as any)?.payment || {}) });
   } catch (_e) {
     order = await tryInsert({ user_id: userId, total_amount: total, status: 'placed' });
   }

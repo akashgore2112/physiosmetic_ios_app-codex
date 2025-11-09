@@ -50,7 +50,9 @@
         "projectId": "8836c37b-198f-4302-bc15-cdbb10b5a61a"
       },
       "EXPO_PUBLIC_GOOGLE_MAPS_GEOCODING_KEY": "AIzaSyDB_Gsn7CvIj8Syyd-N3QjOpNeDVpiFxAA",
-      "EXPO_PUBLIC_GOOGLE_PLACES_KEY": "AIzaSyDB_Gsn7CvIj8Syyd-N3QjOpNeDVpiFxAA"
+      "EXPO_PUBLIC_GOOGLE_PLACES_KEY": "AIzaSyDB_Gsn7CvIj8Syyd-N3QjOpNeDVpiFxAA",
+      "RAZORPAY_ENV": "test",
+      "EXPO_PUBLIC_RAZORPAY_KEY_ID": "rzp_test_Rde5IXKuG2BKiG"
     }
   }
 }

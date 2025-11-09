@@ -164,6 +164,30 @@ This matches clinic policy: "Login only at the point of commitment."
 - Optional: nativewind/Tailwind-style styling for speed
 - Icons: @expo/vector-icons
 
+### Payments (Razorpay TEST)
+- Client only needs the public `KEY_ID` (TEST): set in `app.json → expo.extra.EXPO_PUBLIC_RAZORPAY_KEY_ID`.
+- Never ship `KEY_SECRET` in the client. Store `RAZORPAY_KEY_SECRET` in Supabase secrets and use it only in Edge Functions.
+- Current flow:
+  1. Client calls Supabase Edge Function `payments/create_razorpay_order` → gets `{ order_id, amount }`.
+  2. Client opens Razorpay Checkout with `key`, `order_id`, `amount` (in paise).
+  3. On success, client calls `payments/verify_razorpay_payment` (HMAC SHA256 on server) → if ok, create order as `paid`.
+
+Test Card (Razorpay TEST mode):
+- Use Razorpay test credentials and card as per their docs.
+- Example: `4111 1111 1111 1111` any future expiry, any CVV (for test mode only).
+
+#### Deploy Supabase Functions
+- Put secrets in a local env file `supabase/.env.local`:
+  - `RAZORPAY_KEY_ID=...`
+  - `RAZORPAY_KEY_SECRET=...`
+- Then deploy:
+```
+supabase secrets set --env-file ./supabase/.env.local
+supabase functions deploy payments/create_razorpay_order
+supabase functions deploy payments/verify_razorpay_payment
+supabase functions list
+```
+
 ### Backend
 - Supabase:
   - Auth (email/password)

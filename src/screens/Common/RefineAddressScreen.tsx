@@ -10,6 +10,8 @@ export default function RefineAddressScreen({ navigation }: any): JSX.Element {
   const [city, setCity] = useState(selection?.city ?? '');
   const [state, setState] = useState(selection?.state ?? '');
   const [pincode, setPincode] = useState(selection?.postal_code ?? '');
+  const [unit, setUnit] = useState(selection?.unit ?? '');
+  const [building, setBuilding] = useState(selection?.building ?? '');
 
   useEffect(() => {
     // If selection is missing, just go back
@@ -20,13 +22,17 @@ export default function RefineAddressScreen({ navigation }: any): JSX.Element {
 
   const onSave = () => {
     if (!selection) return;
+    // Compose line1 with apartment/unit and building for final storage
+    const composedLine1 = [unit, building, line1].filter(Boolean).join(', ');
     setSelection({
       ...selection,
-      line1: line1 || undefined,
+      line1: composedLine1 || undefined,
       line2: line2 || undefined,
       city: city || undefined,
       state: state || undefined,
       postal_code: pincode || undefined,
+      unit: unit || undefined,
+      building: building || undefined,
     });
     // Go back to the calling screen (pop MapPicker and this screen)
     if (navigation.pop) navigation.pop(2);
@@ -39,6 +45,8 @@ export default function RefineAddressScreen({ navigation }: any): JSX.Element {
     <View style={{ flex: 1, padding: 16 }}>
       <Text style={{ fontSize: 20, fontWeight: '800', marginBottom: 12 }}>Refine Address</Text>
       {!!preview && <Text style={{ color: '#666', marginBottom: 12 }}>{preview}</Text>}
+      <TextInput placeholder="Apartment / House No." value={unit} onChangeText={setUnit} style={s.input} />
+      <TextInput placeholder="Building / Tower Name" value={building} onChangeText={setBuilding} style={s.input} />
       <TextInput placeholder="Address line 1" value={line1} onChangeText={setLine1} style={s.input} />
       <TextInput placeholder="Address line 2 (optional)" value={line2} onChangeText={setLine2} style={s.input} />
       <TextInput placeholder="City" value={city} onChangeText={setCity} style={s.input} />
@@ -54,4 +62,3 @@ export default function RefineAddressScreen({ navigation }: any): JSX.Element {
 const s: any = {
   input: { borderWidth: 1, borderColor: '#ddd', padding: 10, borderRadius: 8, marginTop: 8 },
 };
-

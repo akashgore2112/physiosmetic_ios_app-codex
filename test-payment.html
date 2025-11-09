@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Payment Edge Function Test</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; max-width: 800px; margin: 0 auto; }
+    textarea { width: 100%; height: 150px; font-family: monospace; }
+    button { padding: 10px 20px; font-size: 16px; cursor: pointer; margin: 10px 5px; }
+    .success { color: green; }
+    .error { color: red; }
+    pre { background: #f4f4f4; padding: 10px; overflow-x: auto; }
+    .section { margin: 20px 0; border: 1px solid #ddd; padding: 15px; }
+  </style>
+</head>
+<body>
+  <h1>Payment Edge Function Tester</h1>
+
+  <div class="section">
+    <h2>Step 1: Get Auth Token</h2>
+    <p>Login to your app and run this in console:</p>
+    <pre>supabase.auth.getSession().then(({data}) => console.log(data.session.access_token))</pre>
+    <label>Paste token here:</label>
+    <textarea id="token" placeholder="eyJ..."></textarea>
+  </div>
+
+  <div class="section">
+    <h2>Step 2: Get Product ID</h2>
+    <p>Get a product ID from your Supabase products table:</p>
+    <textarea id="productId" placeholder="uuid-here"></textarea>
+  </div>
+
+  <div class="section">
+    <h2>Step 3: Get User ID</h2>
+    <p>From session above or run: supabase.auth.getUser().then(({data}) => console.log(data.user.id))</p>
+    <textarea id="userId" placeholder="user-uuid-here"></textarea>
+  </div>
+
+  <div class="section">
+    <h2>Step 4: Test Request</h2>
+    <button onclick="testEdgeFunction()">Test Edge Function</button>
+    <button onclick="clearLogs()">Clear Logs</button>
+  </div>
+
+  <div class="section">
+    <h2>Response</h2>
+    <div id="output"></div>
+  </div>
+
+  <script>
+    const SUPABASE_URL = 'https://cjdchjdhrjcmtskkgngb.supabase.co';
+    const FUNCTION_URL = `${SUPABASE_URL}/functions/v1/create_razorpay_order`;
+
+    function log(message, type = 'info') {
+      const output = document.getElementById('output');
+      const div = document.createElement('div');
+      div.className = type;
+      if (typeof message === 'object') {
+        div.innerHTML = `<pre>${JSON.stringify(message, null, 2)}</pre>`;
+      } else {
+        div.textContent = message;
+      }
+      output.appendChild(div);
+    }
+
+    function clearLogs() {
+      document.getElementById('output').innerHTML = '';
+    }
+
+    async function testEdgeFunction() {
+      clearLogs();
+
+      const token = document.getElementById('token').value.trim();
+      const productId = document.getElementById('productId').value.trim();
+      const userId = document.getElementById('userId').value.trim();
+
+      if (!token || !productId || !userId) {
+        log('Please fill all fields!', 'error');
+        return;
+      }
+
+      const payload = {
+        amount_in_paise: 150000, // ₹1500
+        currency: 'INR',
+        user_id: userId,
+        cart: [{ product_id: productId, qty: 1 }]
+      };
+
+      log('Sending request...');
+      log(payload);
+
+      try {
+        const response = await fetch(FUNCTION_URL, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify(payload)
+        });
+
+        log(`Status: ${response.status} ${response.statusText}`, response.ok ? 'success' : 'error');
+
+        const text = await response.text();
+        log('Raw response:');
+
+        try {
+          const data = JSON.parse(text);
+          log(data, response.ok ? 'success' : 'error');
+        } catch (e) {
+          log(text, 'error');
+        }
+
+      } catch (error) {
+        log('Request failed:', 'error');
+        log(error.message, 'error');
+      }
+    }
+  </script>
+</body>
+</html>

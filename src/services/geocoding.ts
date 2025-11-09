@@ -8,12 +8,17 @@ type GeocodeResult = {
   country?: string;
   postal_code?: string;
   formatted_address?: string;
+  building?: string;
+  unit?: string;
 };
 
 function parseComponents(components: any[]): GeocodeResult {
   const byType = (t: string) => components.find((c) => (c.types || []).includes(t));
   const streetNumber = byType('street_number')?.long_name || '';
   const route = byType('route')?.long_name || '';
+  const premise = byType('premise')?.long_name || '';
+  const establishment = byType('establishment')?.long_name || '';
+  const subpremise = byType('subpremise')?.long_name || '';
   const sublocality = byType('sublocality')?.long_name || byType('sublocality_level_1')?.long_name || '';
   const locality = byType('locality')?.long_name || byType('postal_town')?.long_name || '';
   const admin1 = byType('administrative_area_level_1')?.long_name || '';
@@ -28,6 +33,8 @@ function parseComponents(components: any[]): GeocodeResult {
     state: admin1 || undefined,
     country: country || undefined,
     postal_code: postal || undefined,
+    building: (premise || establishment) || undefined,
+    unit: subpremise || undefined,
   };
 }
 

@@ -5,11 +5,16 @@ import { useSessionStore } from '../../store/useSessionStore';
 import { useCartStore } from '../../store/useCartStore';
 import { formatPrice } from '../../utils/formatPrice';
 import { placeOrder } from '../../services/orderService';
+import { createRazorpayOrder, verifyRazorpayPayment } from '../../services/paymentsApi';
+import { createRazorpayOrderFallback } from '../../services/paymentsApiFallback';
+import { getRazorpayKeyId } from '../../services/razorpay';
+import RazorpayWebView, { type RazorpayOptions, type RazorpaySuccess } from '../../components/RazorpayWebView';
 import { getAddresses, saveAddress, setDefaultAddress } from '../../services/profileAddressService';
 import { useToast } from '../../components/feedback/useToast';
 import { normalizeToE164 } from '../../utils/phone';
 import { light as hapticLight } from '../../utils/haptics';
 import { useMapPickerStore } from '../../store/useMapPickerStore';
+import { RZP_KEY_ID } from '../../config/payments';
 
 export default function CheckoutScreen({ navigation }: any): JSX.Element {
   const { userId, isLoggedIn } = useSessionStore();
@@ -22,6 +27,10 @@ export default function CheckoutScreen({ navigation }: any): JSX.Element {
   const [saveToBook, setSaveToBook] = useState(true);
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
+
+  // Razorpay WebView state
+  const [showRazorpay, setShowRazorpay] = useState(false);
+  const [razorpayOptions, setRazorpayOptions] = useState<RazorpayOptions | null>(null);
   const dialCode = '+91';
   const [line1, setLine1] = useState('');
   const [line2, setLine2] = useState('');
@@ -40,6 +49,8 @@ export default function CheckoutScreen({ navigation }: any): JSX.Element {
   const snapHigh = screenH * 0.25; // ~75% visible
   const [pendingAddrId, setPendingAddrId] = useState<string | null>(null);
   const [showHint, setShowHint] = useState(false);
+  const [paymentMethod, setPaymentMethod] = useState<'online' | 'cod'>('online');
+  const [placingMsg, setPlacingMsg] = useState<string | null>(null);
   const pan = React.useRef(PanResponder.create({
     onStartShouldSetPanResponder: () => true,
     onMoveShouldSetPanResponder: () => true,
@@ -170,6 +181,84 @@ export default function CheckoutScreen({ navigation }: any): JSX.Element {
     return null;
   };
 
+  // Razorpay WebView callbacks
+  const handleRazorpaySuccess = async (response: RazorpaySuccess) => {
+    console.log('[Checkout] Razorpay payment success:', response);
+    setShowRazorpay(false);
+    setSaving(true);
+    setPlacingMsg('Verifying payment…');
+    try {
+      // Verify payment
+      let ok: any;
+      try {
+        ok = await verifyRazorpayPayment({
+          razorpay_order_id: response.razorpay_order_id,
+          razorpay_payment_id: response.razorpay_payment_id,
+          razorpay_signature: response.razorpay_signature,
+        });
+      } catch (e: any) {
+        console.error('[Checkout] Payment verification failed:', e);
+        setError('Payment verification failed. Please contact support.');
+        setSaving(false);
+        setPlacingMsg(null);
+        return;
+      }
+      if (!ok?.ok) {
+        console.error('[Checkout] Payment verification returned not ok:', ok);
+        setError('Payment verification failed. Please contact support.');
+        setSaving(false);
+        setPlacingMsg(null);
+        return;
+      }
+      // Place order
+      setPlacingMsg('Placing order…');
+      const address = pickup ? null : { name, phone, line1, line2, city, pincode, state, country };
+      const res = await placeOrder(userId!, items, {
+        pickup,
+        address,
+        payment: {
+          payment_method: 'online',
+          payment_status: 'paid',
+          payment_gateway: 'razorpay',
+          gateway_order_id: response.razorpay_order_id,
+          gateway_payment_id: response.razorpay_payment_id,
+        },
+      });
+      // Save address if needed
+      if (!pickup && address && saveToBook) {
+        try {
+          await saveAddress(userId!, address, { setDefault: true });
+        } catch (e) {
+          console.error('[Checkout] Failed to save address:', e);
+        }
+      }
+      clear();
+      navigation.replace('OrderSuccess', { id: res.id, method: 'online' });
+    } catch (e: any) {
+      console.error('[Checkout] Order placement failed:', e);
+      setError(e?.message ?? 'Failed to place order. Payment was successful. Please contact support.');
+    } finally {
+      setSaving(false);
+      setPlacingMsg(null);
+    }
+  };
+
+  const handleRazorpayError = (error: string) => {
+    console.error('[Checkout] Razorpay payment error:', error);
+    setShowRazorpay(false);
+    setError(`Payment failed: ${error}. Please try again.`);
+    setSaving(false);
+    setPlacingMsg(null);
+  };
+
+  const handleRazorpayCancel = () => {
+    console.log('[Checkout] Razorpay payment cancelled by user');
+    setShowRazorpay(false);
+    setError('Payment cancelled. Try again when ready.');
+    setSaving(false);
+    setPlacingMsg(null);
+  };
+
   const onPlaceOrder = async () => {
     try { hapticLight(); } catch {}
     setError(null);
@@ -185,14 +274,59 @@ export default function CheckoutScreen({ navigation }: any): JSX.Element {
     setSaving(true);
     try {
       const address = pickup ? null : { name, phone, line1, line2, city, pincode, state, country };
-      const res = await placeOrder(userId, items, { pickup, address });
-      if (!pickup && address && saveToBook) { try { await saveAddress(userId, address, { setDefault: true }); } catch {} }
-      clear();
-      navigation.replace('OrderSuccess');
+      if (paymentMethod === 'online') {
+        setPlacingMsg('Initiating payment…');
+        const keyId = getRazorpayKeyId();
+        if (!keyId) { setError('Payment unavailable. Try Cash on Delivery.'); return; }
+        const amountPaise = Math.round(total * 100);
+        const cart = items.map((it) => ({ product_id: it.id, qty: it.qty }));
+        console.log('[Checkout] Payment request:', {
+          total,
+          amountPaise,
+          cart,
+          userId,
+        });
+        let rzp: any;
+        try {
+          // Using fallback for better error messages
+          rzp = await createRazorpayOrderFallback({ amount_in_paise: amountPaise, currency: 'INR', user_id: userId!, cart });
+        } catch (e: any) {
+          const msg = e?.message || e?.error?.message || 'Payment unavailable. Try Cash on Delivery.';
+          setError(msg);
+          return;
+        }
+        // Show Razorpay WebView instead of native SDK
+        console.log('[Checkout] Opening Razorpay WebView with options:', {
+          key: keyId,
+          amount: rzp.amount,
+          currency: 'INR',
+          order_id: rzp.order_id,
+        });
+
+        setRazorpayOptions({
+          key: keyId,
+          amount: rzp.amount,
+          currency: 'INR',
+          name: 'PHYSIOSMETIC',
+          description: 'Order payment',
+          order_id: rzp.order_id,
+          prefill: { email: useSessionStore.getState().displayName ?? '', contact: phone ?? '' },
+          theme: { color: '#F37021' },
+        });
+        setShowRazorpay(true);
+        return; // Payment flow continues in WebView callbacks
+      } else {
+        setPlacingMsg('Placing order…');
+        const res = await placeOrder(userId, items, { pickup, address, payment: { payment_method: 'cod', payment_status: 'pending' } });
+        if (!pickup && address && saveToBook) { try { await saveAddress(userId, address, { setDefault: true }); } catch {} }
+        clear();
+        navigation.replace('OrderSuccess', { id: res.id, method: 'cod' });
+      }
     } catch (e: any) {
       setError(e?.message ?? 'Failed to place order');
     } finally {
       setSaving(false);
+      setPlacingMsg(null);
     }
   };
 
@@ -221,6 +355,22 @@ export default function CheckoutScreen({ navigation }: any): JSX.Element {
     <ScrollView style={{ flex: 1 }} contentContainerStyle={{ padding: 12 }} keyboardShouldPersistTaps="handled">
       <Text style={{ fontSize: 20, fontWeight: '800' }}>Checkout</Text>
       <Text style={{ marginTop: 6 }}>Subtotal: {formatPrice(total)}</Text>
+      {/* Payment method */}
+      <View style={{ marginTop: 10, borderWidth: 1, borderColor: '#eee', borderRadius: 10, padding: 10 }}>
+        <Text style={{ fontWeight: '700', marginBottom: 6 }}>Payment</Text>
+        <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 6 }}>
+          <Pressable disabled={!RZP_KEY_ID} onPress={() => setPaymentMethod('online')} style={({ pressed }) => ({ marginRight: 12, paddingHorizontal: 10, paddingVertical: 8, borderWidth: 1, borderColor: paymentMethod==='online' ? '#1e64d4' : '#ddd', backgroundColor: paymentMethod==='online' ? '#e6f2ff' : '#fff', borderRadius: 8, opacity: pressed ? 0.9 : 1 })}>
+            <Text>{paymentMethod==='online' ? '● ' : '○ '}Pay Online (Razorpay)</Text>
+          </Pressable>
+          <Pressable onPress={() => setPaymentMethod('cod')} style={({ pressed }) => ({ paddingHorizontal: 10, paddingVertical: 8, borderWidth: 1, borderColor: paymentMethod==='cod' ? '#1e64d4' : '#ddd', backgroundColor: paymentMethod==='cod' ? '#e6f2ff' : '#fff', borderRadius: 8, opacity: pressed ? 0.9 : 1 })}>
+            <Text>{paymentMethod==='cod' ? '● ' : '○ '}Cash on Delivery</Text>
+          </Pressable>
+        </View>
+        <Text style={{ color: '#666', fontSize: 12 }}>Test Mode</Text>
+        {!RZP_KEY_ID && (
+          <Text style={{ color: '#b45309', marginTop: 4 }}>Payment temporarily unavailable.</Text>
+        )}
+      </View>
       {!pickup && currentAddr && (
         <Pressable onPress={() => setAddrSheetOpen(true)}
           accessibilityRole="button"
@@ -290,7 +440,7 @@ export default function CheckoutScreen({ navigation }: any): JSX.Element {
       )}
       {!!error && <Text style={{ color: '#b00020', marginTop: 10 }}>{error}</Text>}
       <Pressable accessibilityRole="button" onPress={onPlaceOrder} disabled={saving} style={({ pressed }) => ({ marginTop: 16, padding: 14, borderRadius: 10, backgroundColor: '#1e64d4', opacity: pressed || saving ? 0.85 : 1 })}>
-        <Text style={{ color: '#fff', textAlign: 'center', fontWeight: '700' }}>{saving ? 'Placing order…' : 'Place Order'}</Text>
+        <Text style={{ color: '#fff', textAlign: 'center', fontWeight: '700' }}>{saving ? (placingMsg || 'Placing order…') : 'Place Order'}</Text>
       </Pressable>
 
       {/* Address select bottom sheet */}
@@ -348,6 +498,17 @@ export default function CheckoutScreen({ navigation }: any): JSX.Element {
             </Pressable>
           </Animated.View>
         </View>
+      )}
+
+      {/* Razorpay WebView */}
+      {razorpayOptions && (
+        <RazorpayWebView
+          visible={showRazorpay}
+          options={razorpayOptions}
+          onSuccess={handleRazorpaySuccess}
+          onError={handleRazorpayError}
+          onCancel={handleRazorpayCancel}
+        />
       )}
     </ScrollView>
   );

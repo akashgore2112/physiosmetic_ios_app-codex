@@ -52,7 +52,7 @@ function ProductCardBase({ id, name, price, image_url, category, in_stock, clini
             if (onAdd) { onAdd(); span.end(); }
             else {
               if (outOfStock) { showToast('Out of stock'); return; }
-              add({ id, name, price, qty: 1 });
+              add({ id, line_id: id, variant_id: null, variant_label: null, name, price, qty: 1, image_url: displayImage });
               showToast('Added to cart');
               span.end();
             }

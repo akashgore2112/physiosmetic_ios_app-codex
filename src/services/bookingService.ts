@@ -441,20 +441,10 @@ export async function bookAppointment(params: {
   slotId: string;
   notes?: string;
 }): Promise<Appointment> {
-  // Pre-check: fetch slot info then ensure user doesn't have appointment at same date+time
-  const { data: slot, error: slotErr } = await supabase
-    .from('availability_slots')
-    .select('id,date,start_time')
-    .eq('id', params.slotId)
-    .maybeSingle();
-  if (slotErr || !slot) throw slotErr ?? new Error('Slot not found');
-  if (await hasUserApptAtDateTime(params.userId, slot.date, slot.start_time)) {
-    throw new Error('You already have an appointment at this time.');
-  }
-
   // Ensure the user has a corresponding profiles row to satisfy FK constraints
   try { await ensureProfileExists(params.userId, null, null); } catch {}
 
+  // Call atomic RPC with server-side locking and validation
   const { data, error } = await supabase.rpc('book_appointment', {
     p_user_id: params.userId,
     p_service_id: params.serviceId,
@@ -463,8 +453,36 @@ export async function bookAppointment(params: {
     p_is_online: false,
     p_notes: params.notes ?? null,
   });
+
   if (error) throw error;
-  return data as Appointment;
+
+  // Handle JSONB response from enhanced RPC
+  const result = data as { success: boolean; appointment_id?: string; error?: string; message?: string };
+
+  if (!result.success) {
+    // Map error codes to user-friendly messages
+    const message = result.message || 'Booking failed. Please try again.';
+    const err = new Error(message) as Error & { code?: string };
+    err.code = result.error;
+    throw err;
+  }
+
+  if (!result.appointment_id) {
+    throw new Error('Booking succeeded but no appointment ID returned.');
+  }
+
+  // Fetch the full appointment record to return
+  const { data: appt, error: fetchErr } = await supabase
+    .from('appointments')
+    .select('*')
+    .eq('id', result.appointment_id)
+    .maybeSingle();
+
+  if (fetchErr || !appt) {
+    throw fetchErr ?? new Error('Failed to fetch appointment details.');
+  }
+
+  return appt as Appointment;
 }
 
 export async function cancelAppointment(apptId: string): Promise<void> {

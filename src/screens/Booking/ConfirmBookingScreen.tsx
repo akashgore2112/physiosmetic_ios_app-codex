@@ -57,7 +57,21 @@ export default function ConfirmBookingScreen({ route, navigation }: any): JSX.El
       navigation.popToTop();
       navigation.navigate('Account', { screen: 'MyAppointments' });
     } catch (e: any) {
-      show(e?.message ?? 'Booking failed');
+      const message = e?.message ?? 'Booking failed. Please try again.';
+      show(message);
+
+      // Handle specific error codes with appropriate navigation
+      const errorCode = e?.code;
+      if (errorCode === 'slot_taken' || errorCode === 'slot_expired') {
+        // Slot is no longer available or expired - go back to time selection
+        setTimeout(() => {
+          navigation.goBack(); // Return to SelectTimeSlot
+        }, 2000);
+      } else if (errorCode === 'user_conflict') {
+        // User has overlapping appointment - stay on confirmation screen
+        // User can try a different time by going back
+      }
+      // For other errors, stay on screen and let user retry or go back manually
     } finally {
       setLoading(false);
       span.end();

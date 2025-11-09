@@ -272,6 +272,12 @@ export default function MapPickerScreen({ navigation, route }: any): JSX.Element
   };
 
   const onUseCurrentLocation = async () => {
+    // Reset any search UI so the overlay doesn't hide map changes
+    if (idleRef.current) clearTimeout(idleRef.current);
+    if (searchAbortRef.current) { try { searchAbortRef.current.abort(); } catch {} }
+    setSuggestions([]);
+    setSearchMsg(null);
+    // Begin locating
     setLoadingCurrent(true);
     setLocCode(undefined);
     const r = await getCurrentCoords();
@@ -284,7 +290,7 @@ export default function MapPickerScreen({ navigation, route }: any): JSX.Element
     setRegion(reg);
     setMarker({ latitude: r.lat, longitude: r.lng });
     setCenterDirty(false);
-    try { mapRef.current?.animateToRegion(reg as any, 400); } catch {}
+    try { InteractionManager.runAfterInteractions(() => { try { mapRef.current?.animateToRegion(reg as any, 400); } catch {} }); } catch {}
     console.debug('[mapPicker] useCurrent ok', { lat: r.lat, lng: r.lng });
     await kickReverseGeocode(r.lat, r.lng);
   };

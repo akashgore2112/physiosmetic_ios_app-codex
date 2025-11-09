@@ -32,8 +32,9 @@ export default function CartScreen({ navigation }: any): JSX.Element {
   };
 
   return (
-    <View style={{ flex: 1, padding: 12 }}>
+    <View style={{ flex: 1 }}>
       <FlatList
+        contentContainerStyle={{ padding: 12, paddingBottom: 16 }}
         data={items}
         keyExtractor={(i) => i.line_id}
         initialNumToRender={8}
@@ -59,18 +60,21 @@ export default function CartScreen({ navigation }: any): JSX.Element {
           </View>
         )}
         ListEmptyComponent={<Text>Your cart is empty</Text>}
+        ListFooterComponent={
+          <View style={{ paddingTop: 8 }}>
+            <View style={{ padding: 12, borderTopWidth: 1, borderTopColor: '#eee' }}>
+              <Text style={{ fontSize: 16, fontWeight: '700' }}>Total: {formatPrice(total)}</Text>
+              <TouchableOpacity
+                disabled={!canCheckout}
+                onPress={onCheckout}
+                style={{ marginTop: 12, padding: 16, borderRadius: 12, alignItems: 'center', backgroundColor: canCheckout ? '#1e64d4' : '#ccc' }}
+              >
+                <Text style={{ color: '#fff', fontWeight: '700' }}>Checkout</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        }
       />
-
-      <View style={{ padding: 12, borderTopWidth: 1, borderTopColor: '#eee' }}>
-        <Text style={{ fontSize: 16, fontWeight: '700' }}>Total: {formatPrice(total)}</Text>
-        <TouchableOpacity
-          disabled={!canCheckout}
-          onPress={onCheckout}
-          style={{ marginTop: 12, padding: 16, borderRadius: 12, alignItems: 'center', backgroundColor: canCheckout ? '#1e64d4' : '#ccc' }}
-        >
-          <Text style={{ color: '#fff', fontWeight: '700' }}>Checkout</Text>
-        </TouchableOpacity>
-      </View>
     </View>
   );
 }
