@@ -2,6 +2,16 @@
 _Maintained automatically; newest first._
 _Last cleaned: 2025-11-09_
 
+- **2025-11-10**: HOME: Deep link support added with route params to scroll/highlight promos, products, services sections
+- **2025-11-10**: HOME: Unified retry helper with error states and retry buttons for failed data loads
+- **2025-11-10**: HOME: Top Products out-of-stock guard added with visual badge, Add to Cart disabled for unavailable items
+- **2025-11-10**: HOME: Top Products Add to Cart action added with toast feedback and accessibility support
+- **2025-11-10**: HOME: Guest auth-gated flow added for Quick Actions—saves intent, navigates to Sign In, resumes after login
+- **2025-11-10**: HOME: Upcoming appointment visibility fixed to show until slot end_time (not start_time)
+- **2025-11-10**: HOME: Hero section enhanced with interactive CTAs (Book Physiotherapy, Shop Deals, server promo), full a11y support
+- **2025-11-10**: SERVICE/BOOKING: create_razorpay_order_service Edge Function created for service-specific payment validation (uses services.base_price)
+- **2025-11-10**: SERVICE/BOOKING: createRazorpayOrderForService API added to paymentsApi.ts with proper service_id parameter handling
+- **2025-11-10**: SERVICE/BOOKING: BookingCheckoutScreen Razorpay integration fixed with correct component imports and options structure
 - **2025-11-10**: DB schema migration created: orders/order_items enhanced (pickup, payment fields, variants), coupons table, indexes
 - **2025-11-10**: RLS policies cleaned up: orders (3 policies), order_items (2 policies), duplicates removed
 - **2025-11-10**: Server-side place_order RPC v2 created with pricing validation, stock check, tax/shipping calc, idempotency

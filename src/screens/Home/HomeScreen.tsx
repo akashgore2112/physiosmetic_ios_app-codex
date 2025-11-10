@@ -3,6 +3,7 @@ import { View, Text, TouchableOpacity, ActivityIndicator, ScrollView, Pressable,
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useFocusEffect } from '@react-navigation/native';
 import { useSessionStore } from '../../store/useSessionStore';
+import { useCartStore } from '../../store/useCartStore';
 import { getMyUpcomingAppointments, getNextAvailableSlots } from '../../services/bookingService';
 import { supabase } from '../../config/supabaseClient';
 import { getAllActiveServices } from '../../services/serviceCatalogService';
@@ -17,7 +18,7 @@ import { CLINIC_CALL_PHONE_E164, CLINIC_WHATSAPP_E164, CLINIC_PROMOS } from '../
 import OfflineBanner from '../../components/feedback/OfflineBanner';
 import useNetworkStore from '../../store/useNetworkStore';
 
-export default function HomeScreen({ navigation }: any): JSX.Element {
+export default function HomeScreen({ navigation, route }: any): JSX.Element {
   const { isLoggedIn, userId } = useSessionStore();
   const [loading, setLoading] = useState(false);
   const [upcoming, setUpcoming] = useState<any[]>([]);
@@ -25,8 +26,10 @@ export default function HomeScreen({ navigation }: any): JSX.Element {
   const [nextSlots, setNextSlots] = useState<any[]>([]);
   const [topProducts, setTopProducts] = useState<any[]>([]);
   const [topLoading, setTopLoading] = useState<boolean>(false);
+  const [topError, setTopError] = useState<boolean>(false);
   const [promos, setPromos] = useState<any[]>([]);
   const [promosLoading, setPromosLoading] = useState<boolean>(false);
+  const [promosError, setPromosError] = useState<boolean>(false);
   const [dismissedBannerIds, setDismissedBannerIds] = useState<Record<string, true>>({});
   const { show } = useToast();
   const endRefreshRef = useRef<NodeJS.Timeout | null>(null);
@@ -36,6 +39,12 @@ export default function HomeScreen({ navigation }: any): JSX.Element {
   const isOnline = useNetworkStore((s) => s.isOnline);
   const [refreshing, setRefreshing] = useState(false);
   const insets = useSafeAreaInsets();
+
+  // Refs for deep link scrolling
+  const scrollViewRef = useRef<ScrollView>(null);
+  const promosRef = useRef<View>(null);
+  const productsRef = useRef<View>(null);
+  const servicesRef = useRef<View>(null);
 
   const refresh = useCallback(async () => {
     if (!userId) {
@@ -54,7 +63,8 @@ export default function HomeScreen({ navigation }: any): JSX.Element {
         .map((r) => {
           if (!r?.slot) return null;
           const [y, m, d] = r.slot.date.split('-').map((n: string) => parseInt(n, 10));
-          const [hh, mm] = (r.slot.start_time || '00:00').split(':').map((n: string) => parseInt(n, 10));
+          // Use end_time to hide card only after appointment is fully over
+          const [hh, mm] = (r.slot.end_time || r.slot.start_time || '00:00').split(':').map((n: string) => parseInt(n, 10));
           return new Date(y, (m - 1), d, hh, mm, 1).getTime();
         })
         .filter((t: any) => typeof t === 'number' && t > now) as number[];
@@ -113,11 +123,14 @@ export default function HomeScreen({ navigation }: any): JSX.Element {
   // Load top products by purchases
   const loadTopProducts = useCallback(async () => {
     setTopLoading(true);
+    setTopError(false);
     try {
       const list = await getTopPurchasedProducts(4);
       setTopProducts(list ?? []);
+      setTopError(false);
     } catch {
       setTopProducts([]);
+      setTopError(true);
     } finally {
       setTopLoading(false);
     }
@@ -146,6 +159,7 @@ export default function HomeScreen({ navigation }: any): JSX.Element {
   // Load promos: Supabase first, fallback to CLINIC_PROMOS if table missing/empty
   const loadPromos = useCallback(async () => {
     setPromosLoading(true);
+    setPromosError(false);
     try {
       const { data, error } = await supabase
         .from('promos')
@@ -154,13 +168,17 @@ export default function HomeScreen({ navigation }: any): JSX.Element {
         .limit(20);
       if (error) {
         setPromos(CLINIC_PROMOS?.filter((p) => p.is_active !== false) || []);
+        setPromosError(false); // Fallback available
       } else if (!data || data.length === 0) {
         setPromos(CLINIC_PROMOS?.filter((p) => p.is_active !== false) || []);
+        setPromosError(false);
       } else {
         setPromos(data as any[]);
+        setPromosError(false);
       }
     } catch {
       setPromos(CLINIC_PROMOS?.filter((p) => p.is_active !== false) || []);
+      setPromosError(false); // Fallback available
     } finally {
       setPromosLoading(false);
     }
@@ -202,11 +220,54 @@ export default function HomeScreen({ navigation }: any): JSX.Element {
     }
   }, [refresh, loadPromos, loadTopProducts, loadNextAvailable]);
 
+  // Deep link support - handle highlight params
+  useEffect(() => {
+    const params = route?.params;
+    if (!params?.highlight) return;
+
+    const scrollToSection = () => {
+      let targetRef: React.RefObject<View> | null = null;
+
+      switch (params.highlight) {
+        case 'promos':
+        case 'offers':
+          targetRef = promosRef;
+          break;
+        case 'products':
+        case 'shop':
+          targetRef = productsRef;
+          break;
+        case 'services':
+          targetRef = servicesRef;
+          break;
+      }
+
+      if (targetRef?.current && scrollViewRef.current) {
+        setTimeout(() => {
+          targetRef.current?.measureLayout(
+            // @ts-ignore - measureLayout exists
+            scrollViewRef.current?.getInnerViewNode(),
+            (x: number, y: number) => {
+              scrollViewRef.current?.scrollTo({ y: y - 60, animated: true });
+            },
+            () => {}
+          );
+        }, 300);
+      }
+
+      // Clear param to prevent re-scroll on re-renders
+      navigation.setParams({ highlight: undefined });
+    };
+
+    scrollToSection();
+  }, [route?.params, navigation]);
+
   // Cancel handler removed; upcoming card links to Appointment Detail
 
   return (
     <View style={{ flex: 1, paddingTop: insets.top, paddingBottom: insets.bottom }}>
       <ScrollView
+        ref={scrollViewRef}
         style={{ flex: 1 }}
         contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 16 }}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
@@ -236,23 +297,138 @@ export default function HomeScreen({ navigation }: any): JSX.Element {
         <Text style={{ fontSize: 22, fontWeight: '800' }}>Physiosmetic</Text>
       </Pressable>
 
-      {/* Hero */}
-      <View style={{ marginTop: 12, backgroundColor: '#fff', borderRadius: 12, padding: 12, borderWidth: 1, borderColor: '#eee' }}>
-        <Text style={{ fontSize: 16, fontWeight: '700' }}>Mumbai’s First Holistic & Sports Studio</Text>
-        <Text style={{ color: '#444', marginTop: 4 }}>Hours: 10:00 am – 07:00 pm</Text>
-        <View style={{ flexDirection: 'row', marginTop: 10 }}>
+      {/* Hero - Interactive with CTAs */}
+      <View
+        style={{ marginTop: 12, backgroundColor: '#fff', borderRadius: 12, padding: 16, borderWidth: 1, borderColor: '#eee' }}
+        accessibilityRole="header"
+        accessibilityLabel="Physiosmetic clinic information and quick actions"
+      >
+        <Text style={{ fontSize: 18, fontWeight: '700' }}>Mumbai's First Holistic & Sports Studio</Text>
+        <Text style={{ color: '#444', marginTop: 4, fontSize: 14 }}>Hours: 10:00 am – 07:00 pm</Text>
+
+        {/* Primary CTAs */}
+        <View style={{ flexDirection: 'row', marginTop: 12, gap: 8 }}>
+          <Pressable
+            onPress={() => {
+              if (!isLoggedIn) {
+                useSessionStore.getState().setPostLoginIntent({
+                  action: 'navigate_services',
+                  params: {}
+                });
+                show({ message: 'Please sign in to book appointments', type: 'info' });
+                navigation.navigate('Account', { screen: 'SignIn' });
+                return;
+              }
+              navigation.navigate('Services', { screen: 'ServicesMain' });
+            }}
+            accessibilityRole="button"
+            accessibilityLabel="Book physiotherapy appointment"
+            accessibilityHint={isLoggedIn ? "Opens services list to book an appointment" : "Requires sign in to book"}
+            style={({ pressed }) => ({
+              flex: 1,
+              backgroundColor: '#1e64d4',
+              paddingHorizontal: 16,
+              paddingVertical: 12,
+              borderRadius: 10,
+              opacity: pressed ? 0.85 : 1,
+              minHeight: 44,
+              justifyContent: 'center',
+              alignItems: 'center'
+            })}
+          >
+            <Text style={{ color: '#fff', fontWeight: '700', fontSize: 15 }}>Book Physiotherapy</Text>
+          </Pressable>
+          <Pressable
+            onPress={() => navigation.navigate('Shop')}
+            accessibilityRole="button"
+            accessibilityLabel="Shop deals and products"
+            accessibilityHint="Opens product shop"
+            style={({ pressed }) => ({
+              flex: 1,
+              backgroundColor: '#16a34a',
+              paddingHorizontal: 16,
+              paddingVertical: 12,
+              borderRadius: 10,
+              opacity: pressed ? 0.85 : 1,
+              minHeight: 44,
+              justifyContent: 'center',
+              alignItems: 'center'
+            })}
+          >
+            <Text style={{ color: '#fff', fontWeight: '700', fontSize: 15 }}>Shop Deals</Text>
+          </Pressable>
+        </View>
+
+        {/* Context CTA from server promo (first promo with deep_link) */}
+        {promos.length > 0 && promos[0]?.deep_link && (
+          <Pressable
+            onPress={() => {
+              const promo = promos[0];
+              if (promo.deep_link) {
+                Linking.openURL(promo.deep_link).catch(() => {
+                  show({ message: 'Could not open promo link', type: 'error' });
+                });
+              }
+            }}
+            accessibilityRole="button"
+            accessibilityLabel={`Special offer: ${promos[0].title}`}
+            accessibilityHint="Opens promotional offer"
+            style={({ pressed }) => ({
+              marginTop: 8,
+              backgroundColor: '#fef3c7',
+              paddingHorizontal: 16,
+              paddingVertical: 10,
+              borderRadius: 10,
+              opacity: pressed ? 0.9 : 1,
+              minHeight: 44,
+              justifyContent: 'center',
+              alignItems: 'center',
+              borderWidth: 1,
+              borderColor: '#f59e0b'
+            })}
+          >
+            <Text style={{ color: '#92400e', fontWeight: '700', fontSize: 14 }}>
+              🎉 {promos[0].title}
+            </Text>
+          </Pressable>
+        )}
+
+        {/* Contact options */}
+        <View style={{ flexDirection: 'row', marginTop: 12, flexWrap: 'wrap', gap: 8 }}>
           <Pressable
             onPress={() => Linking.openURL('https://maps.app.goo.gl/ftuctsKC5w3c5x957')}
-            style={({ pressed }) => ({ backgroundColor: '#e8f5e9', paddingHorizontal: 12, paddingVertical: 8, borderRadius: 10, opacity: pressed ? 0.9 : 1 })}
+            accessibilityRole="button"
+            accessibilityLabel="Open location in Google Maps"
+            accessibilityHint="Opens clinic location in maps app"
+            style={({ pressed }) => ({
+              backgroundColor: '#e8f5e9',
+              paddingHorizontal: 12,
+              paddingVertical: 8,
+              borderRadius: 10,
+              opacity: pressed ? 0.9 : 1,
+              minHeight: 44,
+              justifyContent: 'center'
+            })}
           >
-            <Text style={{ color: '#1b5e20', fontWeight: '700' }}>Google Maps</Text>
+            <Text style={{ color: '#1b5e20', fontWeight: '700' }}>📍 Maps</Text>
           </Pressable>
           {!!CLINIC_CALL_PHONE_E164 && (
             <Pressable
               onPress={() => Linking.openURL(`tel:${CLINIC_CALL_PHONE_E164}`)}
-              style={({ pressed }) => ({ backgroundColor: '#eef2ff', paddingHorizontal: 12, paddingVertical: 8, borderRadius: 10, marginLeft: 10, opacity: pressed ? 0.9 : 1 })}
+              accessibilityRole="button"
+              accessibilityLabel="Call clinic"
+              accessibilityHint="Opens phone dialer to call clinic"
+              style={({ pressed }) => ({
+                backgroundColor: '#eef2ff',
+                paddingHorizontal: 12,
+                paddingVertical: 8,
+                borderRadius: 10,
+                opacity: pressed ? 0.9 : 1,
+                minHeight: 44,
+                justifyContent: 'center'
+              })}
             >
-              <Text style={{ color: '#1e40af', fontWeight: '700' }}>Call</Text>
+              <Text style={{ color: '#1e40af', fontWeight: '700' }}>📞 Call</Text>
             </Pressable>
           )}
           {!!CLINIC_WHATSAPP_E164 && (
@@ -261,9 +437,20 @@ export default function HomeScreen({ navigation }: any): JSX.Element {
                 const phone = CLINIC_WHATSAPP_E164.replace(/\+/g, '');
                 Linking.openURL(`https://wa.me/${phone}?text=${encodeURIComponent('Hello Physiosmetic')}`);
               }}
-              style={({ pressed }) => ({ backgroundColor: '#e0f2fe', paddingHorizontal: 12, paddingVertical: 8, borderRadius: 10, marginLeft: 10, opacity: pressed ? 0.9 : 1 })}
+              accessibilityRole="button"
+              accessibilityLabel="Message on WhatsApp"
+              accessibilityHint="Opens WhatsApp to message clinic"
+              style={({ pressed }) => ({
+                backgroundColor: '#e0f2fe',
+                paddingHorizontal: 12,
+                paddingVertical: 8,
+                borderRadius: 10,
+                opacity: pressed ? 0.9 : 1,
+                minHeight: 44,
+                justifyContent: 'center'
+              })}
             >
-              <Text style={{ color: '#075985', fontWeight: '700' }}>WhatsApp</Text>
+              <Text style={{ color: '#075985', fontWeight: '700' }}>💬 WhatsApp</Text>
             </Pressable>
           )}
         </View>
@@ -282,6 +469,17 @@ export default function HomeScreen({ navigation }: any): JSX.Element {
             key={qa.label}
             onPress={() => {
               if (qa.category) {
+                // Check auth for booking services
+                if (!isLoggedIn) {
+                  useSessionStore.getState().setPostLoginIntent({
+                    action: 'quick_action_booking',
+                    params: { category: qa.category, online: qa.online, label: qa.label }
+                  });
+                  show({ message: 'Please sign in to book services', type: 'info' });
+                  navigation.navigate('Account', { screen: 'SignIn' });
+                  return;
+                }
+
                 (async () => {
                   try {
                     const all = await getAllActiveServices();
@@ -339,9 +537,13 @@ export default function HomeScreen({ navigation }: any): JSX.Element {
             }}
             accessibilityRole="button"
             accessibilityLabel={qa.category ? `Browse ${qa.label}` : 'Open Shop'}
+            accessibilityHint={qa.category && !isLoggedIn ? 'Requires sign in' : undefined}
             style={({ pressed }) => ({ flexBasis: '48%', backgroundColor: '#fff', borderRadius: 12, padding: 14, minHeight: 44, justifyContent: 'center', opacity: pressed ? 0.85 : 1 })}
           >
             <Text style={{ fontWeight: '700' }}>{qa.label}</Text>
+            {qa.category && !isLoggedIn && (
+              <Text style={{ color: '#666', fontSize: 12, marginTop: 2 }}>Sign in required</Text>
+            )}
           </Pressable>
         ))}
       </View>
@@ -361,7 +563,7 @@ export default function HomeScreen({ navigation }: any): JSX.Element {
           </View>
         </View>
       ) : ((!promosLoading && promos.length > 0) ? (
-        <View style={{ marginTop: 20 }}>
+        <View ref={promosRef} style={{ marginTop: 20 }}>
           <Text style={{ fontSize: 16, fontWeight: '700', marginBottom: 8 }}>Offers & Promos</Text>
           {/* Banner slider */}
           {promos.some((p) => p.image_url) && (
@@ -551,7 +753,7 @@ export default function HomeScreen({ navigation }: any): JSX.Element {
 
       {/* Featured Services */}
       {services.length > 0 && (
-        <View style={{ marginTop: 8 }}>
+        <View ref={servicesRef} style={{ marginTop: 8 }}>
           <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
             <Text style={{ fontSize: 16, fontWeight: '700' }}>Featured Services</Text>
             <Pressable accessibilityRole="button" accessibilityLabel="View all services" onPress={() => navigation.navigate('Services', { screen: 'ServicesMain' })} hitSlop={8} style={{ minHeight: 44, justifyContent: 'center' }}>
@@ -606,8 +808,29 @@ export default function HomeScreen({ navigation }: any): JSX.Element {
             </View>
           </ScrollView>
         </View>
+      ) : topError ? (
+        <View style={{ marginTop: 20, backgroundColor: '#fff', borderRadius: 12, borderWidth: 1, borderColor: '#fee', padding: 16 }}>
+          <Text style={{ fontSize: 16, fontWeight: '700', marginBottom: 8 }}>Top Products · Mostly Purchased</Text>
+          <Text style={{ color: '#666', marginBottom: 12 }}>Failed to load products. Check your connection and try again.</Text>
+          <Pressable
+            onPress={() => loadTopProducts()}
+            accessibilityRole="button"
+            accessibilityLabel="Retry loading products"
+            style={({ pressed }) => ({
+              backgroundColor: '#1e64d4',
+              paddingHorizontal: 16,
+              paddingVertical: 10,
+              borderRadius: 10,
+              alignItems: 'center',
+              opacity: pressed ? 0.85 : 1,
+              minHeight: 44
+            })}
+          >
+            <Text style={{ color: '#fff', fontWeight: '700' }}>Retry</Text>
+          </Pressable>
+        </View>
       ) : (topProducts.length > 0 ? (
-        <View style={{ marginTop: 20 }}>
+        <View ref={productsRef} style={{ marginTop: 20 }}>
           <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
             <Text style={{ fontSize: 16, fontWeight: '700' }}>Top Products · Mostly Purchased</Text>
             <Pressable onPress={() => navigation.navigate('Shop')} hitSlop={8}>
@@ -616,23 +839,64 @@ export default function HomeScreen({ navigation }: any): JSX.Element {
           </View>
           <ScrollView horizontal showsHorizontalScrollIndicator={false}>
             <View style={{ flexDirection: 'row' }}>
-              {topProducts.map((p) => (
-                <Pressable
-                  accessibilityRole="button"
-                  accessibilityLabel={`View product ${p.name}`}
-                  key={`tp-${p.id}`}
-                  onPress={() => navigation.navigate('Shop', { screen: 'ProductDetail', params: { id: p.id } })}
-                  style={({ pressed }) => ({ width: 140, borderRadius: 12, borderWidth: 1, borderColor: '#eee', backgroundColor: '#fff', padding: 10, marginRight: 10, opacity: pressed ? 0.95 : 1 })}
-                >
-                  {!!p.image_url && (
-                    <Image source={{ uri: p.image_url }} resizeMode="cover" style={{ width: '100%', height: 80, borderRadius: 8 }} />
-                  )}
-                  <Text numberOfLines={1} style={{ marginTop: 8, fontWeight: '700' }}>{p.name}</Text>
-                  <Text style={{ marginTop: 4 }}>
-                    {typeof p.price === 'number' ? `₹${p.price.toFixed(0)}` : ''}
-                  </Text>
-                </Pressable>
-              ))}
+              {topProducts.map((p) => {
+                const isOutOfStock = p.in_stock === false;
+                return (
+                  <View
+                    key={`tp-${p.id}`}
+                    style={{ width: 140, borderRadius: 12, borderWidth: 1, borderColor: '#eee', backgroundColor: '#fff', padding: 10, marginRight: 10 }}
+                  >
+                    <Pressable
+                      accessibilityRole="button"
+                      accessibilityLabel={`View product ${p.name}`}
+                      onPress={() => navigation.navigate('Shop', { screen: 'ProductDetail', params: { id: p.id } })}
+                      style={({ pressed }) => ({ opacity: pressed ? 0.85 : 1 })}
+                    >
+                      {!!p.image_url && (
+                        <Image source={{ uri: p.image_url }} resizeMode="cover" style={{ width: '100%', height: 80, borderRadius: 8 }} />
+                      )}
+                      {isOutOfStock && (
+                        <View style={{ position: 'absolute', top: 4, right: 4, backgroundColor: 'rgba(0,0,0,0.7)', paddingHorizontal: 6, paddingVertical: 2, borderRadius: 6 }}>
+                          <Text style={{ color: '#fff', fontSize: 10, fontWeight: '700' }}>Out of Stock</Text>
+                        </View>
+                      )}
+                      <Text numberOfLines={1} style={{ marginTop: 8, fontWeight: '700' }}>{p.name}</Text>
+                      <Text style={{ marginTop: 4, fontWeight: '600' }}>
+                        {typeof p.price === 'number' ? `₹${p.price.toFixed(0)}` : ''}
+                      </Text>
+                    </Pressable>
+                    {!isOutOfStock && (
+                      <Pressable
+                        accessibilityRole="button"
+                        accessibilityLabel={`Add ${p.name} to cart`}
+                        accessibilityHint="Adds one item to shopping cart"
+                        onPress={() => {
+                          useCartStore.getState().addItem({
+                            id: p.id,
+                            line_id: p.id, // No variant
+                            name: p.name,
+                            price: p.price,
+                            qty: 1,
+                            image_url: p.image_url
+                          });
+                          show({ message: 'Added to cart', type: 'success' });
+                        }}
+                        style={({ pressed }) => ({
+                          marginTop: 8,
+                          backgroundColor: '#16a34a',
+                          paddingVertical: 8,
+                          borderRadius: 8,
+                          alignItems: 'center',
+                          opacity: pressed ? 0.85 : 1,
+                          minHeight: 36
+                        })}
+                      >
+                        <Text style={{ color: '#fff', fontWeight: '700', fontSize: 13 }}>Add to Cart</Text>
+                      </Pressable>
+                    )}
+                  </View>
+                );
+              })}
             </View>
           </ScrollView>
         </View>

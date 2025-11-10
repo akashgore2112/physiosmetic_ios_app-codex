@@ -643,6 +643,3 @@ if (typeof window !== 'undefined') {
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = TRANSLATIONS;
 }
-
-// ES6 module export
-export default TRANSLATIONS;

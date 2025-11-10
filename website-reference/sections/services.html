@@ -1,0 +1,184 @@
+<!-- SERVICES SECTION -->
+<section id="services" class="section-container">
+    <div class="section-header">
+        <span class="section-badge">What We Offer</span>
+        <h2 class="section-title">Comprehensive Care Services</h2>
+        <p class="section-subtitle">State-of-the-art facilities and expert care across multiple specialties</p>
+    </div>
+
+    <div class="services-grid">
+        <!-- Sports Performance Studio -->
+        <div class="service-card" data-service="sports">
+            <div class="service-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M13.49 5.48c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm-3.6 13.9l1-4.4 2.1 2v6h2v-7.5l-2.1-2 .6-3c1.3 1.5 3.3 2.5 5.5 2.5v-2c-1.9 0-3.5-1-4.3-2.4l-1-1.6c-.4-.6-1-1-1.7-1-.3 0-.5.1-.8.1l-5.2 2.2v4.7h2v-3.4l1.8-.7-1.6 8.1-4.9-1-.4 2 7 1.4z"/>
+                </svg>
+            </div>
+            <h3 class="service-title">Sports Performance Studio</h3>
+            <p class="service-description">
+                Advanced athletic training, injury prevention, and performance optimization for athletes at all levels.
+            </p>
+            <ul class="service-features">
+                <li>Injury Prevention Programs</li>
+                <li>Elite Athlete Training</li>
+                <li>Exercise & Functional Training</li>
+                <li>Cryotherapy Recovery</li>
+            </ul>
+            <button class="service-btn" onclick="openServiceModal('sports')">
+                <span>Explore Service</span>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M5 12h14M12 5l7 7-7 7"/>
+                </svg>
+            </button>
+        </div>
+
+        <!-- Physio Care -->
+        <div class="service-card featured" data-service="physio">
+            <div class="featured-badge">Most Popular</div>
+            <div class="service-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
+                </svg>
+            </div>
+            <h3 class="service-title">Physio Care</h3>
+            <p class="service-description">
+                Comprehensive physiotherapy treatments for pain relief, mobility improvement, and functional recovery.
+            </p>
+            <ul class="service-features">
+                <li>Manual Therapy</li>
+                <li>Pain Management</li>
+                <li>Post-Surgery Rehabilitation</li>
+                <li>Chronic Pain Treatment</li>
+            </ul>
+            <button class="service-btn" onclick="openServiceModal('physio')">
+                <span>Explore Service</span>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M5 12h14M12 5l7 7-7 7"/>
+                </svg>
+            </button>
+        </div>
+
+        <!-- Skin Care -->
+        <div class="service-card" data-service="skin">
+            <div class="service-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="8" r="7"/>
+                    <path d="M8.21 13.89L7 23l5-3 5 3-1.21-9.12"/>
+                </svg>
+            </div>
+            <h3 class="service-title">Skin Care</h3>
+            <p class="service-description">
+                Advanced dermatological treatments and cosmetic procedures for healthy, radiant skin.
+            </p>
+            <ul class="service-features">
+                <li>Acne Treatment Solutions</li>
+                <li>Anti-Aging Therapies</li>
+                <li>Pigmentation Correction</li>
+                <li>Laser Hair Reduction</li>
+            </ul>
+            <button class="service-btn" onclick="openServiceModal('skin')">
+                <span>Explore Service</span>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M5 12h14M12 5l7 7-7 7"/>
+                </svg>
+            </button>
+        </div>
+
+        <!-- Hair Care -->
+        <div class="service-card" data-service="hair">
+            <div class="service-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 2c2.5 0 4.5 2 4.5 4.5 0 1.5-1 3-2 3.5v7c0 1.1-.9 2-2 2H7v2h10v2H7c-1.1 0-2-.9-2-2v-6c-1-.5-2-2-2-3.5C3 4 5 2 7.5 2c1 0 1.9.3 2.5.9C10.6 2.3 11.5 2 12 2z"/>
+                </svg>
+            </div>
+            <h3 class="service-title">Hair Care</h3>
+            <p class="service-description">
+                Professional hair restoration and scalp treatments for all hair-related concerns.
+            </p>
+            <ul class="service-features">
+                <li>Hair Loss Treatment</li>
+                <li>Mesotherapy Solutions</li>
+                <li>Hair Root Therapy</li>
+                <li>PRP (Platelet Rich Plasma)</li>
+            </ul>
+            <button class="service-btn" onclick="openServiceModal('hair')">
+                <span>Explore Service</span>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M5 12h14M12 5l7 7-7 7"/>
+                </svg>
+            </button>
+        </div>
+
+        <!-- Body Care -->
+        <div class="service-card" data-service="body">
+            <div class="service-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 2a2 2 0 0 1 2 2c0 .74-.4 1.39-1 1.73V7h1a7 7 0 0 1 7 7h1a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-1v2a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-2H2a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1h1a7 7 0 0 1 7-7h1V5.73c-.6-.34-1-.99-1-1.73a2 2 0 0 1 2-2z"/>
+                </svg>
+            </div>
+            <h3 class="service-title">Body Care</h3>
+            <p class="service-description">
+                Holistic body treatments and wellness programs for complete physical health.
+            </p>
+            <ul class="service-features">
+                <li>Weight Loss Programs</li>
+                <li>Non-Invasive Lipolysis</li>
+                <li>Detoxification Therapy</li>
+                <li>Vaginal Rejuvenation</li>
+            </ul>
+            <button class="service-btn" onclick="openServiceModal('body')">
+                <span>Explore Service</span>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M5 12h14M12 5l7 7-7 7"/>
+                </svg>
+            </button>
+        </div>
+
+        <!-- Nutrition Care -->
+        <div class="service-card" data-service="nutrition">
+            <div class="service-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M2 21c.5.5 1.5.5 2 0l1.5-1.5c.5-.5.5-1.5 0-2l-2-2c-.5-.5-1.5-.5-2 0-.5.5-.5 1.5 0 2l.5.5-.5.5c-.5.5-.5 1.5 0 2zM21.8 2.2c-.4-.4-1-.4-1.4 0l-2.5 2.5c-.4.4-.4 1 0 1.4.2.2.5.3.7.3.3 0 .5-.1.7-.3l2.5-2.5c.4-.4.4-1 0-1.4z"/>
+                    <circle cx="9" cy="9" r="2"/>
+                    <path d="M14.5 13.5c0-1.93-1.57-3.5-3.5-3.5s-3.5 1.57-3.5 3.5S9.07 17 11 17s3.5-1.57 3.5-3.5z"/>
+                </svg>
+            </div>
+            <h3 class="service-title">Nutrition Care</h3>
+            <p class="service-description">
+                Personalized nutrition planning and dietary consultations for optimal health and wellness.
+            </p>
+            <ul class="service-features">
+                <li>Lifestyle Modification</li>
+                <li>Diet Counselling</li>
+                <li>Personalized Nutrition Planning</li>
+                <li>Health Goal Achievement</li>
+            </ul>
+            <button class="service-btn" onclick="openServiceModal('nutrition')">
+                <span>Explore Service</span>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M5 12h14M12 5l7 7-7 7"/>
+                </svg>
+            </button>
+        </div>
+    </div>
+
+    <!-- Service Stats -->
+    <div class="service-stats">
+        <div class="stat-card">
+            <div class="stat-number" data-count="10000">0+</div>
+            <div class="stat-label">Happy Patients</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number" data-count="15">0+</div>
+            <div class="stat-label">Years Experience</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number" data-count="50">0+</div>
+            <div class="stat-label">Expert Specialists</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number" data-count="98">0%</div>
+            <div class="stat-label">Success Rate</div>
+        </div>
+    </div>
+</section>

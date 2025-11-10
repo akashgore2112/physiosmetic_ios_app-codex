@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Pain Assessment Functions Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-section {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .test-button {
+            padding: 10px 20px;
+            margin: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+        }
+        .test-button:hover {
+            background: #45a049;
+        }
+        .result {
+            margin-top: 10px;
+            padding: 10px;
+            background: #e8f5e9;
+            border-left: 4px solid #4CAF50;
+        }
+        .error {
+            background: #ffebee;
+            border-left-color: #f44336;
+        }
+        pre {
+            background: #263238;
+            color: #aed581;
+            padding: 10px;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>🧪 Pain Assessment Functions Test Page</h1>
+
+    <div class="test-section">
+        <h2>Step 1: Load Scripts</h2>
+        <p>Loading translations.js and pain-assessment.js...</p>
+        <div id="script-status"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>Step 2: Check Window Functions</h2>
+        <button class="test-button" onclick="checkWindowFunctions()">Check Functions on Window</button>
+        <div id="window-check"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>Step 3: Call initPainAssessment()</h2>
+        <button class="test-button" onclick="callInitPainAssessment()">Call initPainAssessment()</button>
+        <div id="init-result"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>Step 4: Test Individual Functions</h2>
+        <button class="test-button" onclick="testSelectBodyPart()">Test selectBodyPart()</button>
+        <button class="test-button" onclick="testShowTooltip()">Test showTooltip()</button>
+        <button class="test-button" onclick="testSelectIntensity()">Test selectIntensity()</button>
+        <div id="function-test"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>Console Output</h2>
+        <p>Check browser console (F12) for detailed logs</p>
+        <pre id="console-output"></pre>
+    </div>
+
+    <!-- Load scripts -->
+    <script src="./js/translations.js"></script>
+    <script src="./js/pain-assessment.js"></script>
+
+    <script>
+        // Capture console logs
+        const consoleOutput = document.getElementById('console-output');
+        const originalLog = console.log;
+        const originalError = console.error;
+
+        console.log = function(...args) {
+            originalLog.apply(console, args);
+            consoleOutput.textContent += args.join(' ') + '\n';
+        };
+
+        console.error = function(...args) {
+            originalError.apply(console, args);
+            consoleOutput.textContent += 'ERROR: ' + args.join(' ') + '\n';
+        };
+
+        // Test functions
+        function checkWindowFunctions() {
+            const output = document.getElementById('window-check');
+            const functions = [
+                'initPainAssessment',
+                'selectBodyPart',
+                'showTooltip',
+                'hideTooltip',
+                'selectIntensity',
+                'nextStep',
+                'switchLanguage'
+            ];
+
+            let html = '<div class="result">';
+            let allFound = true;
+
+            functions.forEach(fn => {
+                const exists = typeof window[fn] === 'function';
+                const status = exists ? '✅' : '❌';
+                html += `${status} window.${fn}: ${exists ? 'FOUND' : 'NOT FOUND'}<br>`;
+                if (!exists) allFound = false;
+            });
+
+            html += '<br><strong>';
+            html += allFound ? '✅ All functions are on window!' : '❌ Some functions are missing!';
+            html += '</strong></div>';
+
+            output.innerHTML = html;
+        }
+
+        function callInitPainAssessment() {
+            const output = document.getElementById('init-result');
+            try {
+                if (typeof initPainAssessment !== 'function') {
+                    output.innerHTML = '<div class="result error">❌ initPainAssessment is not defined</div>';
+                    return;
+                }
+
+                initPainAssessment();
+                output.innerHTML = '<div class="result">✅ initPainAssessment() called successfully!</div>';
+
+                // Re-check functions after init
+                setTimeout(checkWindowFunctions, 100);
+            } catch (error) {
+                output.innerHTML = `<div class="result error">❌ Error: ${error.message}</div>`;
+            }
+        }
+
+        function testSelectBodyPart() {
+            const output = document.getElementById('function-test');
+            try {
+                if (typeof window.selectBodyPart !== 'function') {
+                    output.innerHTML = '<div class="result error">❌ selectBodyPart is not defined on window</div>';
+                    return;
+                }
+
+                window.selectBodyPart('head');
+                output.innerHTML = '<div class="result">✅ selectBodyPart("head") called successfully!</div>';
+            } catch (error) {
+                output.innerHTML = `<div class="result error">❌ Error: ${error.message}</div>`;
+            }
+        }
+
+        function testShowTooltip() {
+            const output = document.getElementById('function-test');
+            try {
+                if (typeof window.showTooltip !== 'function') {
+                    output.innerHTML = '<div class="result error">❌ showTooltip is not defined on window</div>';
+                    return;
+                }
+
+                const fakeEvent = { currentTarget: { getAttribute: () => 'Muscle,Nerve' } };
+                window.showTooltip(fakeEvent, 'head');
+                output.innerHTML = '<div class="result">✅ showTooltip(event, "head") called successfully!</div>';
+            } catch (error) {
+                output.innerHTML = `<div class="result error">❌ Error: ${error.message}</div>`;
+            }
+        }
+
+        function testSelectIntensity() {
+            const output = document.getElementById('function-test');
+            try {
+                if (typeof window.selectIntensity !== 'function') {
+                    output.innerHTML = '<div class="result error">❌ selectIntensity is not defined on window</div>';
+                    return;
+                }
+
+                window.selectIntensity('moderate');
+                output.innerHTML = '<div class="result">✅ selectIntensity("moderate") called successfully!</div>';
+            } catch (error) {
+                output.innerHTML = `<div class="result error">❌ Error: ${error.message}</div>`;
+            }
+        }
+
+        // Auto-check on page load
+        window.addEventListener('load', function() {
+            console.log('='.repeat(60));
+            console.log('PAGE LOADED - Running automatic checks...');
+            console.log('='.repeat(60));
+
+            document.getElementById('script-status').innerHTML = '<div class="result">✅ Scripts loaded</div>';
+
+            setTimeout(function() {
+                checkWindowFunctions();
+            }, 500);
+        });
+    </script>
+</body>
+</html>

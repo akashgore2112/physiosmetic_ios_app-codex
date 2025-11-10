@@ -10,7 +10,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
-    <script src="js/translations.js"></script>
+    <!-- REMOVED: <script src="js/translations.js"></script> - DUPLICATE! Loaded again at line 6470 -->
 
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -207,6 +207,7 @@
             justify-content: space-between;
             align-items: center;
             padding: 1.5rem 6%;
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
             backdrop-filter: blur(20px) saturate(180%);
             background: rgba(0, 0, 0, 0.8);
             border-bottom: 1px solid rgba(255, 255, 255, 0.08);
@@ -532,6 +533,7 @@
         .highlight {
             background: linear-gradient(135deg, var(--primary), var(--primary-light));
             -webkit-background-clip: text;
+            background-clip: text;
             -webkit-text-fill-color: transparent;
             background-size: 200% auto;
             animation: shimmer 3s ease infinite;
@@ -565,6 +567,7 @@
             animation: fadeIn 1s ease 0.5s both;
             position: relative;
             overflow: hidden;
+            -webkit-backdrop-filter: blur(10px);
             backdrop-filter: blur(10px);
             box-shadow:
                 0 8px 32px rgba(0, 0, 0, 0.3),
@@ -718,6 +721,7 @@
             opacity: 0;
             visibility: hidden;
             transition: all var(--transition-normal) var(--easing);
+            -webkit-backdrop-filter: blur(20px);
             backdrop-filter: blur(20px);
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
             overflow-y: auto;
@@ -733,6 +737,7 @@
             position: fixed;
             inset: 0;
             background: rgba(0, 0, 0, 0.8);
+            -webkit-backdrop-filter: blur(8px);
             backdrop-filter: blur(8px);
             z-index: 10000;
             opacity: 0;
@@ -904,6 +909,7 @@
                 #c62828 100%);
             outline: none;
             -webkit-appearance: none;
+            appearance: none;
             position: relative;
         }
 
@@ -1173,6 +1179,7 @@
             font-size: 0.9rem;
             position: relative;
             overflow: hidden;
+            -webkit-backdrop-filter: blur(10px);
             backdrop-filter: blur(10px);
             box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
         }
@@ -1475,6 +1482,7 @@
             background: linear-gradient(135deg,
                 rgba(5, 10, 20, 0.85) 0%,
                 rgba(10, 15, 25, 0.9) 100%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
             backdrop-filter: blur(20px) saturate(180%);
             border: 2px solid rgba(243, 112, 33, 0.3);
             border-radius: 16px;
@@ -1831,6 +1839,7 @@
             position: fixed;
             inset: 0;
             background: rgba(0, 0, 0, 0.9);
+            -webkit-backdrop-filter: blur(10px);
             backdrop-filter: blur(10px);
             z-index: 9998;
             opacity: 0;
@@ -1901,6 +1910,7 @@
             margin-bottom: 0.5rem;
             background: linear-gradient(135deg, var(--primary), var(--primary-light));
             -webkit-background-clip: text;
+            background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
@@ -1960,6 +1970,138 @@
         .form-submit:hover {
             transform: translateY(-2px);
             box-shadow: 0 10px 30px rgba(243, 112, 33, 0.4);
+        }
+
+        .form-submit:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Form Validation Messages */
+        .form-error {
+            color: #ff4444;
+            font-size: 0.875rem;
+            margin-top: 0.5rem;
+            display: none;
+            animation: shake 0.3s ease;
+        }
+
+        .form-error.show {
+            display: block;
+        }
+
+        .form-input.error {
+            border-color: #ff4444;
+            background: rgba(255, 68, 68, 0.1);
+        }
+
+        /* Success Message */
+        .success-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.95);
+            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 100000;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .success-overlay.show {
+            display: flex;
+        }
+
+        .success-message {
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            border: 2px solid var(--primary);
+            border-radius: 24px;
+            padding: 3rem;
+            text-align: center;
+            max-width: 500px;
+            width: 90%;
+            animation: successPopIn 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        .success-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            font-size: 3rem;
+            animation: successBounce 0.6s ease 0.2s both;
+        }
+
+        .success-title {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .success-text {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 2rem;
+        }
+
+        .success-button {
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: #fff;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .success-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(243, 112, 33, 0.4);
+        }
+
+        @keyframes successPopIn {
+            0% {
+                opacity: 0;
+                transform: scale(0.5);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes successBounce {
+            0% {
+                opacity: 0;
+                transform: scale(0);
+            }
+            50% {
+                transform: scale(1.2);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
         }
 
         /* RESPONSIVE */
@@ -2117,6 +2259,7 @@
             background: var(--card-bg);
             border: 1px solid var(--border-color);
             border-radius: 20px;
+            -webkit-backdrop-filter: blur(20px);
             backdrop-filter: blur(20px);
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
             position: relative;
@@ -2201,8 +2344,8 @@
             font-weight: 700;
             background: linear-gradient(135deg, var(--primary), var(--primary-light));
             -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
             background-clip: text;
+            -webkit-text-fill-color: transparent;
             margin-bottom: 0.25rem;
         }
 
@@ -2440,6 +2583,7 @@
             border: 1px solid var(--border-color);
             border-radius: 24px;
             padding: 2.5rem;
+            -webkit-backdrop-filter: blur(20px);
             backdrop-filter: blur(20px);
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
             min-height: 600px;
@@ -2493,8 +2637,8 @@
             margin-bottom: 0.75rem;
             background: linear-gradient(135deg, var(--text-primary), var(--text-secondary));
             -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
             background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
         .step-description {
@@ -2583,6 +2727,7 @@
             z-index: 1000;
             box-shadow: 0 8px 24px rgba(0, 0, 0, 0.8);
             min-width: 200px;
+            -webkit-backdrop-filter: blur(10px);
             backdrop-filter: blur(10px);
         }
 
@@ -3460,6 +3605,7 @@
             width: 100%;
             height: 100%;
             background: rgba(0, 0, 0, 0.9);
+            -webkit-backdrop-filter: blur(10px);
             backdrop-filter: blur(10px);
             z-index: 9999;
             display: none;
@@ -4287,8 +4433,8 @@
             gap: 0.5rem;
             z-index: 999;
             background: rgba(20, 20, 30, 0.95);
-            backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px);
             padding: 0.5rem;
             border-radius: 30px;
             border: 1px solid var(--border-color);
@@ -4331,8 +4477,8 @@
             right: 0;
             z-index: 998;
             background: rgba(5, 10, 20, 0.98);
-            backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
+            backdrop-filter: blur(20px);
             border-bottom: 1px solid var(--border-color);
             padding: 1rem 2rem;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
@@ -4661,6 +4807,1290 @@
             to {
                 opacity: 1;
                 transform: translateY(0);
+            }
+        }
+
+        /* ============================================
+           DYNAMIC SECTIONS STYLES
+           ============================================ */
+
+        /* Common Section Styles */
+        .section-container {
+            padding: 6rem 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+            background: var(--dark-bg);
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .section-badge {
+            display: inline-block;
+            padding: 0.5rem 1.5rem;
+            background: rgba(243, 112, 33, 0.1);
+            color: var(--primary);
+            border-radius: 50px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            margin-bottom: 1rem;
+        }
+
+        .section-title {
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+            font-family: 'Space Grotesk', sans-serif;
+        }
+
+        .section-subtitle {
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        /* Services Section */
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            margin-bottom: 4rem;
+        }
+
+        /* Responsive Grid: 2 columns for tablets, 1 for mobile */
+        @media (max-width: 1200px) {
+            .services-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .services-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .service-card {
+                padding: 2rem !important;
+            }
+
+            .service-icon {
+                width: 60px !important;
+                height: 60px !important;
+            }
+
+            .service-icon svg {
+                width: 30px !important;
+                height: 30px !important;
+            }
+
+            .service-title {
+                font-size: 1.35rem !important;
+            }
+
+            .service-description {
+                font-size: 0.9rem !important;
+            }
+
+            .featured-badge {
+                font-size: 0.7rem !important;
+                padding: 0.4rem 0.8rem !important;
+            }
+
+            .service-modal-content {
+                width: 95% !important;
+                max-height: 90vh !important;
+                border-radius: 20px !important;
+            }
+
+            .service-modal-header {
+                padding: 2rem !important;
+                padding-bottom: 1rem !important;
+            }
+
+            .service-modal-icon {
+                width: 70px !important;
+                height: 70px !important;
+            }
+
+            .service-modal-icon svg {
+                width: 35px !important;
+                height: 35px !important;
+            }
+
+            .service-modal-title {
+                font-size: 1.75rem !important;
+            }
+
+            .service-modal-body {
+                padding: 0 2rem 2rem !important;
+                font-size: 0.95rem !important;
+            }
+
+            .service-modal-body h4 {
+                font-size: 1.15rem !important;
+            }
+
+            .service-modal-footer {
+                padding: 1.5rem 2rem 2rem !important;
+                flex-direction: column !important;
+            }
+
+            .service-modal-btn-primary,
+            .service-modal-btn-secondary {
+                padding: 1rem 1.5rem !important;
+                font-size: 1rem !important;
+            }
+        }
+
+        .service-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 2.5rem;
+            transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            min-height: 100%;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Top gradient border animation */
+        .service-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--primary-light));
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+        }
+
+        /* Glowing background effect */
+        .service-card::after {
+            content: '';
+            position: absolute;
+            inset: -2px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            border-radius: 20px;
+            opacity: 0;
+            z-index: -1;
+            transition: opacity 0.4s ease;
+            filter: blur(20px);
+        }
+
+        .service-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .service-card:hover::after {
+            opacity: 0.3;
+        }
+
+        .service-card:hover {
+            transform: translateY(-12px);
+            border-color: var(--primary);
+            box-shadow:
+                0 25px 50px rgba(243, 112, 33, 0.25),
+                0 0 40px rgba(243, 112, 33, 0.15),
+                inset 0 0 20px rgba(243, 112, 33, 0.05);
+        }
+
+        /* Featured Card with Enhanced Glow */
+        .service-card.featured {
+            border-color: var(--primary);
+            background: linear-gradient(135deg,
+                rgba(243, 112, 33, 0.12) 0%,
+                rgba(10, 15, 25, 0.95) 50%,
+                rgba(10, 15, 25, 0.98) 100%
+            );
+            box-shadow:
+                0 4px 20px rgba(0, 0, 0, 0.3),
+                0 0 30px rgba(243, 112, 33, 0.2),
+                inset 0 0 30px rgba(243, 112, 33, 0.05);
+        }
+
+        .service-card.featured::before {
+            transform: scaleX(1);
+        }
+
+        .service-card.featured::after {
+            opacity: 0.15;
+        }
+
+        .service-card.featured:hover {
+            box-shadow:
+                0 30px 60px rgba(243, 112, 33, 0.35),
+                0 0 60px rgba(243, 112, 33, 0.25),
+                inset 0 0 40px rgba(243, 112, 33, 0.08);
+        }
+
+        .service-card.featured:hover::after {
+            opacity: 0.4;
+        }
+
+        .featured-badge {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 15px rgba(243, 112, 33, 0.4);
+            animation: pulse 2s ease-in-out infinite;
+            z-index: 1;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+                box-shadow: 0 4px 15px rgba(243, 112, 33, 0.4);
+            }
+            50% {
+                transform: scale(1.05);
+                box-shadow: 0 4px 20px rgba(243, 112, 33, 0.6);
+            }
+        }
+
+        .service-icon {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, rgba(243, 112, 33, 0.15), rgba(243, 112, 33, 0.05));
+            border: 2px solid rgba(243, 112, 33, 0.3);
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+            color: var(--primary);
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(243, 112, 33, 0.15);
+        }
+
+        .service-card:hover .service-icon {
+            transform: scale(1.1) rotate(5deg);
+            box-shadow: 0 6px 25px rgba(243, 112, 33, 0.3);
+            background: linear-gradient(135deg, rgba(243, 112, 33, 0.25), rgba(243, 112, 33, 0.1));
+        }
+
+        .service-icon svg {
+            width: 36px;
+            height: 36px;
+            filter: drop-shadow(0 2px 4px rgba(243, 112, 33, 0.3));
+        }
+
+        .service-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+            font-family: 'Space Grotesk', sans-serif;
+            letter-spacing: -0.5px;
+        }
+
+        .service-description {
+            color: var(--text-secondary);
+            line-height: 1.7;
+            margin-bottom: 1.5rem;
+            font-size: 0.95rem;
+            flex-grow: 0;
+        }
+
+        .service-features {
+            list-style: none;
+            margin-bottom: auto;
+            padding-bottom: 2rem;
+            flex-grow: 1;
+        }
+
+        .service-features li {
+            padding: 0.65rem 0;
+            padding-left: 1.5rem;
+            position: relative;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+        }
+
+        .service-features li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: var(--primary);
+            font-weight: bold;
+            font-size: 1.1rem;
+            transition: all 0.2s ease;
+        }
+
+        .service-card:hover .service-features li {
+            padding-left: 1.75rem;
+            color: var(--text-primary);
+        }
+
+        .service-card:hover .service-features li::before {
+            left: 0.25rem;
+            text-shadow: 0 0 10px rgba(243, 112, 33, 0.5);
+        }
+
+        .service-btn {
+            width: 100%;
+            padding: 1.1rem 1.5rem;
+            background: linear-gradient(135deg, rgba(243, 112, 33, 0.1), rgba(243, 112, 33, 0.05));
+            border: 2px solid var(--primary);
+            border-radius: 14px;
+            color: var(--primary);
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+            position: relative;
+            overflow: hidden;
+            margin-top: auto;
+            box-shadow: 0 4px 15px rgba(243, 112, 33, 0.15);
+        }
+
+        .service-btn::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .service-btn span,
+        .service-btn svg {
+            position: relative;
+            z-index: 1;
+        }
+
+        .service-btn:hover::before {
+            opacity: 1;
+        }
+
+        .service-btn:hover {
+            color: white;
+            transform: translateY(-2px);
+            box-shadow:
+                0 8px 25px rgba(243, 112, 33, 0.35),
+                0 0 20px rgba(243, 112, 33, 0.2);
+            border-color: var(--primary-light);
+        }
+
+        .service-btn:hover svg {
+            transform: translateX(4px);
+        }
+
+        .service-btn svg {
+            width: 20px;
+            height: 20px;
+            transition: transform 0.3s ease;
+        }
+
+        .service-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            padding: 3rem;
+            background: rgba(243, 112, 33, 0.05);
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+        }
+
+        .stat-card {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+
+        /* Specialists Section */
+        .specialists-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .specialist-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 2rem;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .specialist-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(243, 112, 33, 0.3);
+            border-color: var(--primary);
+        }
+
+        .specialist-image {
+            width: 120px;
+            height: 120px;
+            background: rgba(243, 112, 33, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            position: relative;
+            border: 3px solid var(--border-color);
+        }
+
+        .specialist-image svg {
+            width: 60px;
+            height: 60px;
+            color: var(--primary);
+        }
+
+        .specialist-badge {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            background: var(--primary);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .specialist-info {
+            text-align: center;
+        }
+
+        .specialist-name {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .specialist-specialty {
+            color: var(--primary);
+            font-size: 0.875rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 1rem;
+        }
+
+        .specialist-bio {
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+            text-align: left;
+        }
+
+        .specialist-credentials {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .credential {
+            padding: 0.5rem 1rem;
+            background: rgba(243, 112, 33, 0.1);
+            border-radius: 50px;
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        .specialist-btn {
+            width: 100%;
+            padding: 1rem;
+            background: var(--primary);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .specialist-btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        .specialist-btn svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        .specialists-cta {
+            padding: 3rem;
+            background: linear-gradient(135deg, rgba(243, 112, 33, 0.1), rgba(10, 15, 25, 0.95));
+            border: 1px solid var(--primary);
+            border-radius: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: 2rem;
+        }
+
+        .cta-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .cta-subtitle {
+            color: var(--text-secondary);
+            max-width: 600px;
+        }
+
+        .cta-btn {
+            padding: 1rem 2rem;
+            background: var(--primary);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .cta-btn:hover {
+            background: var(--primary-dark);
+            transform: translateX(4px);
+        }
+
+        .cta-btn svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        /* Testimonials Section */
+        .success-stats-banner {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin-bottom: 4rem;
+            padding: 3rem;
+            background: linear-gradient(135deg, rgba(243, 112, 33, 0.1), rgba(10, 15, 25, 0.95));
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+        }
+
+        .success-stat {
+            text-align: center;
+        }
+
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            margin: 0 auto 1rem;
+            color: var(--primary);
+        }
+
+        .stat-icon svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+
+        .testimonials-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-bottom: 4rem;
+        }
+
+        .testimonial-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 2rem;
+            transition: all 0.3s ease;
+        }
+
+        .testimonial-card:hover {
+            transform: translateY(-8px);
+            border-color: var(--primary);
+            box-shadow: 0 20px 40px rgba(243, 112, 33, 0.2);
+        }
+
+        .testimonial-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .testimonial-avatar {
+            width: 60px;
+            height: 60px;
+            background: rgba(243, 112, 33, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .testimonial-avatar svg {
+            width: 30px;
+            height: 30px;
+            color: var(--primary);
+        }
+
+        .testimonial-info {
+            flex: 1;
+        }
+
+        .testimonial-name {
+            font-size: 1.125rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.25rem;
+        }
+
+        .testimonial-issue {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+        }
+
+        .testimonial-rating {
+            display: flex;
+            gap: 0.25rem;
+        }
+
+        .testimonial-rating svg {
+            width: 16px;
+            height: 16px;
+            color: #fbbf24;
+        }
+
+        .testimonial-text {
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+            font-style: italic;
+        }
+
+        .testimonial-outcome {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .outcome-badge {
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .outcome-badge.success {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+        }
+
+        .outcome-timeline {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+
+        .video-testimonials-section {
+            margin-bottom: 4rem;
+        }
+
+        .video-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .video-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .video-subtitle {
+            color: var(--text-secondary);
+        }
+
+        .video-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .video-placeholder {
+            aspect-ratio: 16/9;
+            background: linear-gradient(135deg, rgba(243, 112, 33, 0.2), rgba(10, 15, 25, 0.95));
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .video-placeholder:hover {
+            transform: scale(1.05);
+            border-color: var(--primary);
+        }
+
+        .video-play-btn {
+            width: 80px;
+            height: 80px;
+            background: var(--primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+
+        .video-play-btn svg {
+            width: 40px;
+            height: 40px;
+            margin-left: 4px;
+        }
+
+        .video-info {
+            position: absolute;
+            bottom: 1rem;
+            left: 1rem;
+            right: 1rem;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 0.75rem;
+            border-radius: 8px;
+        }
+
+        .video-name {
+            color: white;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .video-duration {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+
+        .testimonials-cta {
+            text-align: center;
+            padding: 4rem 2rem;
+            background: linear-gradient(135deg, rgba(243, 112, 33, 0.1), rgba(10, 15, 25, 0.95));
+            border-radius: 20px;
+            border: 1px solid var(--primary);
+        }
+
+        .cta-btn-large {
+            padding: 1.25rem 3rem;
+            background: var(--primary);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-size: 1.125rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            transition: all 0.3s ease;
+            margin-top: 2rem;
+        }
+
+        .cta-btn-large:hover {
+            background: var(--primary-dark);
+            transform: translateY(-4px);
+            box-shadow: 0 10px 30px rgba(243, 112, 33, 0.3);
+        }
+
+        .cta-btn-large svg {
+            width: 24px;
+            height: 24px;
+        }
+
+        /* Contact Section */
+        .contact-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .contact-info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 4rem;
+        }
+
+        .contact-info-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 2rem;
+            transition: all 0.3s ease;
+        }
+
+        .contact-info-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--primary);
+        }
+
+        .contact-icon {
+            width: 50px;
+            height: 50px;
+            background: rgba(243, 112, 33, 0.1);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1rem;
+            color: var(--primary);
+        }
+
+        .contact-icon svg {
+            width: 24px;
+            height: 24px;
+        }
+
+        .contact-info-title {
+            font-size: 1.125rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.75rem;
+        }
+
+        .contact-info-text {
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+
+        .contact-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .contact-link:hover {
+            transform: translateX(4px);
+        }
+
+        .contact-link svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        .contact-note {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--success);
+            font-size: 0.875rem;
+            margin-top: 1rem;
+        }
+
+        .contact-note svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        .contact-main-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            margin-bottom: 4rem;
+        }
+
+        .contact-map-container,
+        .contact-form-container {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 2rem;
+        }
+
+        .map-header,
+        .form-header {
+            margin-bottom: 2rem;
+        }
+
+        .map-title,
+        .form-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .map-subtitle,
+        .form-subtitle {
+            color: var(--text-secondary);
+        }
+
+        .map-wrapper {
+            height: 400px;
+            border-radius: 16px;
+            overflow: hidden;
+            margin-bottom: 1.5rem;
+        }
+
+        .map-features {
+            display: flex;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .map-feature {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+
+        .map-feature svg {
+            width: 20px;
+            height: 20px;
+            color: var(--primary);
+        }
+
+        .contact-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+
+        .form-label {
+            color: var(--text-primary);
+            font-weight: 600;
+            font-size: 0.875rem;
+        }
+
+        .required {
+            color: var(--danger);
+        }
+
+        .form-input,
+        .form-select,
+        .form-textarea {
+            padding: 0.875rem 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-family: 'Inter', sans-serif;
+            transition: all 0.3s ease;
+        }
+
+        .form-input:focus,
+        .form-select:focus,
+        .form-textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .form-input.error,
+        .form-select.error,
+        .form-textarea.error {
+            border-color: var(--danger);
+        }
+
+        .form-error {
+            color: var(--danger);
+            font-size: 0.75rem;
+            margin-top: 0.25rem;
+            display: block;
+        }
+
+        .form-hint {
+            color: var(--text-secondary);
+            font-size: 0.75rem;
+            margin-top: 0.25rem;
+        }
+
+        .form-checkbox {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            cursor: pointer;
+        }
+
+        .form-checkbox input[type="checkbox"] {
+            margin-top: 0.25rem;
+        }
+
+        .checkbox-text {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+
+        .form-link {
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        .form-link:hover {
+            text-decoration: underline;
+        }
+
+        .form-submit-btn {
+            padding: 1rem 2rem;
+            background: var(--primary);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+        }
+
+        .form-submit-btn:hover:not(:disabled) {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        .form-submit-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .form-submit-btn svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        .form-success {
+            display: none;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid var(--success);
+            border-radius: 12px;
+            color: var(--success);
+            margin-top: 1rem;
+        }
+
+        .form-success svg {
+            width: 24px;
+            height: 24px;
+            flex-shrink: 0;
+        }
+
+        .contact-quick-actions {
+            margin-bottom: 4rem;
+        }
+
+        .quick-actions-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .quick-actions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .quick-action-btn {
+            padding: 1.5rem 1rem;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.75rem;
+            color: var(--text-primary);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .quick-action-btn:hover {
+            transform: translateY(-4px);
+            border-color: var(--primary);
+            background: rgba(243, 112, 33, 0.05);
+        }
+
+        .quick-action-btn svg {
+            width: 32px;
+            height: 32px;
+            color: var(--primary);
+        }
+
+        .contact-social {
+            text-align: center;
+        }
+
+        .social-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 1.5rem;
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+        }
+
+        .social-link {
+            width: 50px;
+            height: 50px;
+            background: rgba(243, 112, 33, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+            transition: all 0.3s ease;
+        }
+
+        .social-link:hover {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-4px);
+        }
+
+        .social-link svg {
+            width: 24px;
+            height: 24px;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .section-title {
+                font-size: 2.5rem;
+            }
+
+            .contact-main-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .section-container {
+                padding: 4rem 1.5rem;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+
+            .services-grid,
+            .specialists-grid,
+            .testimonials-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .quick-actions-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .section-badge {
+                font-size: 0.75rem;
+                padding: 0.4rem 1rem;
+            }
+
+            .section-title {
+                font-size: 1.75rem;
+            }
+
+            .section-subtitle {
+                font-size: 1rem;
+            }
+
+            .quick-actions-grid {
+                grid-template-columns: 1fr;
             }
         }
 
@@ -5543,27 +6973,616 @@
             <form id="quickBooking" onsubmit="handleSubmit(event)">
                 <div class="form-group">
                     <label class="form-label">Your Name</label>
-                    <input type="text" class="form-input" placeholder="Enter your name" required>
+                    <input type="text" class="form-input" id="nameInput" placeholder="Enter your name" required>
+                    <div class="form-error" id="nameError"></div>
                 </div>
                 <div class="form-group">
                     <label class="form-label">Phone Number</label>
-                    <input type="tel" class="form-input" placeholder="+971 XX XXX XXXX" required>
+                    <input type="tel" class="form-input" id="phoneInput" placeholder="+971 XX XXX XXXX" required>
+                    <div class="form-error" id="phoneError"></div>
                 </div>
                 <div class="form-group">
                     <label class="form-label">Preferred Date</label>
-                    <input type="date" class="form-input" required>
+                    <input type="date" class="form-input" id="dateInput" required>
+                    <div class="form-error" id="dateError"></div>
                 </div>
                 <div class="form-group">
                     <label class="form-label">Pain Area (Optional)</label>
                     <input type="text" class="form-input" id="painAreaInput" placeholder="e.g., Lower back, Knee">
                 </div>
-                <button type="submit" class="form-submit">Book Free Assessment</button>
+                <button type="submit" class="form-submit" id="submitBtn">Book Free Assessment</button>
             </form>
+        </div>
+
+        <!-- SUCCESS MESSAGE OVERLAY -->
+        <div class="success-overlay" id="successOverlay">
+            <div class="success-message">
+                <div class="success-icon">✓</div>
+                <h2 class="success-title">Booking Confirmed!</h2>
+                <p class="success-text">
+                    Thank you for choosing our services. We'll contact you shortly to confirm your appointment and answer any questions you may have.
+                </p>
+                <button class="success-button" onclick="closeSuccess()">Got it!</button>
+            </div>
         </div>
 
     </section>
     <!-- End of Pain Assessment AI section -->
 
+    <!-- DYNAMIC SECTIONS CONTAINER -->
+    <main id="main-sections">
+        <!-- Services Section -->
+        <div id="services-container" class="section-placeholder" data-section="services">
+            <!-- SERVICES SECTION -->
+            <section id="services" class="section-container">
+                <div class="section-header">
+                    <span class="section-badge">What We Offer</span>
+                    <h2 class="section-title">Comprehensive Care Services</h2>
+                    <p class="section-subtitle">State-of-the-art facilities and expert care across multiple specialties</p>
+                </div>
+
+                <div class="services-grid">
+                    <!-- Sports Performance Studio -->
+                    <div class="service-card" data-service="sports">
+                        <div class="service-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M13.49 5.48c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm-3.6 13.9l1-4.4 2.1 2v6h2v-7.5l-2.1-2 .6-3c1.3 1.5 3.3 2.5 5.5 2.5v-2c-1.9 0-3.5-1-4.3-2.4l-1-1.6c-.4-.6-1-1-1.7-1-.3 0-.5.1-.8.1l-5.2 2.2v4.7h2v-3.4l1.8-.7-1.6 8.1-4.9-1-.4 2 7 1.4z"/>
+                            </svg>
+                        </div>
+                        <h3 class="service-title">Sports Performance Studio</h3>
+                        <p class="service-description">
+                            Advanced athletic training, injury prevention, and performance optimization for athletes at all levels.
+                        </p>
+                        <ul class="service-features">
+                            <li>Injury Prevention Programs</li>
+                            <li>Elite Athlete Training</li>
+                            <li>Exercise & Functional Training</li>
+                            <li>Cryotherapy Recovery</li>
+                        </ul>
+                        <button class="service-btn" onclick="openServiceModal('sports')">
+                            <span>Explore Service</span>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M5 12h14M12 5l7 7-7 7"/>
+                            </svg>
+                        </button>
+                    </div>
+
+                    <!-- Physio Care -->
+                    <div class="service-card featured" data-service="physio">
+                        <div class="featured-badge">Most Popular</div>
+                        <div class="service-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
+                            </svg>
+                        </div>
+                        <h3 class="service-title">Physio Care</h3>
+                        <p class="service-description">
+                            Comprehensive physiotherapy treatments for pain relief, mobility improvement, and functional recovery.
+                        </p>
+                        <ul class="service-features">
+                            <li>Manual Therapy</li>
+                            <li>Pain Management</li>
+                            <li>Post-Surgery Rehabilitation</li>
+                            <li>Chronic Pain Treatment</li>
+                        </ul>
+                        <button class="service-btn" onclick="openServiceModal('physio')">
+                            <span>Explore Service</span>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M5 12h14M12 5l7 7-7 7"/>
+                            </svg>
+                        </button>
+                    </div>
+
+                    <!-- Skin Care -->
+                    <div class="service-card" data-service="skin">
+                        <div class="service-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="8" r="7"/>
+                                <path d="M8.21 13.89L7 23l5-3 5 3-1.21-9.12"/>
+                            </svg>
+                        </div>
+                        <h3 class="service-title">Skin Care</h3>
+                        <p class="service-description">
+                            Advanced dermatological treatments and cosmetic procedures for healthy, radiant skin.
+                        </p>
+                        <ul class="service-features">
+                            <li>Acne Treatment Solutions</li>
+                            <li>Anti-Aging Therapies</li>
+                            <li>Pigmentation Correction</li>
+                            <li>Laser Hair Reduction</li>
+                        </ul>
+                        <button class="service-btn" onclick="openServiceModal('skin')">
+                            <span>Explore Service</span>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M5 12h14M12 5l7 7-7 7"/>
+                            </svg>
+                        </button>
+                    </div>
+
+                    <!-- Hair Care -->
+                    <div class="service-card" data-service="hair">
+                        <div class="service-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M12 2c2.5 0 4.5 2 4.5 4.5 0 1.5-1 3-2 3.5v7c0 1.1-.9 2-2 2H7v2h10v2H7c-1.1 0-2-.9-2-2v-6c-1-.5-2-2-2-3.5C3 4 5 2 7.5 2c1 0 1.9.3 2.5.9C10.6 2.3 11.5 2 12 2z"/>
+                            </svg>
+                        </div>
+                        <h3 class="service-title">Hair Care</h3>
+                        <p class="service-description">
+                            Professional hair restoration and scalp treatments for all hair-related concerns.
+                        </p>
+                        <ul class="service-features">
+                            <li>Hair Loss Treatment</li>
+                            <li>Mesotherapy Solutions</li>
+                            <li>Hair Root Therapy</li>
+                            <li>PRP (Platelet Rich Plasma)</li>
+                        </ul>
+                        <button class="service-btn" onclick="openServiceModal('hair')">
+                            <span>Explore Service</span>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M5 12h14M12 5l7 7-7 7"/>
+                            </svg>
+                        </button>
+                    </div>
+
+                    <!-- Body Care -->
+                    <div class="service-card" data-service="body">
+                        <div class="service-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M12 2a2 2 0 0 1 2 2c0 .74-.4 1.39-1 1.73V7h1a7 7 0 0 1 7 7h1a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-1v2a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-2H2a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1h1a7 7 0 0 1 7-7h1V5.73c-.6-.34-1-.99-1-1.73a2 2 0 0 1 2-2z"/>
+                            </svg>
+                        </div>
+                        <h3 class="service-title">Body Care</h3>
+                        <p class="service-description">
+                            Holistic body treatments and wellness programs for complete physical health.
+                        </p>
+                        <ul class="service-features">
+                            <li>Weight Loss Programs</li>
+                            <li>Non-Invasive Lipolysis</li>
+                            <li>Detoxification Therapy</li>
+                            <li>Vaginal Rejuvenation</li>
+                        </ul>
+                        <button class="service-btn" onclick="openServiceModal('body')">
+                            <span>Explore Service</span>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M5 12h14M12 5l7 7-7 7"/>
+                            </svg>
+                        </button>
+                    </div>
+
+                    <!-- Nutrition Care -->
+                    <div class="service-card" data-service="nutrition">
+                        <div class="service-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M2 21c.5.5 1.5.5 2 0l1.5-1.5c.5-.5.5-1.5 0-2l-2-2c-.5-.5-1.5-.5-2 0-.5.5-.5 1.5 0 2l.5.5-.5.5c-.5.5-.5 1.5 0 2zM21.8 2.2c-.4-.4-1-.4-1.4 0l-2.5 2.5c-.4.4-.4 1 0 1.4.2.2.5.3.7.3.3 0 .5-.1.7-.3l2.5-2.5c.4-.4.4-1 0-1.4z"/>
+                                <circle cx="9" cy="9" r="2"/>
+                                <path d="M14.5 13.5c0-1.93-1.57-3.5-3.5-3.5s-3.5 1.57-3.5 3.5S9.07 17 11 17s3.5-1.57 3.5-3.5z"/>
+                            </svg>
+                        </div>
+                        <h3 class="service-title">Nutrition Care</h3>
+                        <p class="service-description">
+                            Personalized nutrition planning and dietary consultations for optimal health and wellness.
+                        </p>
+                        <ul class="service-features">
+                            <li>Lifestyle Modification</li>
+                            <li>Diet Counselling</li>
+                            <li>Personalized Nutrition Planning</li>
+                            <li>Health Goal Achievement</li>
+                        </ul>
+                        <button class="service-btn" onclick="openServiceModal('nutrition')">
+                            <span>Explore Service</span>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M5 12h14M12 5l7 7-7 7"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Service Stats -->
+                <div class="service-stats">
+                    <div class="stat-card">
+                        <div class="stat-number" data-count="10000">0+</div>
+                        <div class="stat-label">Happy Patients</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" data-count="15">0+</div>
+                        <div class="stat-label">Years Experience</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" data-count="50">0+</div>
+                        <div class="stat-label">Expert Specialists</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" data-count="98">0%</div>
+                        <div class="stat-label">Success Rate</div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- Specialists Section -->
+        <div id="specialists-container" class="section-placeholder" data-section="specialists">
+            <div class="section-loader">
+                <div class="loader-spinner"></div>
+                <p>Loading Specialists...</p>
+            </div>
+        </div>
+
+        <!-- Testimonials Section -->
+        <div id="testimonials-container" class="section-placeholder" data-section="success-stories">
+            <!-- SUCCESS STORIES SECTION -->
+<section id="testimonials" class="section-container">
+    <div class="section-header">
+        <span class="section-badge">Patient Success Stories</span>
+        <h2 class="section-title">Real Results, Real Recovery</h2>
+        <p class="section-subtitle">Hear from our patients who achieved remarkable recovery milestones</p>
+    </div>
+
+    <!-- Success Stats Banner -->
+    <div class="success-stats-banner">
+        <div class="success-stat">
+            <div class="stat-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                    <polyline points="22 4 12 14.01 9 11.01"/>
+                </svg>
+            </div>
+            <div class="stat-value">92%</div>
+            <div class="stat-label">Full Recovery Rate</div>
+        </div>
+        <div class="success-stat">
+            <div class="stat-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"/>
+                    <polyline points="12 6 12 12 16 14"/>
+                </svg>
+            </div>
+            <div class="stat-value">6 Weeks</div>
+            <div class="stat-label">Average Recovery Time</div>
+        </div>
+        <div class="success-stat">
+            <div class="stat-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                    <circle cx="9" cy="7" r="4"/>
+                    <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                    <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                </svg>
+            </div>
+            <div class="stat-value">10,000+</div>
+            <div class="stat-label">Successful Treatments</div>
+        </div>
+        <div class="success-stat">
+            <div class="stat-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                </svg>
+            </div>
+            <div class="stat-value">4.9/5</div>
+            <div class="stat-label">Patient Satisfaction</div>
+        </div>
+    </div>
+
+    <!-- Testimonials Grid -->
+    <div class="testimonials-grid">
+        <!-- Testimonial 1 -->
+        <div class="testimonial-card" data-delay="0">
+            <div class="testimonial-header">
+                <div class="testimonial-avatar">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                        <circle cx="12" cy="7" r="4"/>
+                    </svg>
+                </div>
+                <div class="testimonial-info">
+                    <h4 class="testimonial-name">Rahul M.</h4>
+                    <p class="testimonial-issue">Chronic Lower Back Pain</p>
+                    <div class="testimonial-rating">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                        </svg>
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                        </svg>
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                        </svg>
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                        </svg>
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+            <div class="testimonial-content">
+                <p class="testimonial-text">
+                    "After 3 years of debilitating back pain, I was skeptical about any treatment working. Dr. Priya's personalized approach changed everything. Within 4 weeks, I was pain-free and back to my daily activities. The AI-powered assessment made me feel truly understood."
+                </p>
+                <div class="testimonial-outcome">
+                    <div class="outcome-badge success">100% Pain Reduction</div>
+                    <div class="outcome-timeline">Recovery: 4 weeks</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Testimonial 2 -->
+        <div class="testimonial-card" data-delay="100">
+            <div class="testimonial-header">
+                <div class="testimonial-avatar">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                        <circle cx="12" cy="7" r="4"/>
+                    </svg>
+                </div>
+                <div class="testimonial-info">
+                    <h4 class="testimonial-name">Priya S.</h4>
+                    <p class="testimonial-issue">Sports Knee Injury</p>
+                    <div class="testimonial-rating">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                        </svg>
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                        </svg>
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                        </svg>
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                        </svg>
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+            <div class="testimonial-content">
+                <p class="testimonial-text">
+                    "As a semi-professional athlete, I thought my career was over after tearing my ACL. Dr. Rajesh's sports rehabilitation program got me back on the field stronger than before. His biomechanical analysis identified issues I didn't even know I had!"
+                </p>
+                <div class="testimonial-outcome">
+                    <div class="outcome-badge success">Full Recovery</div>
+                    <div class="outcome-timeline">Recovery: 8 weeks</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Testimonial 3 -->
+        <div class="testimonial-card" data-delay="200">
+            <div class="testimonial-header">
+                <div class="testimonial-avatar">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                        <circle cx="12" cy="7" r="4"/>
+                    </svg>
+                </div>
+                <div class="testimonial-info">
+                    <h4 class="testimonial-name">Amit K.</h4>
+                    <p class="testimonial-issue">Post-Surgery Rehabilitation</p>
+                    <div class="testimonial-rating">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                        </svg>
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                        </svg>
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                        </svg>
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                        </svg>
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+            <div class="testimonial-content">
+                <p class="testimonial-text">
+                    "After my hip replacement surgery, I was worried about regaining mobility. The comprehensive post-surgery program exceeded all expectations. The staff was incredibly supportive, and the technology-driven approach made tracking progress so motivating."
+                </p>
+                <div class="testimonial-outcome">
+                    <div class="outcome-badge success">95% Mobility Restored</div>
+                    <div class="outcome-timeline">Recovery: 10 weeks</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Testimonial 4 -->
+        <div class="testimonial-card" data-delay="300">
+            <div class="testimonial-header">
+                <div class="testimonial-avatar">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                        <circle cx="12" cy="7" r="4"/>
+                    </svg>
+                </div>
+                <div class="testimonial-info">
+                    <h4 class="testimonial-name">Sneha P.</h4>
+                    <p class="testimonial-issue">Frozen Shoulder</p>
+                    <div class="testimonial-rating">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                        </svg>
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                        </svg>
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                        </svg>
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                        </svg>
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+            <div class="testimonial-content">
+                <p class="testimonial-text">
+                    "I couldn't lift my arm above shoulder height for 6 months. Manual therapy sessions with Dr. Priya combined with the home exercise program worked wonders. Now I have full range of motion and zero pain. Truly life-changing!"
+                </p>
+                <div class="testimonial-outcome">
+                    <div class="outcome-badge success">Full Range Restored</div>
+                    <div class="outcome-timeline">Recovery: 5 weeks</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Testimonial 5 -->
+        <div class="testimonial-card" data-delay="400">
+            <div class="testimonial-header">
+                <div class="testimonial-avatar">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                        <circle cx="12" cy="7" r="4"/>
+                    </svg>
+                </div>
+                <div class="testimonial-info">
+                    <h4 class="testimonial-name">Vikram R.</h4>
+                    <p class="testimonial-issue">Neck & Shoulder Tension</p>
+                    <div class="testimonial-rating">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                        </svg>
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                        </svg>
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                        </svg>
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                        </svg>
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+            <div class="testimonial-content">
+                <p class="testimonial-text">
+                    "Years of desk work left me with constant neck and shoulder pain. The ergonomic assessment and targeted exercises transformed my work life. I'm now pain-free and much more productive. The team's expertise is unmatched."
+                </p>
+                <div class="testimonial-outcome">
+                    <div class="outcome-badge success">Pain-Free</div>
+                    <div class="outcome-timeline">Recovery: 3 weeks</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Testimonial 6 -->
+        <div class="testimonial-card" data-delay="500">
+            <div class="testimonial-header">
+                <div class="testimonial-avatar">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                        <circle cx="12" cy="7" r="4"/>
+                    </svg>
+                </div>
+                <div class="testimonial-info">
+                    <h4 class="testimonial-name">Anjali D.</h4>
+                    <p class="testimonial-issue">Plantar Fasciitis</p>
+                    <div class="testimonial-rating">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                        </svg>
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                        </svg>
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                        </svg>
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                        </svg>
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+            <div class="testimonial-content">
+                <p class="testimonial-text">
+                    "Morning foot pain made every step agony. I tried everything before coming here. The combination of manual therapy, stretching protocol, and custom orthotics recommendations finally solved the problem. I can walk and run again!"
+                </p>
+                <div class="testimonial-outcome">
+                    <div class="outcome-badge success">90% Pain Reduction</div>
+                    <div class="outcome-timeline">Recovery: 6 weeks</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Video Testimonials Teaser -->
+    <div class="video-testimonials-section">
+        <div class="video-header">
+            <h3 class="video-title">Watch Patient Recovery Journeys</h3>
+            <p class="video-subtitle">See real transformations and hear directly from our patients</p>
+        </div>
+        <div class="video-grid">
+            <div class="video-placeholder" onclick="playTestimonialVideo('rahul')">
+                <div class="video-play-btn">
+                    <svg viewBox="0 0 24 24" fill="currentColor">
+                        <polygon points="5 3 19 12 5 21 5 3"/>
+                    </svg>
+                </div>
+                <div class="video-info">
+                    <p class="video-name">Rahul's Recovery</p>
+                    <p class="video-duration">3:45</p>
+                </div>
+            </div>
+            <div class="video-placeholder" onclick="playTestimonialVideo('priya')">
+                <div class="video-play-btn">
+                    <svg viewBox="0 0 24 24" fill="currentColor">
+                        <polygon points="5 3 19 12 5 21 5 3"/>
+                    </svg>
+                </div>
+                <div class="video-info">
+                    <p class="video-name">Priya's Journey</p>
+                    <p class="video-duration">4:12</p>
+                </div>
+            </div>
+            <div class="video-placeholder" onclick="playTestimonialVideo('amit')">
+                <div class="video-play-btn">
+                    <svg viewBox="0 0 24 24" fill="currentColor">
+                        <polygon points="5 3 19 12 5 21 5 3"/>
+                    </svg>
+                </div>
+                <div class="video-info">
+                    <p class="video-name">Amit's Transformation</p>
+                    <p class="video-duration">5:20</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CTA -->
+    <div class="testimonials-cta">
+        <h3 class="cta-title">Ready to Start Your Recovery Journey?</h3>
+        <p class="cta-subtitle">Join thousands of patients who found relief and regained their quality of life</p>
+        <button class="cta-btn-large" onclick="openModal()">
+            <span>Book Your Assessment Today</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M5 12h14M12 5l7 7-7 7"/>
+            </svg>
+        </button>
+    </div>
+</section>
+
+        </div>
+
+        <!-- Contact Section -->
+        <div id="contact-container" class="section-placeholder" data-section="contact">
+            <div class="section-loader">
+                <div class="loader-spinner"></div>
+                <p>Loading Contact Info...</p>
+            </div>
+        </div>
+    </main>
 
     <!-- Main page scripts (Hero section, animations, modals, etc.) -->
     <section class="hero-scripts">
@@ -5587,13 +7606,14 @@
             });
 
             // ASSESSMENT STATE
-            let assessmentData = {
-                painIntensity: 5,
-                duration: null,
-                activityLevel: null,
-                selectedPain: null,
-                bodyPart: null
-            };
+            // REMOVED: Duplicate declaration - assessmentData is already defined in pain-assessment.js
+            // let assessmentData = {
+            //     painIntensity: 5,
+            //     duration: null,
+            //     activityLevel: null,
+            //     selectedPain: null,
+            //     bodyPart: null
+            // };
 
             // PAIN DETAIL MODAL DATA
             const painDetailData = {
@@ -6388,9 +8408,99 @@
 
             function handleSubmit(event) {
                 event.preventDefault();
-                alert('Thank you for booking! We will contact you shortly.');
-                closeModal();
+
+                // Clear previous errors
+                clearErrors();
+
+                // Get form values
+                const name = document.getElementById('nameInput').value.trim();
+                const phone = document.getElementById('phoneInput').value.trim();
+                const date = document.getElementById('dateInput').value;
+                const submitBtn = document.getElementById('submitBtn');
+
+                let isValid = true;
+
+                // Validate name
+                if (!name || name.length < 2) {
+                    showError('nameInput', 'nameError', 'Please enter a valid name (at least 2 characters)');
+                    isValid = false;
+                }
+
+                // Validate phone (UAE format: +971 followed by 9 digits, or 10 digits starting with 0)
+                const phoneRegex = /^(\+971|971|0)?[0-9]{9,10}$/;
+                if (!phone || !phoneRegex.test(phone.replace(/\s/g, ''))) {
+                    showError('phoneInput', 'phoneError', 'Please enter a valid UAE phone number');
+                    isValid = false;
+                }
+
+                // Validate date (must be today or in the future)
+                const selectedDate = new Date(date);
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+
+                if (!date || selectedDate < today) {
+                    showError('dateInput', 'dateError', 'Please select today or a future date');
+                    isValid = false;
+                }
+
+                if (!isValid) {
+                    return false;
+                }
+
+                // Disable submit button
+                submitBtn.disabled = true;
+                submitBtn.textContent = 'Processing...';
+
+                // Simulate API call
+                setTimeout(() => {
+                    // Reset form
+                    document.getElementById('quickBooking').reset();
+
+                    // Close modal
+                    closeModal();
+
+                    // Show success message
+                    setTimeout(() => {
+                        document.getElementById('successOverlay').classList.add('show');
+                        document.body.style.overflow = 'hidden';
+                    }, 300);
+
+                    // Re-enable button
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'Book Free Assessment';
+
+                    console.log('✅ Booking submitted successfully', { name, phone, date });
+                }, 1000);
+
                 return false;
+            }
+
+            function showError(inputId, errorId, message) {
+                const input = document.getElementById(inputId);
+                const error = document.getElementById(errorId);
+
+                input.classList.add('error');
+                error.textContent = message;
+                error.classList.add('show');
+
+                // Remove error on input
+                input.addEventListener('input', function() {
+                    input.classList.remove('error');
+                    error.classList.remove('show');
+                }, { once: true });
+            }
+
+            function clearErrors() {
+                const inputs = document.querySelectorAll('.form-input');
+                const errors = document.querySelectorAll('.form-error');
+
+                inputs.forEach(input => input.classList.remove('error'));
+                errors.forEach(error => error.classList.remove('show'));
+            }
+
+            function closeSuccess() {
+                document.getElementById('successOverlay').classList.remove('show');
+                document.body.style.overflow = '';
             }
 
             function scrollToSection(sectionId) {
@@ -6466,24 +8576,1769 @@
     <!-- End of hero-scripts section -->
 
 
-    <!-- Pain Assessment AI - Module Imports -->
-    <script type="module">
-        import './js/translations.js';
-        import {
-            initPainAssessment,
-            selectBodyPart,
-            showTooltip,
-            hideTooltip,
-            switchLanguage
-        } from './js/pain-assessment.js';
+    <!-- Pain Assessment AI - Script Imports -->
+    <script src="./js/translations.js"></script>
+    <script src="./js/pain-assessment.js"></script>
+    <script>
+        // ========================================================================
+        // EMERGENCY FIX: FORCE IMMEDIATE FUNCTION ATTACHMENT
+        // ========================================================================
+        // User says clicks are NOT working - we need functions on window NOW!
+        // Call initPainAssessment() IMMEDIATELY to attach all functions
+        // ========================================================================
 
-        window.addEventListener('DOMContentLoaded', () => {
-            initPainAssessment();
-            window.selectBodyPart = selectBodyPart;
-            window.showTooltip = showTooltip;
-            window.hideTooltip = hideTooltip;
-            window.switchLanguage = switchLanguage;
+        console.log('🚨 EMERGENCY: Forcing immediate initPainAssessment() call...');
+
+        // CALL initPainAssessment() RIGHT NOW (not waiting for DOMContentLoaded)
+        if (typeof initPainAssessment === 'function') {
+            try {
+                initPainAssessment();
+                console.log('✅ initPainAssessment() executed successfully');
+                console.log('✅ Functions should now be attached to window');
+            } catch (error) {
+                console.error('❌ ERROR calling initPainAssessment():', error.message);
+                console.error('   Stack trace:', error.stack);
+            }
+        } else {
+            console.error('❌ FATAL: initPainAssessment function not found!');
+            console.error('   pain-assessment.js did not load properly');
+        }
+
+        // ========================================================================
+        // VERIFY FUNCTIONS ARE NOW ON WINDOW
+        // ========================================================================
+
+        (function() {
+            console.log('');
+            console.log('🔍 Verifying functions after initPainAssessment()...');
+
+            const criticalFunctions = [
+                'selectBodyPart', 'showTooltip', 'hideTooltip',
+                'selectIntensity', 'selectDuration', 'toggleActivity',
+                'nextStep', 'previousStep', 'goToStep',
+                'switchLanguage', 'openConfig', 'saveConfig', 'toggleVoice',
+                'downloadPDF', 'shareWithDoctor', 'askFollowUp', 'submitFeedback'
+            ];
+
+            const missing = criticalFunctions.filter(fn => typeof window[fn] !== 'function');
+
+            if (missing.length === 0) {
+                console.log('✅✅ SUCCESS! All ' + criticalFunctions.length + ' functions are on window');
+                console.log('✅✅ Body parts should be CLICKABLE now!');
+                console.log('✅✅ Tooltips should appear on HOVER!');
+                console.log('✅✅ Intensity buttons should be CLICKABLE!');
+                console.log('');
+            } else {
+                console.error('❌❌ FAILED! Missing ' + missing.length + ' functions:', missing);
+                console.error('❌❌ Clicks will NOT work!');
+                console.error('❌❌ These functions were not defined properly');
+                console.error('');
+            }
+
+            // Create setIntensity alias
+            if (typeof window.selectIntensity === 'function' && typeof window.setIntensity === 'undefined') {
+                window.setIntensity = window.selectIntensity;
+                console.log('✅ Created setIntensity alias');
+            }
+        })();
+
+        // ========================================================================
+        // DOM READY INITIALIZATION
+        // ========================================================================
+        // This runs AFTER DOM is ready to initialize interactive features
+        // ========================================================================
+
+        document.addEventListener('DOMContentLoaded', async function() {
+            console.log('');
+            console.log('🚀 Pain Assessment AI: DOMContentLoaded fired - Starting full initialization...');
+            console.log('');
+
+            // ====================================================================
+            // STEP 1: Verify TRANSLATIONS object
+            // ====================================================================
+            if (typeof window.TRANSLATIONS === 'undefined') {
+                console.error('❌ FATAL: TRANSLATIONS object not found');
+                console.error('   translations.js must load before pain-assessment.js');
+                console.error('   Cannot initialize language system');
+                return;
+            }
+            console.log('✅ Step 1: TRANSLATIONS object loaded');
+            console.log('   Available languages:', Object.keys(window.TRANSLATIONS).join(', '));
+
+            // ====================================================================
+            // STEP 2: Final verification of ALL functions
+            // ====================================================================
+            const allFunctions = [
+                'selectBodyPart', 'showTooltip', 'hideTooltip',
+                'selectIntensity', 'selectDuration', 'toggleActivity',
+                'nextStep', 'previousStep', 'goToStep',
+                'switchLanguage', 'openConfig', 'saveConfig', 'toggleVoice',
+                'downloadPDF', 'shareWithDoctor', 'askFollowUp', 'submitFeedback',
+                'selectContextOption', 'toggleActivityTrigger', 'speakQuestion',
+                'startVoiceAnswerInput', 'initPainAssessment'
+            ];
+
+            const stillMissing = allFunctions.filter(fn => typeof window[fn] !== 'function');
+
+            if (stillMissing.length > 0) {
+                console.error('❌ Step 2 FAILED: Still missing ' + stillMissing.length + ' functions:', stillMissing);
+                console.error('   Pain Assessment WILL NOT work properly');
+            } else {
+                console.log('✅ Step 2: All ' + allFunctions.length + ' functions verified on window');
+            }
+
+            // ====================================================================
+            // STEP 3: Verify critical DOM elements exist
+            // ====================================================================
+            const criticalElements = {
+                'painTooltip': 'Tooltip display element',
+                'maleSvg': 'Male body diagram SVG',
+                'femaleSvg': 'Female body diagram SVG',
+                'headerTitle': 'Page header title',
+                'progressBarFill': 'Progress bar fill'
+            };
+
+            const missingElements = [];
+            for (const [id, desc] of Object.entries(criticalElements)) {
+                if (!document.getElementById(id)) {
+                    missingElements.push(id + ' (' + desc + ')');
+                }
+            }
+
+            if (missingElements.length > 0) {
+                console.warn('⚠️  Step 3: Missing ' + missingElements.length + ' DOM elements:');
+                missingElements.forEach(el => console.warn('     - ' + el));
+                console.warn('   Some features may not work');
+            } else {
+                console.log('✅ Step 3: All critical DOM elements present');
+            }
+
+            // ====================================================================
+            // STEP 4: Language system already initialized
+            // ====================================================================
+            // NOTE: initPainAssessment() was already called immediately after script load
+            // No need to call it again here - it would be redundant
+            console.log('✅ Step 4: Language system already initialized (via immediate call)');
+            console.log('   initPainAssessment() was called before DOMContentLoaded');
+
+            // ====================================================================
+            // STEP 5: Test interactive features
+            // ====================================================================
+            console.log('');
+            console.log('🧪 Step 5: Testing interactive feature availability...');
+
+            const features = [
+                { name: 'Body part selection', test: () => typeof window.selectBodyPart === 'function' },
+                { name: 'Tooltip display', test: () => typeof window.showTooltip === 'function' && typeof window.hideTooltip === 'function' },
+                { name: 'Intensity selection', test: () => typeof window.selectIntensity === 'function' || typeof window.setIntensity === 'function' },
+                { name: 'Duration selection', test: () => typeof window.selectDuration === 'function' },
+                { name: 'Navigation controls', test: () => typeof window.nextStep === 'function' && typeof window.previousStep === 'function' },
+                { name: 'Language switching', test: () => typeof window.switchLanguage === 'function' },
+                { name: 'Configuration panel', test: () => typeof window.openConfig === 'function' },
+                { name: 'PDF export', test: () => typeof window.downloadPDF === 'function' },
+                { name: 'Doctor sharing', test: () => typeof window.shareWithDoctor === 'function' }
+            ];
+
+            let allFeaturesWork = true;
+            features.forEach(feature => {
+                try {
+                    if (feature.test()) {
+                        console.log('   ✅ ' + feature.name);
+                    } else {
+                        console.error('   ❌ ' + feature.name + ' - FAILED');
+                        allFeaturesWork = false;
+                    }
+                } catch (e) {
+                    console.error('   ❌ ' + feature.name + ' - ERROR:', e.message);
+                    allFeaturesWork = false;
+                }
+            });
+
+            // ====================================================================
+            // FINAL STATUS
+            // ====================================================================
+            console.log('');
+            console.log('═══════════════════════════════════════════════════════════════');
+            if (stillMissing.length === 0 && allFeaturesWork) {
+                console.log('✅✅✅ PAIN ASSESSMENT AI INITIALIZATION SUCCESSFUL! ✅✅✅');
+                console.log('');
+                console.log('All interactive features are ready:');
+                console.log('  • Click body parts to select pain location');
+                console.log('  • Hover for tooltips with pain type info');
+                console.log('  • Select pain intensity (mild/moderate/severe)');
+                console.log('  • Navigate between assessment steps');
+                console.log('  • Switch languages dynamically');
+                console.log('  • Export results as PDF');
+                console.log('  • Share assessment with doctor');
+                console.log('');
+                console.log('No ReferenceErrors or TypeErrors should occur.');
+            } else {
+                console.error('❌❌❌ PAIN ASSESSMENT AI INITIALIZATION FAILED ❌❌❌');
+                console.error('');
+                console.error('Issues detected:');
+                if (stillMissing.length > 0) {
+                    console.error('  • Missing functions:', stillMissing.join(', '));
+                }
+                if (!allFeaturesWork) {
+                    console.error('  • Some interactive features are not available');
+                }
+                console.error('');
+                console.error('User will experience ReferenceErrors when clicking/hovering');
+            }
+            console.log('═══════════════════════════════════════════════════════════════');
+            console.log('');
         });
+    </script>
+
+    <!-- DYNAMIC SECTION LOADING & NAVIGATION -->
+    <style>
+        /* Section Placeholder Styles */
+        .section-placeholder {
+            min-height: 100vh;
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+
+        .section-placeholder.loaded {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .section-loader {
+            text-align: center;
+            color: var(--text-secondary);
+            display: none;
+        }
+
+        .loader-spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(243, 112, 33, 0.2);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Active Navigation Highlight */
+        .nav-links a.active {
+            color: var(--primary);
+            position: relative;
+        }
+
+        .nav-links a.active::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--primary);
+            border-radius: 2px;
+        }
+
+        /* Smooth Scroll */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Section Animations */
+        .fade-in-section {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+
+        .fade-in-section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Main Sections Container */
+        #main-sections {
+            width: 100%;
+            overflow-x: hidden;
+        }
+    </style>
+
+    <script>
+        // ===================================
+        // DYNAMIC SECTION LOADING SYSTEM
+        // ===================================
+
+        const sectionConfig = {
+            'services': {
+                file: 'sections/services.html',
+                container: 'services-container'
+            },
+            'specialists': {
+                file: 'sections/specialists.html',
+                container: 'specialists-container'
+            },
+            'success-stories': {
+                file: 'sections/success-stories.html',
+                container: 'testimonials-container'
+            },
+            'contact': {
+                file: 'sections/contact.html',
+                container: 'contact-container'
+            }
+        };
+
+        // Load section content dynamically
+        async function loadSection(sectionName) {
+            const config = sectionConfig[sectionName];
+            if (!config) {
+                console.error(`Section config not found: ${sectionName}`);
+                return;
+            }
+
+            const container = document.getElementById(config.container);
+            if (!container) {
+                console.error(`Container not found: ${config.container}`);
+                return;
+            }
+
+            // Check if content is already embedded (skip loading if section-container exists)
+            const existingContent = container.querySelector('.section-container');
+            if (existingContent) {
+                console.log(`✅ Section already embedded: ${sectionName} - Skipping dynamic load`);
+                container.classList.add('loaded');
+                return;
+            }
+
+            try {
+                const response = await fetch(config.file);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const html = await response.text();
+
+                // Replace loader with actual content
+                container.innerHTML = html;
+                container.classList.add('loaded');
+
+                // Add fade-in animation to section elements
+                const sectionElements = container.querySelectorAll('.section-container > *');
+                sectionElements.forEach((el, index) => {
+                    el.classList.add('fade-in-section');
+                    setTimeout(() => {
+                        el.classList.add('visible');
+                    }, index * 100);
+                });
+
+                console.log(`✅ Section loaded: ${sectionName}`);
+            } catch (error) {
+                console.error(`Failed to load section ${sectionName}:`, error);
+                container.innerHTML = `
+                    <div style="text-align: center; padding: 2rem; color: var(--text-secondary);">
+                        <p>⚠️ Failed to load content</p>
+                        <button onclick="loadSection('${sectionName}')" style="margin-top: 1rem; padding: 0.5rem 1rem; background: var(--primary); color: white; border: none; border-radius: 8px; cursor: pointer;">
+                            Retry
+                        </button>
+                    </div>
+                `;
+            }
+        }
+
+        // Load all sections on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('🚀 Initializing dynamic section loading...');
+
+            // Load all sections
+            Object.keys(sectionConfig).forEach(sectionName => {
+                loadSection(sectionName);
+            });
+
+            // Initialize other features
+            initSmoothScroll();
+            initActiveNavigation();
+            initIntersectionObserver();
+        });
+
+        // ===================================
+        // SMOOTH SCROLL NAVIGATION
+        // ===================================
+
+        function initSmoothScroll() {
+            const navLinks = document.querySelectorAll('.nav-links a');
+
+            navLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    const href = link.getAttribute('href');
+
+                    // Only handle hash links
+                    if (href && href.startsWith('#')) {
+                        e.preventDefault();
+
+                        const targetId = href.substring(1);
+                        const targetContainer = document.getElementById(`${targetId}-container`) ||
+                                              document.getElementById(targetId);
+
+                        if (targetContainer) {
+                            // Smooth scroll to target
+                            targetContainer.scrollIntoView({
+                                behavior: 'smooth',
+                                block: 'start'
+                            });
+
+                            // Update active state
+                            navLinks.forEach(l => l.classList.remove('active'));
+                            link.classList.add('active');
+                        }
+                    }
+                });
+            });
+
+            console.log('✅ Smooth scroll initialized');
+        }
+
+        // ===================================
+        // ACTIVE NAVIGATION HIGHLIGHTING
+        // ===================================
+
+        function initActiveNavigation() {
+            const navLinks = document.querySelectorAll('.nav-links a');
+            const sections = [];
+
+            // Build sections array
+            navLinks.forEach(link => {
+                const href = link.getAttribute('href');
+                if (href && href.startsWith('#')) {
+                    const targetId = href.substring(1);
+                    const targetContainer = document.getElementById(`${targetId}-container`) ||
+                                          document.getElementById(targetId);
+                    if (targetContainer) {
+                        sections.push({
+                            id: targetId,
+                            element: targetContainer,
+                            link: link
+                        });
+                    }
+                }
+            });
+
+            // Update active link based on scroll position
+            function updateActiveLink() {
+                const scrollPosition = window.scrollY + 100; // Offset for navbar
+
+                sections.forEach(section => {
+                    const sectionTop = section.element.offsetTop;
+                    const sectionBottom = sectionTop + section.element.offsetHeight;
+
+                    if (scrollPosition >= sectionTop && scrollPosition < sectionBottom) {
+                        navLinks.forEach(link => link.classList.remove('active'));
+                        section.link.classList.add('active');
+                    }
+                });
+            }
+
+            // Throttle scroll event
+            let scrollTimeout;
+            window.addEventListener('scroll', () => {
+                if (scrollTimeout) {
+                    window.cancelAnimationFrame(scrollTimeout);
+                }
+                scrollTimeout = window.requestAnimationFrame(() => {
+                    updateActiveLink();
+                });
+            });
+
+            // Initial check
+            updateActiveLink();
+
+            console.log('✅ Active navigation highlighting initialized');
+        }
+
+        // ===================================
+        // INTERSECTION OBSERVER FOR ANIMATIONS
+        // ===================================
+
+        function initIntersectionObserver() {
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -100px 0px'
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                        // Optionally unobserve after animation
+                        // observer.unobserve(entry.target);
+                    }
+                });
+            }, observerOptions);
+
+            // Observe all fade-in sections
+            const fadeElements = document.querySelectorAll('.fade-in-section');
+            fadeElements.forEach(el => observer.observe(el));
+
+            // Re-observe when new sections are loaded
+            const mutationObserver = new MutationObserver((mutations) => {
+                mutations.forEach((mutation) => {
+                    mutation.addedNodes.forEach((node) => {
+                        if (node.nodeType === 1) { // Element node
+                            const fadeElements = node.querySelectorAll('.fade-in-section');
+                            fadeElements.forEach(el => observer.observe(el));
+                        }
+                    });
+                });
+            });
+
+            mutationObserver.observe(document.getElementById('main-sections'), {
+                childList: true,
+                subtree: true
+            });
+
+            console.log('✅ Intersection observer initialized');
+        }
+
+        // ===================================
+        // UTILITY: SCROLL TO TOP BUTTON
+        // ===================================
+
+        window.addEventListener('scroll', () => {
+            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+
+            // You can add a scroll-to-top button here if needed
+            // For now, this is just a placeholder for future enhancements
+        });
+
+        console.log('🎉 Dynamic section loading system ready!');
+    </script>
+
+    <!-- ===================================
+         SERVICE DETAIL MODAL
+         =================================== -->
+    <div id="serviceDetailModal" class="service-modal">
+        <div class="service-modal-overlay" onclick="closeServiceModal()"></div>
+        <div class="service-modal-content">
+            <button class="service-modal-close" onclick="closeServiceModal()" aria-label="Close">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="18" y1="6" x2="6" y2="18"/>
+                    <line x1="6" y1="6" x2="18" y2="18"/>
+                </svg>
+            </button>
+            <div class="service-modal-header">
+                <div class="service-modal-icon" id="serviceModalIcon"></div>
+                <h3 class="service-modal-title" id="serviceModalTitle"></h3>
+            </div>
+            <div class="service-modal-body" id="serviceModalBody"></div>
+            <div class="service-modal-footer">
+                <button class="service-modal-btn-primary" onclick="openBookingModalFromService()">
+                    <span>Book This Service</span>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M5 12h14M12 5l7 7-7 7"/>
+                    </svg>
+                </button>
+                <button class="service-modal-btn-secondary" onclick="closeServiceModal()">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===================================
+         BOOKING CONSULTATION MODAL
+         =================================== -->
+    <div id="bookingModal" class="booking-modal">
+        <div class="booking-modal-overlay" onclick="closeBookingModal()"></div>
+        <div class="booking-modal-content">
+            <button class="booking-modal-close" onclick="closeBookingModal()" aria-label="Close">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="18" y1="6" x2="6" y2="18"/>
+                    <line x1="6" y1="6" x2="18" y2="18"/>
+                </svg>
+            </button>
+
+            <!-- Form View -->
+            <div id="bookingFormView" class="booking-view">
+                <div class="booking-modal-header">
+                    <div class="booking-modal-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                            <line x1="16" y1="2" x2="16" y2="6"/>
+                            <line x1="8" y1="2" x2="8" y2="6"/>
+                            <line x1="3" y1="10" x2="21" y2="10"/>
+                        </svg>
+                    </div>
+                    <h3 class="booking-modal-title">Book Your Consultation</h3>
+                    <p class="booking-modal-subtitle" id="bookingSubtitle">Fill in your details and we'll get back to you within 24 hours</p>
+                </div>
+
+                <form id="bookingForm" class="booking-form" onsubmit="handleBookingSubmit(event)">
+                    <div class="booking-form-group">
+                        <label for="bookingName" class="booking-label">
+                            Full Name <span class="required-star">*</span>
+                        </label>
+                        <input
+                            type="text"
+                            id="bookingName"
+                            name="name"
+                            class="booking-input"
+                            placeholder="Enter your full name"
+                            required
+                            minlength="2">
+                        <span class="booking-error" id="nameError"></span>
+                    </div>
+
+                    <div class="booking-form-row">
+                        <div class="booking-form-group">
+                            <label for="bookingEmail" class="booking-label">
+                                Email Address <span class="required-star">*</span>
+                            </label>
+                            <input
+                                type="email"
+                                id="bookingEmail"
+                                name="email"
+                                class="booking-input"
+                                placeholder="your.email@example.com"
+                                required>
+                            <span class="booking-error" id="emailError"></span>
+                        </div>
+
+                        <div class="booking-form-group">
+                            <label for="bookingPhone" class="booking-label">
+                                Phone Number <span class="required-star">*</span>
+                            </label>
+                            <input
+                                type="tel"
+                                id="bookingPhone"
+                                name="phone"
+                                class="booking-input"
+                                placeholder="+91 98765 43210"
+                                required
+                                pattern="[0-9+\s\-()]{10,}">
+                            <span class="booking-error" id="phoneError"></span>
+                        </div>
+                    </div>
+
+                    <div class="booking-form-group">
+                        <label for="bookingService" class="booking-label">
+                            Service Required
+                        </label>
+                        <input
+                            type="text"
+                            id="bookingService"
+                            name="service"
+                            class="booking-input"
+                            readonly>
+                    </div>
+
+                    <div class="booking-form-group">
+                        <label for="bookingMessage" class="booking-label">
+                            Additional Message
+                        </label>
+                        <textarea
+                            id="bookingMessage"
+                            name="message"
+                            class="booking-textarea"
+                            rows="4"
+                            placeholder="Tell us about your concerns or preferred consultation time..."></textarea>
+                    </div>
+
+                    <div class="booking-form-actions">
+                        <button type="submit" class="booking-btn-submit">
+                            <span>Submit Request</span>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="22" y1="2" x2="11" y2="13"/>
+                                <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+                            </svg>
+                        </button>
+                        <button type="button" class="booking-btn-cancel" onclick="closeBookingModal()">Cancel</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Success View -->
+            <div id="bookingSuccessView" class="booking-view" style="display: none;">
+                <div class="booking-success-content">
+                    <div class="success-checkmark">
+                        <svg class="checkmark-icon" viewBox="0 0 52 52">
+                            <circle class="checkmark-circle" cx="26" cy="26" r="25" fill="none"/>
+                            <path class="checkmark-check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
+                        </svg>
+                    </div>
+                    <h3 class="success-title">Request Sent Successfully!</h3>
+                    <p class="success-message">
+                        Thank you for choosing PHYSIOSMETIC. We've received your consultation request and will contact you within 24 hours.
+                    </p>
+                    <div class="success-details">
+                        <div class="success-detail-item">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+                            </svg>
+                            <span>We'll call you back</span>
+                        </div>
+                        <div class="success-detail-item">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                                <polyline points="22,6 12,13 2,6"/>
+                            </svg>
+                            <span>Check your email</span>
+                        </div>
+                    </div>
+                    <button class="success-btn" onclick="closeBookingModal()">Done</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===================================
+         MODAL STYLES
+         =================================== -->
+    <style>
+        /* Service Detail Modal */
+        .service-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 10000;
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .service-modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .service-modal-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(10px);
+        }
+
+        .service-modal-content {
+            position: relative;
+            background: linear-gradient(135deg,
+                rgba(10, 15, 25, 0.98) 0%,
+                rgba(15, 20, 30, 0.98) 100%
+            );
+            border: 2px solid var(--primary);
+            border-radius: 28px;
+            max-width: 750px;
+            width: 90%;
+            max-height: 85vh;
+            overflow-y: auto;
+            z-index: 10001;
+            animation: slideUpModal 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow:
+                0 30px 80px rgba(0, 0, 0, 0.8),
+                0 0 60px rgba(243, 112, 33, 0.3),
+                inset 0 0 40px rgba(243, 112, 33, 0.05);
+        }
+
+        /* Custom scrollbar for modal */
+        .service-modal-content::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .service-modal-content::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+        }
+
+        .service-modal-content::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 10px;
+        }
+
+        .service-modal-content::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-light);
+        }
+
+        @keyframes slideUpModal {
+            from {
+                opacity: 0;
+                transform: translateY(50px) scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .service-modal-close {
+            position: absolute;
+            top: 1.5rem;
+            right: 1.5rem;
+            width: 44px;
+            height: 44px;
+            background: linear-gradient(135deg, rgba(243, 112, 33, 0.15), rgba(243, 112, 33, 0.05));
+            border: 2px solid rgba(243, 112, 33, 0.3);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 10;
+            box-shadow: 0 4px 15px rgba(243, 112, 33, 0.15);
+        }
+
+        .service-modal-close:hover {
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            border-color: var(--primary);
+            transform: rotate(90deg) scale(1.1);
+            box-shadow: 0 6px 25px rgba(243, 112, 33, 0.4);
+        }
+
+        .service-modal-close:hover svg {
+            color: white;
+        }
+
+        .service-modal-close svg {
+            width: 22px;
+            height: 22px;
+            color: var(--text-primary);
+            transition: color 0.3s ease;
+        }
+
+        .service-modal-header {
+            padding: 3rem;
+            padding-bottom: 1.5rem;
+            text-align: center;
+            position: relative;
+        }
+
+        .service-modal-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 20%;
+            right: 20%;
+            height: 4px;
+            background: linear-gradient(90deg, transparent, var(--primary), transparent);
+            border-radius: 0 0 4px 4px;
+        }
+
+        .service-modal-icon {
+            width: 90px;
+            height: 90px;
+            margin: 0 auto 1.5rem;
+            background: linear-gradient(135deg, rgba(243, 112, 33, 0.2), rgba(243, 112, 33, 0.08));
+            border-radius: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid var(--primary);
+            box-shadow: 0 8px 30px rgba(243, 112, 33, 0.25);
+            animation: iconFloat 3s ease-in-out infinite;
+        }
+
+        @keyframes iconFloat {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .service-modal-icon svg {
+            width: 40px;
+            height: 40px;
+            color: var(--primary);
+        }
+
+        .service-modal-title {
+            font-size: 2.25rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            margin-bottom: 0.75rem;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-family: 'Space Grotesk', sans-serif;
+            letter-spacing: -1px;
+            animation: titleFadeIn 0.6s ease 0.3s both;
+        }
+
+        @keyframes titleFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .service-modal-body {
+            padding: 0 3rem 2.5rem;
+            color: var(--text-secondary);
+            line-height: 1.9;
+            font-size: 1rem;
+        }
+
+        .service-modal-body p {
+            margin-bottom: 1.5rem;
+        }
+
+        .service-modal-body h4 {
+            color: var(--text-primary);
+            font-size: 1.35rem;
+            font-weight: 700;
+            margin: 2rem 0 1rem;
+            padding-left: 1rem;
+            border-left: 4px solid var(--primary);
+            font-family: 'Space Grotesk', sans-serif;
+        }
+
+        .service-modal-body ul {
+            list-style: none;
+            margin: 1.25rem 0;
+            background: rgba(243, 112, 33, 0.03);
+            border-radius: 12px;
+            padding: 1rem;
+        }
+
+        .service-modal-body li {
+            padding: 0.8rem 0;
+            padding-left: 2.25rem;
+            position: relative;
+            transition: all 0.2s ease;
+        }
+
+        .service-modal-body li:hover {
+            padding-left: 2.5rem;
+            color: var(--text-primary);
+        }
+
+        .service-modal-body li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: var(--primary);
+            font-weight: bold;
+            font-size: 1.3rem;
+            transition: all 0.2s ease;
+        }
+
+        .service-modal-body li:hover::before {
+            text-shadow: 0 0 10px rgba(243, 112, 33, 0.6);
+            transform: scale(1.2);
+        }
+
+        .service-modal-body strong {
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .service-modal-footer {
+            padding: 2rem 3rem 3rem;
+            display: flex;
+            gap: 1rem;
+            border-top: 2px solid rgba(243, 112, 33, 0.2);
+            background: linear-gradient(180deg, transparent, rgba(243, 112, 33, 0.03));
+        }
+
+        .service-modal-btn-primary {
+            flex: 1;
+            padding: 1.25rem 2.5rem;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            border: 2px solid var(--primary);
+            border-radius: 14px;
+            color: white;
+            font-weight: 700;
+            font-size: 1.05rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 6px 20px rgba(243, 112, 33, 0.3);
+        }
+
+        .service-modal-btn-primary::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, var(--primary-light), var(--primary));
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .service-modal-btn-primary span,
+        .service-modal-btn-primary svg {
+            position: relative;
+            z-index: 1;
+        }
+
+        .service-modal-btn-primary:hover::before {
+            opacity: 1;
+        }
+
+        .service-modal-btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow:
+                0 12px 35px rgba(243, 112, 33, 0.45),
+                0 0 30px rgba(243, 112, 33, 0.25);
+            border-color: var(--primary-light);
+        }
+
+        .service-modal-btn-primary:hover svg {
+            transform: translateX(5px);
+        }
+
+        .service-modal-btn-primary svg {
+            width: 22px;
+            height: 22px;
+            transition: transform 0.3s ease;
+        }
+
+        .service-modal-btn-secondary {
+            padding: 1.25rem 2rem;
+            background: transparent;
+            border: 2px solid rgba(243, 112, 33, 0.3);
+            border-radius: 14px;
+            color: var(--text-primary);
+            font-weight: 600;
+            font-size: 1.05rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .service-modal-btn-secondary:hover {
+            background: rgba(243, 112, 33, 0.1);
+            border-color: var(--primary);
+            color: var(--primary);
+            box-shadow: 0 4px 15px rgba(243, 112, 33, 0.2);
+        }
+
+        /* Booking Modal */
+        .booking-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 10000;
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .booking-modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .booking-modal-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px);
+        }
+
+        .booking-modal-content {
+            position: relative;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 24px;
+            max-width: 650px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            z-index: 10001;
+            animation: slideUpModal 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .booking-modal-close {
+            position: absolute;
+            top: 1.5rem;
+            right: 1.5rem;
+            width: 40px;
+            height: 40px;
+            background: rgba(243, 112, 33, 0.1);
+            border: 1px solid var(--border-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 10;
+        }
+
+        .booking-modal-close:hover {
+            background: var(--primary);
+            border-color: var(--primary);
+            transform: rotate(90deg);
+        }
+
+        .booking-modal-close svg {
+            width: 20px;
+            height: 20px;
+            color: var(--text-primary);
+        }
+
+        .booking-view {
+            padding: 2.5rem;
+        }
+
+        .booking-modal-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .booking-modal-icon {
+            width: 70px;
+            height: 70px;
+            margin: 0 auto 1.5rem;
+            background: rgba(243, 112, 33, 0.1);
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid var(--border-color);
+        }
+
+        .booking-modal-icon svg {
+            width: 36px;
+            height: 36px;
+            color: var(--primary);
+        }
+
+        .booking-modal-title {
+            font-size: 1.75rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .booking-modal-subtitle {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        .booking-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .booking-form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .booking-form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+
+        .booking-label {
+            color: var(--text-primary);
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .required-star {
+            color: var(--primary);
+        }
+
+        .booking-input,
+        .booking-textarea {
+            padding: 0.875rem 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            color: var(--text-primary);
+            font-family: 'Inter', sans-serif;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+        }
+
+        .booking-input:focus,
+        .booking-textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: rgba(255, 255, 255, 0.08);
+            box-shadow: 0 0 0 3px rgba(243, 112, 33, 0.1);
+        }
+
+        .booking-input.error,
+        .booking-textarea.error {
+            border-color: #ef4444;
+            animation: shake 0.3s ease;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        .booking-error {
+            color: #ef4444;
+            font-size: 0.8rem;
+            display: none;
+        }
+
+        .booking-error.show {
+            display: block;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-5px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .booking-form-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .booking-btn-submit {
+            flex: 1;
+            padding: 1rem 2rem;
+            background: var(--primary);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            transition: all 0.3s ease;
+        }
+
+        .booking-btn-submit:hover:not(:disabled) {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(243, 112, 33, 0.4);
+        }
+
+        .booking-btn-submit:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .booking-btn-submit svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        .booking-btn-cancel {
+            padding: 1rem 2rem;
+            background: transparent;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            color: var(--text-primary);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .booking-btn-cancel:hover {
+            background: rgba(243, 112, 33, 0.1);
+            border-color: var(--primary);
+        }
+
+        /* Success View */
+        .booking-success-content {
+            text-align: center;
+            padding: 2rem 1rem;
+        }
+
+        .success-checkmark {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 2rem;
+        }
+
+        .checkmark-icon {
+            width: 100%;
+            height: 100%;
+        }
+
+        .checkmark-circle {
+            stroke: var(--primary);
+            stroke-width: 2;
+            stroke-dasharray: 166;
+            stroke-dashoffset: 166;
+            animation: stroke 0.6s cubic-bezier(0.65, 0, 0.45, 1) forwards;
+        }
+
+        @keyframes stroke {
+            100% {
+                stroke-dashoffset: 0;
+            }
+        }
+
+        .checkmark-check {
+            stroke: var(--primary);
+            stroke-width: 3;
+            stroke-linecap: round;
+            stroke-dasharray: 48;
+            stroke-dashoffset: 48;
+            animation: stroke 0.3s cubic-bezier(0.65, 0, 0.45, 1) 0.6s forwards;
+        }
+
+        .success-title {
+            font-size: 1.75rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+        }
+
+        .success-message {
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-bottom: 2rem;
+            max-width: 400px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .success-details {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin: 2rem 0;
+            max-width: 300px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .success-detail-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            background: rgba(243, 112, 33, 0.1);
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+        }
+
+        .success-detail-item svg {
+            width: 24px;
+            height: 24px;
+            color: var(--primary);
+            flex-shrink: 0;
+        }
+
+        .success-detail-item span {
+            color: var(--text-primary);
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .success-btn {
+            padding: 1rem 3rem;
+            background: var(--primary);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+        }
+
+        .success-btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(243, 112, 33, 0.4);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .service-modal-content,
+            .booking-modal-content {
+                width: 95%;
+                max-height: 95vh;
+            }
+
+            .service-modal-header,
+            .service-modal-body,
+            .service-modal-footer,
+            .booking-view {
+                padding: 1.5rem;
+            }
+
+            .booking-form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .service-modal-footer,
+            .booking-form-actions {
+                flex-direction: column;
+            }
+        }
+    </style>
+
+    <!-- ===================================
+         MODAL FUNCTIONALITY
+         =================================== -->
+    <script>
+        // Service Details Data
+        const serviceDetails = {
+            sports: {
+                title: 'Sports Performance Studio',
+                icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M13.49 5.48c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm-3.6 13.9l1-4.4 2.1 2v6h2v-7.5l-2.1-2 .6-3c1.3 1.5 3.3 2.5 5.5 2.5v-2c-1.9 0-3.5-1-4.3-2.4l-1-1.6c-.4-.6-1-1-1.7-1-.3 0-.5.1-.8.1l-5.2 2.2v4.7h2v-3.4l1.8-.7-1.6 8.1-4.9-1-.4 2 7 1.4z"/>
+                </svg>`,
+                description: `<p>Our Sports Performance Studio is designed for athletes of all levels who want to enhance their performance, prevent injuries, and recover faster. We combine cutting-edge technology with expert coaching to optimize your athletic potential.</p>
+
+                <h4>What We Offer</h4>
+                <ul>
+                    <li><strong>Biomechanical Analysis:</strong> Advanced motion capture and analysis to identify inefficiencies and injury risks</li>
+                    <li><strong>Strength & Conditioning:</strong> Customized programs to build power, speed, and endurance</li>
+                    <li><strong>Sports Injury Rehabilitation:</strong> Evidence-based recovery protocols for all types of sports injuries</li>
+                    <li><strong>Performance Testing:</strong> Comprehensive assessments of strength, speed, agility, and endurance</li>
+                    <li><strong>Return-to-Sport Programs:</strong> Structured protocols to safely return to competition after injury</li>
+                </ul>
+
+                <h4>Who Is This For?</h4>
+                <p>Professional athletes, weekend warriors, student athletes, and anyone looking to improve their athletic performance and reduce injury risk.</p>`
+            },
+            physio: {
+                title: 'Physio Care',
+                icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
+                </svg>`,
+                description: `<p>Our Physio Care services provide comprehensive treatment for a wide range of musculoskeletal conditions. We use evidence-based manual therapy techniques combined with personalized exercise programs to help you recover faster and prevent future injuries.</p>
+
+                <h4>What We Offer</h4>
+                <ul>
+                    <li><strong>Manual Therapy:</strong> Hands-on techniques including joint mobilization, soft tissue massage, and myofascial release</li>
+                    <li><strong>Pain Management:</strong> Advanced strategies to reduce pain and improve function without over-reliance on medication</li>
+                    <li><strong>Post-Surgery Rehabilitation:</strong> Structured recovery programs after orthopedic surgeries</li>
+                    <li><strong>Chronic Pain Treatment:</strong> Specialized approaches for long-term pain conditions</li>
+                    <li><strong>Ergonomic Assessments:</strong> Workplace and home evaluations to prevent injury</li>
+                </ul>
+
+                <h4>Common Conditions Treated</h4>
+                <p>Back pain, neck pain, shoulder injuries, knee problems, sports injuries, post-surgical recovery, arthritis, and chronic pain syndromes.</p>`
+            },
+            skin: {
+                title: 'Skin Care',
+                icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="8" r="7"/>
+                    <path d="M8.21 13.89L7 23l5-3 5 3-1.21-9.12"/>
+                </svg>`,
+                description: `<p>Our advanced dermatology and aesthetic services combine medical expertise with the latest technology to help you achieve healthy, radiant skin. From treating skin conditions to anti-aging solutions, we offer comprehensive care.</p>
+
+                <h4>What We Offer</h4>
+                <ul>
+                    <li><strong>Anti-Aging Treatments:</strong> Botox, fillers, PRP therapy, and advanced skincare protocols</li>
+                    <li><strong>Acne & Scar Treatment:</strong> Medical-grade treatments for acne and acne scarring</li>
+                    <li><strong>Laser Therapy:</strong> Hair removal, pigmentation treatment, and skin resurfacing</li>
+                    <li><strong>Chemical Peels:</strong> Professional-grade peels for skin rejuvenation</li>
+                    <li><strong>Skin Cancer Screening:</strong> Early detection and treatment of skin cancers</li>
+                </ul>
+
+                <h4>Technology & Techniques</h4>
+                <p>We use state-of-the-art equipment including fractional CO2 lasers, IPL therapy, and medical-grade skincare products to deliver optimal results.</p>`
+            },
+            hair: {
+                title: 'Hair Care',
+                icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 2c2.5 0 4.5 2 4.5 4.5 0 1.5-1 3-2 3.5v7c0 1.1-.9 2-2 2H7v2h10v2H7c-1.1 0-2-.9-2-2v-6c-1-.5-2-2-2-3.5C3 4 5 2 7.5 2c1 0 1.9.3 2.5.9C10.6 2.3 11.5 2 12 2z"/>
+                </svg>`,
+                description: `<p>Our Hair Restoration Center offers comprehensive solutions for all types of hair loss and scalp conditions. We use the latest technology and proven treatments to help you regain fuller, healthier hair.</p>
+
+                <h4>What We Offer</h4>
+                <ul>
+                    <li><strong>Hair Fall Treatment:</strong> Medical treatments including topical solutions and oral medications</li>
+                    <li><strong>PRP Therapy:</strong> Platelet-rich plasma injections to stimulate hair growth</li>
+                    <li><strong>Scalp Analysis:</strong> Advanced trichoscopy to diagnose hair and scalp conditions</li>
+                    <li><strong>Hair Transplant Consultation:</strong> Expert assessment and planning for surgical hair restoration</li>
+                    <li><strong>Low-Level Laser Therapy:</strong> Non-invasive treatment to promote hair growth</li>
+                </ul>
+
+                <h4>Personalized Approach</h4>
+                <p>Each treatment plan is customized based on your specific type of hair loss, age, health status, and personal goals.</p>`
+            },
+            body: {
+                title: 'Body Care',
+                icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 2a2 2 0 0 1 2 2c0 .74-.4 1.39-1 1.73V7h1a7 7 0 0 1 7 7h1a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-1v2a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-2H2a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1h1a7 7 0 0 1 7-7h1V5.73c-.6-.34-1-.99-1-1.73a2 2 0 0 1 2-2z"/>
+                </svg>`,
+                description: `<p>Our holistic Body Care programs focus on complete physical wellness through a combination of therapeutic treatments, wellness programs, and lifestyle guidance. We help you achieve optimal body composition, relaxation, and overall health.</p>
+
+                <h4>What We Offer</h4>
+                <ul>
+                    <li><strong>Body Contouring:</strong> Non-invasive fat reduction and skin tightening treatments</li>
+                    <li><strong>Massage Therapy:</strong> Deep tissue, sports, Swedish, and therapeutic massage</li>
+                    <li><strong>Detox Programs:</strong> Comprehensive detoxification protocols for wellness</li>
+                    <li><strong>Lymphatic Drainage:</strong> Specialized massage to reduce swelling and boost immunity</li>
+                    <li><strong>Wellness Assessments:</strong> Complete body composition and health evaluations</li>
+                </ul>
+
+                <h4>Holistic Wellness</h4>
+                <p>We take a whole-body approach, addressing not just physical concerns but also stress, lifestyle, and overall well-being.</p>`
+            },
+            nutrition: {
+                title: 'Nutrition Care',
+                icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M2 21c.5.5 1.5.5 2 0l1.5-1.5c.5-.5.5-1.5 0-2l-2-2c-.5-.5-1.5-.5-2 0-.5.5-.5 1.5 0 2l.5.5-.5.5c-.5.5-.5 1.5 0 2zM21.8 2.2c-.4-.4-1-.4-1.4 0l-2.5 2.5c-.4.4-.4 1 0 1.4.2.2.5.3.7.3.3 0 .5-.1.7-.3l2.5-2.5c.4-.4.4-1 0-1.4z"/>
+                    <circle cx="9" cy="9" r="2"/>
+                    <path d="M14.5 13.5c0-1.93-1.57-3.5-3.5-3.5s-3.5 1.57-3.5 3.5S9.07 17 11 17s3.5-1.57 3.5-3.5z"/>
+                </svg>`,
+                description: `<p>Our Nutrition Care services provide personalized dietary guidance to help you achieve your health and wellness goals. Whether you want to lose weight, manage a medical condition, or optimize athletic performance, our registered dietitians create customized plans just for you.</p>
+
+                <h4>What We Offer</h4>
+                <ul>
+                    <li><strong>Diet Planning:</strong> Personalized meal plans based on your goals, preferences, and lifestyle</li>
+                    <li><strong>Weight Management:</strong> Evidence-based strategies for healthy, sustainable weight loss or gain</li>
+                    <li><strong>Sports Nutrition:</strong> Performance-focused nutrition for athletes and active individuals</li>
+                    <li><strong>Metabolic Testing:</strong> Advanced assessment of your metabolism and nutritional needs</li>
+                    <li><strong>Medical Nutrition Therapy:</strong> Dietary management of diabetes, heart disease, and other conditions</li>
+                </ul>
+
+                <h4>Science-Based Approach</h4>
+                <p>All our nutrition recommendations are based on the latest research and tailored to your individual needs, preferences, and health status.</p>`
+            }
+        };
+
+        let currentServiceType = '';
+
+        // Open Service Detail Modal
+        function openServiceModal(serviceType) {
+            currentServiceType = serviceType;
+            const modal = document.getElementById('serviceDetailModal');
+            const service = serviceDetails[serviceType];
+
+            if (service) {
+                document.getElementById('serviceModalIcon').innerHTML = service.icon;
+                document.getElementById('serviceModalTitle').textContent = service.title;
+                document.getElementById('serviceModalBody').innerHTML = service.description;
+
+                modal.classList.add('active');
+                document.body.style.overflow = 'hidden';
+
+                console.log('✅ Service modal opened:', serviceType);
+            }
+        }
+
+        // Close Service Detail Modal
+        function closeServiceModal() {
+            const modal = document.getElementById('serviceDetailModal');
+            modal.classList.remove('active');
+            document.body.style.overflow = '';
+            console.log('✅ Service modal closed');
+        }
+
+        // Open Booking Modal from Service Modal
+        function openBookingModalFromService() {
+            closeServiceModal();
+            setTimeout(() => {
+                openBookingModal(currentServiceType);
+            }, 300);
+        }
+
+        // Open Booking Modal
+        function openBookingModal(type) {
+            const modal = document.getElementById('bookingModal');
+            const serviceInput = document.getElementById('bookingService');
+
+            // Set service name
+            let serviceName = '';
+            if (type.startsWith('dr-')) {
+                // Specialist booking
+                const specialistName = type.replace('dr-', '').replace('-', ' ');
+                serviceName = 'Consultation with Dr. ' + specialistName.charAt(0).toUpperCase() + specialistName.slice(1);
+                document.getElementById('bookingSubtitle').textContent = 'Book a consultation with our specialist';
+            } else if (serviceDetails[type]) {
+                // Service booking
+                serviceName = serviceDetails[type].title;
+                document.getElementById('bookingSubtitle').textContent = 'Fill in your details and we\'ll get back to you within 24 hours';
+            } else {
+                serviceName = 'General Consultation';
+                document.getElementById('bookingSubtitle').textContent = 'Fill in your details and we\'ll get back to you within 24 hours';
+            }
+
+            serviceInput.value = serviceName;
+
+            // Reset form
+            document.getElementById('bookingForm').reset();
+            document.getElementById('bookingService').value = serviceName;
+            clearFormErrors();
+
+            // Show form view, hide success view
+            document.getElementById('bookingFormView').style.display = 'block';
+            document.getElementById('bookingSuccessView').style.display = 'none';
+
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+
+            console.log('✅ Booking modal opened:', serviceName);
+        }
+
+        // Close Booking Modal
+        function closeBookingModal() {
+            const modal = document.getElementById('bookingModal');
+            modal.classList.remove('active');
+            document.body.style.overflow = '';
+            console.log('✅ Booking modal closed');
+        }
+
+        // Play Testimonial Video
+        function playTestimonialVideo(patientName) {
+            // Placeholder function for video testimonials
+            // In production, this would open a video modal or link to video content
+            alert(`🎥 Video testimonial: ${patientName}'s recovery journey\n\nThis feature will play the video in a modal when video content is available.`);
+            console.log(`🎥 Playing testimonial video for: ${patientName}`);
+        }
+
+        // Clear Form Errors
+        function clearFormErrors() {
+            document.querySelectorAll('.booking-error').forEach(error => {
+                error.classList.remove('show');
+                error.textContent = '';
+            });
+            document.querySelectorAll('.booking-input, .booking-textarea').forEach(input => {
+                input.classList.remove('error');
+            });
+        }
+
+        // Validate Email
+        function validateEmail(email) {
+            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return re.test(email);
+        }
+
+        // Validate Phone
+        function validatePhone(phone) {
+            const re = /^[0-9+\s\-()]{10,}$/;
+            return re.test(phone);
+        }
+
+        // Show Error
+        function showError(fieldId, message) {
+            const errorElement = document.getElementById(fieldId + 'Error');
+            const inputElement = document.getElementById('booking' + fieldId.charAt(0).toUpperCase() + fieldId.slice(1));
+
+            if (errorElement && inputElement) {
+                errorElement.textContent = message;
+                errorElement.classList.add('show');
+                inputElement.classList.add('error');
+            }
+        }
+
+        // Handle Booking Form Submit
+        async function handleBookingSubmit(event) {
+            event.preventDefault();
+            clearFormErrors();
+
+            // Get form values
+            const name = document.getElementById('bookingName').value.trim();
+            const email = document.getElementById('bookingEmail').value.trim();
+            const phone = document.getElementById('bookingPhone').value.trim();
+            const service = document.getElementById('bookingService').value;
+            const message = document.getElementById('bookingMessage').value.trim();
+
+            let isValid = true;
+
+            // Validate name
+            if (name.length < 2) {
+                showError('name', 'Name must be at least 2 characters');
+                isValid = false;
+            }
+
+            // Validate email
+            if (!validateEmail(email)) {
+                showError('email', 'Please enter a valid email address');
+                isValid = false;
+            }
+
+            // Validate phone
+            if (!validatePhone(phone)) {
+                showError('phone', 'Please enter a valid phone number (min 10 digits)');
+                isValid = false;
+            }
+
+            if (!isValid) {
+                return;
+            }
+
+            // Disable submit button
+            const submitBtn = event.target.querySelector('.booking-btn-submit');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<span>Sending...</span>';
+            submitBtn.disabled = true;
+
+            // Simulate API call (replace with actual API endpoint)
+            try {
+                await new Promise(resolve => setTimeout(resolve, 1500));
+
+                // Log the submission (in production, send to server)
+                console.log('📋 Booking submitted:', {
+                    name,
+                    email,
+                    phone,
+                    service,
+                    message,
+                    timestamp: new Date().toISOString()
+                });
+
+                // Show success view
+                document.getElementById('bookingFormView').style.display = 'none';
+                document.getElementById('bookingSuccessView').style.display = 'block';
+
+                console.log('✅ Booking successful!');
+
+            } catch (error) {
+                console.error('❌ Booking failed:', error);
+                alert('Sorry, there was an error submitting your request. Please try again.');
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+            }
+        }
+
+        // Close modal on Escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeServiceModal();
+                closeBookingModal();
+            }
+        });
+
+        // Make openBookingModal globally available (already defined in sections)
+        window.openServiceModal = openServiceModal;
+        window.closeServiceModal = closeServiceModal;
+        window.openBookingModal = openBookingModal;
+        window.closeBookingModal = closeBookingModal;
+        window.openBookingModalFromService = openBookingModalFromService;
+        window.handleBookingSubmit = handleBookingSubmit;
+
+        console.log('✅ Modal system initialized');
     </script>
 
     </body>

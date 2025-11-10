@@ -43,6 +43,10 @@
             box-sizing: border-box;
         }
 
+        html {
+            scroll-behavior: smooth;
+        }
+
         body {
             font-family: 'Inter', sans-serif;
             background: var(--dark-bg);
@@ -50,6 +54,20 @@
             line-height: 1.6;
             overflow-x: hidden;
             position: relative;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* Enhanced focus states for accessibility */
+        *:focus-visible {
+            outline: 2px solid var(--primary);
+            outline-offset: 2px;
+            border-radius: 4px;
+        }
+
+        button:focus-visible {
+            outline: 2px solid var(--primary);
+            outline-offset: 4px;
         }
 
         /* ANIMATED BACKGROUND */
@@ -1299,6 +1317,478 @@
             background: linear-gradient(135deg, var(--primary), var(--primary-light));
             border-color: var(--primary);
             color: #fff;
+        }
+
+        /* ENHANCED REHAB PLAN STYLES */
+        .rehab-plan-container {
+            margin-top: 2rem;
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        .rehab-plan-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding: 1.5rem;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            backdrop-filter: blur(20px);
+        }
+
+        .rehab-header-content {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .rehab-icon {
+            width: 48px;
+            height: 48px;
+            fill: var(--primary);
+            flex-shrink: 0;
+        }
+
+        .rehab-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin: 0;
+        }
+
+        .rehab-subtitle {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin: 0.25rem 0 0 0;
+        }
+
+        .rehab-header-actions {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .rehab-action-btn {
+            padding: 0.6rem;
+            background: rgba(243, 112, 33, 0.1);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: var(--primary);
+        }
+
+        .rehab-action-btn:hover {
+            background: rgba(243, 112, 33, 0.2);
+            transform: scale(1.05);
+        }
+
+        .difficulty-selector {
+            padding: 0.6rem 1rem;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .difficulty-selector:hover {
+            border-color: var(--primary);
+        }
+
+        .difficulty-selector option {
+            background: var(--dark-bg);
+            color: var(--text-primary);
+        }
+
+        .rehab-progress-container {
+            margin-bottom: 2rem;
+            padding: 1.25rem;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+        }
+
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.75rem;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+
+        .progress-percentage {
+            color: var(--primary);
+            font-size: 1.1rem;
+            font-weight: 700;
+        }
+
+        .progress-bar-bg {
+            width: 100%;
+            height: 12px;
+            background: rgba(243, 112, 33, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--primary-light));
+            border-radius: 10px;
+            transition: width 0.5s ease;
+            box-shadow: 0 0 10px rgba(243, 112, 33, 0.5);
+        }
+
+        .exercises-grid {
+            display: grid;
+            gap: 1.25rem;
+            margin-bottom: 2rem;
+        }
+
+        .exercise-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            animation: fadeInUp 0.5s ease-out backwards;
+        }
+
+        .exercise-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(243, 112, 33, 0.2);
+        }
+
+        .exercise-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.25rem;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .exercise-header-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex: 1;
+        }
+
+        .exercise-checkbox {
+            width: 24px;
+            height: 24px;
+            border: 2px solid var(--border-color);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            flex-shrink: 0;
+            position: relative;
+        }
+
+        .exercise-checkbox.checked {
+            background: var(--primary);
+            border-color: var(--primary);
+        }
+
+        .exercise-checkbox.checked::after {
+            content: '✓';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .exercise-icon {
+            width: 48px;
+            height: 48px;
+            background: rgba(243, 112, 33, 0.1);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+
+        .exercise-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .exercise-name {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin: 0 0 0.25rem 0;
+        }
+
+        .exercise-meta {
+            display: flex;
+            gap: 1rem;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            flex-wrap: wrap;
+        }
+
+        .exercise-meta-item {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .difficulty-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .difficulty-badge.beginner {
+            background: rgba(16, 185, 129, 0.2);
+            color: var(--success);
+        }
+
+        .difficulty-badge.intermediate {
+            background: rgba(245, 158, 11, 0.2);
+            color: var(--warning);
+        }
+
+        .difficulty-badge.advanced {
+            background: rgba(239, 68, 68, 0.2);
+            color: var(--danger);
+        }
+
+        .expand-icon {
+            width: 24px;
+            height: 24px;
+            fill: var(--text-secondary);
+            transition: transform 0.3s ease;
+            flex-shrink: 0;
+        }
+
+        .exercise-card.expanded .expand-icon {
+            transform: rotate(180deg);
+        }
+
+        .exercise-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease, padding 0.4s ease;
+        }
+
+        .exercise-card.expanded .exercise-content {
+            max-height: 600px;
+            padding: 0 1.25rem 1.25rem 1.25rem;
+        }
+
+        .exercise-description {
+            margin-bottom: 1rem;
+            padding: 1rem;
+            background: rgba(243, 112, 33, 0.05);
+            border-left: 3px solid var(--primary);
+            border-radius: 8px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        .exercise-steps {
+            margin-bottom: 1rem;
+        }
+
+        .exercise-steps-title {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.75rem;
+            font-size: 0.95rem;
+        }
+
+        .exercise-steps ol {
+            margin: 0;
+            padding-left: 1.5rem;
+            color: var(--text-secondary);
+        }
+
+        .exercise-steps li {
+            margin-bottom: 0.5rem;
+            line-height: 1.6;
+        }
+
+        .exercise-tips {
+            padding: 1rem;
+            background: rgba(67, 133, 245, 0.1);
+            border-radius: 8px;
+            border-left: 3px solid var(--secondary);
+        }
+
+        .exercise-tips-title {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 600;
+            color: var(--secondary);
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .exercise-tips-content {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        .rehab-actions {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .rehab-btn {
+            flex: 1;
+            min-width: 200px;
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            border: none;
+        }
+
+        .btn-primary-rehab {
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: white;
+        }
+
+        .btn-primary-rehab:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(243, 112, 33, 0.4);
+        }
+
+        .btn-secondary-rehab {
+            background: transparent;
+            border: 2px solid var(--border-color);
+            color: var(--text-primary);
+        }
+
+        .btn-secondary-rehab:hover {
+            border-color: var(--primary);
+            background: rgba(243, 112, 33, 0.1);
+        }
+
+        .ai-connect-notice {
+            margin-top: 1.5rem;
+            padding: 1.25rem;
+            background: rgba(245, 158, 11, 0.1);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .connect-ai-btn {
+            padding: 0.6rem 1.25rem;
+            background: var(--warning);
+            color: var(--dark-bg);
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .connect-ai-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.4);
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(100%);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes slideOut {
+            from {
+                opacity: 1;
+                transform: translateX(0);
+            }
+            to {
+                opacity: 0;
+                transform: translateX(100%);
+            }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .rehab-plan-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+
+            .rehab-header-actions {
+                width: 100%;
+                justify-content: space-between;
+            }
+
+            .difficulty-selector {
+                flex: 1;
+            }
+
+            .exercise-header-left {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .exercise-meta {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .rehab-actions {
+                flex-direction: column;
+            }
+
+            .rehab-btn {
+                width: 100%;
+            }
         }
 
         /* NAVIGATION */
@@ -3107,6 +3597,76 @@
                     <span style="margin-left:0.5rem;color:var(--text-secondary);">AI is thinking...</span>
                 </div>
 
+                <!-- ENHANCED REHAB PLAN SECTION -->
+                <div class="rehab-plan-container" id="rehabPlanContainer" style="display:none;">
+                    <div class="rehab-plan-header">
+                        <div class="rehab-header-content">
+                            <svg class="rehab-icon" viewBox="0 0 24 24">
+                                <path d="M13.49 5.48c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm-3.6 13.9l1-4.4 2.1 2v6h2v-7.5l-2.1-2 .6-3c1.3 1.5 3.3 2.5 5.5 2.5v-2c-1.9 0-3.5-1-4.3-2.4l-1-1.6c-.4-.6-1-1-1.7-1-.3 0-.5.1-.8.1l-5.2 2.2v4.7h2v-3.4l1.8-.7-1.6 8.1-4.9-1-.4 2 7 1.4z"/>
+                            </svg>
+                            <div>
+                                <h3 class="rehab-title" id="rehabTitle">AI-Generated Rehabilitation Plan</h3>
+                                <p class="rehab-subtitle" id="rehabSubtitle">Personalized exercises tailored to your condition</p>
+                            </div>
+                        </div>
+                        <div class="rehab-header-actions">
+                            <button class="rehab-action-btn" onclick="regenerateRehabPlan()" title="Regenerate Plan">
+                                <svg viewBox="0 0 24 24" style="width:18px;height:18px;fill:currentColor;">
+                                    <path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/>
+                                </svg>
+                            </button>
+                            <select class="difficulty-selector" id="difficultySelector" onchange="updateRehabDifficulty(this.value)">
+                                <option value="beginner" id="difficultyBeginner">Beginner</option>
+                                <option value="intermediate" selected id="difficultyIntermediate">Intermediate</option>
+                                <option value="advanced" id="difficultyAdvanced">Advanced</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Progress Bar -->
+                    <div class="rehab-progress-container">
+                        <div class="progress-label">
+                            <span id="progressText">Completion Progress</span>
+                            <span class="progress-percentage" id="progressPercentage">0%</span>
+                        </div>
+                        <div class="progress-bar-bg">
+                            <div class="progress-bar-fill" id="progressBarFill" style="width: 0%;"></div>
+                        </div>
+                    </div>
+
+                    <!-- Exercises Grid -->
+                    <div class="exercises-grid" id="exercisesGrid">
+                        <!-- Exercises will be dynamically inserted -->
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="rehab-actions">
+                        <button class="rehab-btn btn-primary-rehab" onclick="downloadRehabPlan()">
+                            <svg viewBox="0 0 24 24" style="width:18px;height:18px;fill:white;">
+                                <path d="M19 12v7H5v-7H3v7c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2v-7h-2zm-6 .67l2.59-2.58L17 11.5l-5 5-5-5 1.41-1.41L11 12.67V3h2z"/>
+                            </svg>
+                            <span id="downloadPlanText">Download Plan (PDF)</span>
+                        </button>
+                        <button class="rehab-btn btn-secondary-rehab" onclick="shareRehabPlan()">
+                            <svg viewBox="0 0 24 24" style="width:18px;height:18px;fill:currentColor;">
+                                <path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92 1.61 0 2.92-1.31 2.92-2.92s-1.31-2.92-2.92-2.92z"/>
+                            </svg>
+                            <span id="sharePlanText">Share Plan</span>
+                        </button>
+                    </div>
+
+                    <!-- AI Connection Notice -->
+                    <div class="ai-connect-notice" id="aiConnectNotice" style="display:none;">
+                        <svg viewBox="0 0 24 24" style="width:20px;height:20px;fill:var(--warning);margin-right:8px;">
+                            <path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/>
+                        </svg>
+                        <span id="aiConnectNoticeText">Connect AI to personalize your rehab plan with advanced recommendations.</span>
+                        <button class="connect-ai-btn" onclick="openConfig()">
+                            <span id="connectAIText">Connect AI</span>
+                        </button>
+                    </div>
+                </div>
+
                 <!-- SUMMARY CARD -->
                 <div class="summary-card" id="summaryCard" style="display:none;">
                     <div class="summary-header">
@@ -3242,7 +3802,48 @@
     </div>
 
     <script>
+        // ========================================================================
+        // PRODUCTION CONFIGURATION
+        // ========================================================================
+        const PRODUCTION_MODE = true; // Set to false for development
+        const DEBUG_ENABLED = !PRODUCTION_MODE;
+
+        // Production-ready logger
+        const logger = {
+            log: (...args) => DEBUG_ENABLED && console.log(...args),
+            info: (...args) => DEBUG_ENABLED && console.info(...args),
+            warn: (...args) => console.warn(...args), // Always show warnings
+            error: (...args) => console.error(...args) // Always show errors
+        };
+
+        // Performance optimization: Debounce utility
+        function debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
+        }
+
+        // Performance optimization: Throttle utility
+        function throttle(func, limit) {
+            let inThrottle;
+            return function(...args) {
+                if (!inThrottle) {
+                    func.apply(this, args);
+                    inThrottle = true;
+                    setTimeout(() => inThrottle = false, limit);
+                }
+            };
+        }
+
+        // ========================================================================
         // STATE MANAGEMENT
+        // ========================================================================
         let assessmentData = {
             bodyPart: null,  // Keep for backward compatibility (first selected part)
             selectedParts: [],  // NEW: Track multiple selected body parts
@@ -3737,8 +4338,7 @@
          * Translations generated on-demand when user switches
          */
         async function initializeLanguageSystem() {
-            console.log('🚀 Initializing simplified language system...');
-            console.log('📊 Fixed languages: English (en), Hindi (hi)');
+            logger.log('🚀 Initializing language system (EN, HI)');
 
             // Set default language to English
             if (!assessmentData.currentLanguage) {
@@ -3749,17 +4349,17 @@
             const savedLang = localStorage.getItem('preferred_language');
             if (savedLang && ['en', 'hi'].includes(savedLang)) {
                 assessmentData.currentLanguage = savedLang;
-                console.log('✅ Loaded saved language preference:', savedLang);
+                logger.log('✅ Loaded language preference:', savedLang);
             } else if (savedLang) {
                 // Reset any other language to English
-                console.log('⚠️ Saved language was:', savedLang, '- resetting to English');
+                logger.warn('⚠️ Invalid saved language:', savedLang, '- resetting to English');
                 assessmentData.currentLanguage = 'en';
                 localStorage.setItem('preferred_language', 'en');
             }
 
             // Setup language buttons (will show EN and HI only)
             setupLanguages();
-            console.log('✅ Language system initialized successfully');
+            logger.log('✅ Language system ready');
         }
 
         // CONTEXT MATRIX - Comprehensive body-part specific configuration
@@ -4361,12 +4961,16 @@ Respond ONLY with valid JSON, no additional text.
 
         // ==================== OPENAI INTEGRATION ====================
         async function callOpenAI(prompt) {
+            // Graceful fallback: Check if API key is configured
             if (!API_CONFIG.openai.key) {
-                console.log('OpenAI API key not configured');
+                logger.info('ℹ️ OpenAI API key not configured - using local analysis');
+                showAPIKeyNotice();
                 return null;
             }
 
             try {
+                logger.log('🤖 Sending request to OpenAI API...');
+
                 const response = await fetch(API_CONFIG.openai.endpoint, {
                     method: 'POST',
                     headers: {
@@ -4391,23 +4995,81 @@ Respond ONLY with valid JSON, no additional text.
                 });
 
                 if (!response.ok) {
-                    const error = await response.json();
-                    console.error('OpenAI API Error:', error);
+                    const error = await response.json().catch(() => ({ error: 'Unknown error' }));
+                    logger.error('❌ OpenAI API Error:', error);
 
+                    // User-friendly error messages
                     if (response.status === 401) {
-                        alert('Invalid OpenAI API key. Please check your configuration.');
+                        showErrorNotice('Invalid API key. Please update your configuration.', 'auth');
                     } else if (response.status === 429) {
-                        alert('Rate limit exceeded. Please try again later.');
+                        showErrorNotice('Rate limit exceeded. Please try again in a moment.', 'rate');
+                    } else if (response.status === 500) {
+                        showErrorNotice('Service temporarily unavailable. Using local analysis.', 'server');
+                    } else {
+                        showErrorNotice('Unable to connect to AI service. Using local analysis.', 'network');
                     }
                     return null;
                 }
 
                 const data = await response.json();
+                logger.log('✅ OpenAI response received successfully');
                 return data.choices[0].message.content;
 
             } catch (error) {
-                console.error('Error calling OpenAI:', error);
+                logger.error('❌ Error calling OpenAI:', error.message);
+                showErrorNotice('Connection failed. Using local analysis.', 'network');
                 return null;
+            }
+        }
+
+        // Show user-friendly API key notice
+        function showAPIKeyNotice() {
+            const notice = document.getElementById('aiConnectNotice');
+            if (notice) {
+                notice.style.display = 'flex';
+                setTimeout(() => {
+                    notice.style.opacity = '1';
+                }, 100);
+            }
+        }
+
+        // Show error notice with auto-dismiss
+        function showErrorNotice(message, type) {
+            logger.warn(`⚠️ ${type.toUpperCase()}: ${message}`);
+
+            // Create temporary notice if needed
+            const existingNotice = document.querySelector('.error-notice');
+            if (!existingNotice) {
+                const notice = document.createElement('div');
+                notice.className = 'error-notice';
+                notice.style.cssText = `
+                    position: fixed;
+                    top: 20px;
+                    right: 20px;
+                    background: rgba(239, 68, 68, 0.95);
+                    color: white;
+                    padding: 1rem 1.5rem;
+                    border-radius: 12px;
+                    box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+                    z-index: 10000;
+                    animation: slideIn 0.3s ease-out;
+                    max-width: 350px;
+                `;
+                notice.innerHTML = `
+                    <div style="display:flex;align-items:center;gap:0.75rem;">
+                        <svg viewBox="0 0 24 24" style="width:20px;height:20px;fill:white;">
+                            <path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/>
+                        </svg>
+                        <span>${message}</span>
+                    </div>
+                `;
+                document.body.appendChild(notice);
+
+                // Auto-dismiss after 5 seconds
+                setTimeout(() => {
+                    notice.style.animation = 'slideOut 0.3s ease-out';
+                    setTimeout(() => notice.remove(), 300);
+                }, 5000);
             }
         }
 
@@ -5810,6 +6472,9 @@ Keep each section concise, evidence-based, and patient-friendly. Use professiona
                 showCharts();
                 generateDailyTips();
 
+                // Display enhanced rehab plan
+                displayRehabPlan();
+
                 const followUpSection = document.getElementById('followUpSection');
                 const feedbackSection = document.getElementById('feedbackSection');
 
@@ -6015,6 +6680,527 @@ Keep each section concise, evidence-based, and patient-friendly. Use professiona
             window.location.href = `mailto:?subject=${emailSubject}&body=${emailBody}`;
 
             speak('Opening email to share with doctor');
+        }
+
+        // ========================================================================
+        // ENHANCED REHAB PLAN FUNCTIONS
+        // ========================================================================
+
+        // Exercise database with different difficulty levels
+        const exerciseDatabase = {
+            back: {
+                beginner: [
+                    {
+                        name: 'Gentle Cat-Cow Stretch',
+                        icon: '🐱',
+                        duration: '2 min',
+                        reps: '10 reps',
+                        sets: '2 sets',
+                        description: 'A gentle spinal mobility exercise to warm up your back and improve flexibility.',
+                        steps: [
+                            'Start on hands and knees in tabletop position',
+                            'Inhale and arch your back, dropping belly towards floor (Cow)',
+                            'Exhale and round your spine, tucking chin to chest (Cat)',
+                            'Move slowly and smoothly between positions',
+                            'Focus on breathing and controlled movement'
+                        ],
+                        tips: 'Move gently and never force the stretch. Stop if you feel sharp pain.'
+                    },
+                    {
+                        name: 'Pelvic Tilts',
+                        icon: '🔄',
+                        duration: '3 min',
+                        reps: '15 reps',
+                        sets: '2 sets',
+                        description: 'Strengthens core muscles and improves lower back stability.',
+                        steps: [
+                            'Lie on your back with knees bent, feet flat',
+                            'Flatten your lower back against the floor',
+                            'Engage your abdominal muscles',
+                            'Hold for 5 seconds',
+                            'Relax and repeat'
+                        ],
+                        tips: 'Breathe normally throughout the exercise. Quality over quantity.'
+                    },
+                    {
+                        name: 'Knee-to-Chest Stretch',
+                        icon: '🦵',
+                        duration: '2 min',
+                        reps: 'Hold 30s each',
+                        sets: '2 sets',
+                        description: 'Relieves lower back tension and stretches hip muscles.',
+                        steps: [
+                            'Lie on your back with knees bent',
+                            'Bring one knee towards your chest',
+                            'Hold behind the thigh with both hands',
+                            'Keep other foot flat on ground',
+                            'Switch legs and repeat'
+                        ],
+                        tips: 'Keep your lower back flat on the floor throughout the stretch.'
+                    }
+                ],
+                intermediate: [
+                    {
+                        name: 'Bird Dog Exercise',
+                        icon: '🐕',
+                        duration: '4 min',
+                        reps: '10 each side',
+                        sets: '3 sets',
+                        description: 'Core stabilization exercise that strengthens back and abdominal muscles.',
+                        steps: [
+                            'Start in tabletop position',
+                            'Extend right arm forward and left leg back',
+                            'Keep hips level and core engaged',
+                            'Hold for 5 seconds',
+                            'Return to start and switch sides'
+                        ],
+                        tips: 'Focus on stability and control. Avoid rotating your hips.'
+                    },
+                    {
+                        name: 'Bridge Exercise',
+                        icon: '🌉',
+                        duration: '3 min',
+                        reps: '12 reps',
+                        sets: '3 sets',
+                        description: 'Strengthens glutes, hamstrings, and lower back muscles.',
+                        steps: [
+                            'Lie on back with knees bent, feet hip-width apart',
+                            'Lift hips off ground until body forms straight line',
+                            'Squeeze glutes at top',
+                            'Hold for 3 seconds',
+                            'Lower slowly and repeat'
+                        ],
+                        tips: 'Push through heels and keep core engaged throughout movement.'
+                    },
+                    {
+                        name: 'Superman Exercise',
+                        icon: '🦸',
+                        duration: '3 min',
+                        reps: '10 reps',
+                        sets: '3 sets',
+                        description: 'Strengthens the entire posterior chain including back extensors.',
+                        steps: [
+                            'Lie face down with arms extended overhead',
+                            'Simultaneously lift arms, chest, and legs off ground',
+                            'Hold for 3-5 seconds',
+                            'Lower slowly with control',
+                            'Rest briefly and repeat'
+                        ],
+                        tips: 'Start with small lifts and gradually increase range as you get stronger.'
+                    }
+                ],
+                advanced: [
+                    {
+                        name: 'Plank with Leg Lift',
+                        icon: '💪',
+                        duration: '5 min',
+                        reps: '8 each side',
+                        sets: '3 sets',
+                        description: 'Advanced core exercise that challenges stability and strength.',
+                        steps: [
+                            'Start in forearm plank position',
+                            'Engage core and keep body straight',
+                            'Lift one leg off ground',
+                            'Hold for 5 seconds',
+                            'Switch legs and repeat'
+                        ],
+                        tips: 'Keep hips level throughout. If too challenging, reduce hold time.'
+                    },
+                    {
+                        name: 'Romanian Deadlift',
+                        icon: '🏋️',
+                        duration: '6 min',
+                        reps: '12 reps',
+                        sets: '3 sets',
+                        description: 'Strengthens hamstrings, glutes, and lower back with proper form.',
+                        steps: [
+                            'Stand with feet hip-width, holding light weights',
+                            'Hinge at hips, keeping back straight',
+                            'Lower weights along legs to mid-shin',
+                            'Feel stretch in hamstrings',
+                            'Return to standing by squeezing glutes'
+                        ],
+                        tips: 'Start with light weights. Focus on form before adding weight.'
+                    }
+                ]
+            },
+            neck: {
+                beginner: [
+                    {
+                        name: 'Neck Rotations',
+                        icon: '🔄',
+                        duration: '2 min',
+                        reps: '10 each direction',
+                        sets: '2 sets',
+                        description: 'Improves neck mobility and reduces stiffness.',
+                        steps: [
+                            'Sit or stand with good posture',
+                            'Slowly turn head to look over right shoulder',
+                            'Hold for 5 seconds',
+                            'Return to center',
+                            'Repeat on left side'
+                        ],
+                        tips: 'Move slowly and never force the rotation. Stop if dizzy.'
+                    },
+                    {
+                        name: 'Chin Tucks',
+                        icon: '😌',
+                        duration: '2 min',
+                        reps: '15 reps',
+                        sets: '3 sets',
+                        description: 'Strengthens deep neck flexors and improves posture.',
+                        steps: [
+                            'Sit upright with shoulders relaxed',
+                            'Gently pull chin straight back',
+                            'Create a "double chin"',
+                            'Hold for 5 seconds',
+                            'Relax and repeat'
+                        ],
+                        tips: 'Think about lengthening the back of your neck.'
+                    }
+                ],
+                intermediate: [
+                    {
+                        name: 'Isometric Neck Strengthening',
+                        icon: '💪',
+                        duration: '4 min',
+                        reps: '10s hold each direction',
+                        sets: '3 sets',
+                        description: 'Builds neck strength without movement.',
+                        steps: [
+                            'Place hand on forehead',
+                            'Press head forward against hand resistance',
+                            'Hold for 10 seconds without moving',
+                            'Repeat on back and both sides',
+                            'Keep breathing throughout'
+                        ],
+                        tips: 'Use only 50% effort. Neck muscles fatigue quickly.'
+                    }
+                ]
+            },
+            shoulder: {
+                beginner: [
+                    {
+                        name: 'Pendulum Stretch',
+                        icon: '⭕',
+                        duration: '3 min',
+                        reps: '20 circles each direction',
+                        sets: '2 sets',
+                        description: 'Gentle shoulder mobilization to reduce stiffness.',
+                        steps: [
+                            'Lean forward, supporting yourself with good arm',
+                            'Let affected arm hang relaxed',
+                            'Make small circles with hanging arm',
+                            'Change direction after 20 circles',
+                            'Keep movement gentle and controlled'
+                        ],
+                        tips: 'Let gravity do the work. Don\'t force movement.'
+                    },
+                    {
+                        name: 'Wall Angels',
+                        icon: '👼',
+                        duration: '3 min',
+                        reps: '12 reps',
+                        sets: '2 sets',
+                        description: 'Improves shoulder mobility and posture.',
+                        steps: [
+                            'Stand with back against wall',
+                            'Raise arms to 90 degrees, elbows bent',
+                            'Slide arms up wall maintaining contact',
+                            'Lower slowly and repeat',
+                            'Keep lower back flat against wall'
+                        ],
+                        tips: 'Move within comfortable range. Don\'t arch your back.'
+                    }
+                ],
+                intermediate: [
+                    {
+                        name: 'Shoulder Blade Squeezes',
+                        icon: '🔲',
+                        duration: '4 min',
+                        reps: '15 reps',
+                        sets: '3 sets',
+                        description: 'Strengthens muscles between shoulder blades.',
+                        steps: [
+                            'Sit or stand with good posture',
+                            'Pull shoulder blades back and together',
+                            'Imagine squeezing a pencil between them',
+                            'Hold for 5 seconds',
+                            'Release slowly and repeat'
+                        ],
+                        tips: 'Don\'t shrug shoulders up. Keep them down and back.'
+                    }
+                ]
+            }
+        };
+
+        // Generate exercises based on body part and difficulty
+        function generateRehabPlan(bodyPart, difficulty = 'intermediate') {
+            const exercises = exerciseDatabase[bodyPart]?.[difficulty] || exerciseDatabase.back.beginner;
+            return exercises;
+        }
+
+        // Display rehab plan
+        function displayRehabPlan() {
+            const rehabContainer = document.getElementById('rehabPlanContainer');
+            const exercisesGrid = document.getElementById('exercisesGrid');
+
+            if (!rehabContainer || !exercisesGrid) return;
+
+            // Update translations for rehab plan
+            updateRehabTranslations();
+
+            // Show rehab plan container with fade-in
+            rehabContainer.style.display = 'block';
+
+            // Get current body part and difficulty
+            const bodyPart = assessmentData.bodyPart || 'back';
+            const difficulty = document.getElementById('difficultySelector')?.value || 'intermediate';
+
+            // Generate exercises
+            const exercises = generateRehabPlan(bodyPart, difficulty);
+
+            // Clear existing exercises
+            exercisesGrid.innerHTML = '';
+
+            // Create exercise cards with staggered animation
+            exercises.forEach((exercise, index) => {
+                const card = createExerciseCard(exercise, index);
+                exercisesGrid.appendChild(card);
+            });
+
+            // Update progress
+            updateRehabProgress();
+        }
+
+        // Update rehab plan translations
+        function updateRehabTranslations() {
+            const elements = {
+                'rehabTitle': 'rehabTitle',
+                'rehabSubtitle': 'rehabSubtitle',
+                'progressText': 'rehabProgressText',
+                'difficultyBeginner': 'rehabDifficultyBeginner',
+                'difficultyIntermediate': 'rehabDifficultyIntermediate',
+                'difficultyAdvanced': 'rehabDifficultyAdvanced',
+                'downloadPlanText': 'rehabDownloadPlan',
+                'sharePlanText': 'rehabSharePlan',
+                'aiConnectNoticeText': 'rehabConnectAI',
+                'connectAIText': 'rehabConnectButton'
+            };
+
+            for (const [elementId, translationKey] of Object.entries(elements)) {
+                const element = document.getElementById(elementId);
+                if (element) {
+                    element.textContent = t(translationKey);
+                }
+            }
+        }
+
+        // Create exercise card HTML
+        function createExerciseCard(exercise, index) {
+            const card = document.createElement('div');
+            card.className = 'exercise-card';
+            card.style.animationDelay = `${index * 0.1}s`;
+            card.setAttribute('data-exercise-id', index);
+
+            // Check if exercise is completed
+            const isCompleted = assessmentData.completedExercises?.includes(index) || false;
+
+            card.innerHTML = `
+                <div class="exercise-header" onclick="toggleExerciseExpand(${index})">
+                    <div class="exercise-header-left">
+                        <div class="exercise-checkbox ${isCompleted ? 'checked' : ''}"
+                             onclick="event.stopPropagation(); toggleExerciseComplete(${index})">
+                        </div>
+                        <div class="exercise-icon">${exercise.icon}</div>
+                        <div class="exercise-info">
+                            <h4 class="exercise-name">${exercise.name}</h4>
+                            <div class="exercise-meta">
+                                <span class="exercise-meta-item">
+                                    <svg viewBox="0 0 24 24" style="width:14px;height:14px;fill:currentColor;">
+                                        <path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z"/>
+                                        <path d="M12.5 7H11v6l5.25 3.15.75-1.23-4.5-2.67z"/>
+                                    </svg>
+                                    ${exercise.duration}
+                                </span>
+                                <span class="exercise-meta-item">
+                                    <svg viewBox="0 0 24 24" style="width:14px;height:14px;fill:currentColor;">
+                                        <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/>
+                                    </svg>
+                                    ${exercise.reps}
+                                </span>
+                                ${exercise.sets ? `<span class="exercise-meta-item">${exercise.sets}</span>` : ''}
+                            </div>
+                        </div>
+                    </div>
+                    <span class="difficulty-badge ${document.getElementById('difficultySelector')?.value || 'intermediate'}">
+                        ${document.getElementById('difficultySelector')?.value || 'intermediate'}
+                    </span>
+                    <svg class="expand-icon" viewBox="0 0 24 24">
+                        <path d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"/>
+                    </svg>
+                </div>
+                <div class="exercise-content">
+                    <div class="exercise-description">
+                        ${exercise.description}
+                    </div>
+                    <div class="exercise-steps">
+                        <div class="exercise-steps-title">How to perform:</div>
+                        <ol>
+                            ${exercise.steps.map(step => `<li>${step}</li>`).join('')}
+                        </ol>
+                    </div>
+                    <div class="exercise-tips">
+                        <div class="exercise-tips-title">
+                            <svg viewBox="0 0 24 24" style="width:16px;height:16px;fill:currentColor;">
+                                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
+                            </svg>
+                            Pro Tip
+                        </div>
+                        <div class="exercise-tips-content">${exercise.tips}</div>
+                    </div>
+                </div>
+            `;
+
+            return card;
+        }
+
+        // Toggle exercise expansion
+        function toggleExerciseExpand(index) {
+            const card = document.querySelector(`[data-exercise-id="${index}"]`);
+            if (card) {
+                card.classList.toggle('expanded');
+            }
+        }
+
+        // Toggle exercise completion
+        function toggleExerciseComplete(index) {
+            // Initialize completed exercises array if not exists
+            if (!assessmentData.completedExercises) {
+                assessmentData.completedExercises = [];
+            }
+
+            const exerciseIndex = assessmentData.completedExercises.indexOf(index);
+
+            if (exerciseIndex > -1) {
+                // Remove from completed
+                assessmentData.completedExercises.splice(exerciseIndex, 1);
+            } else {
+                // Add to completed
+                assessmentData.completedExercises.push(index);
+            }
+
+            // Update checkbox visual
+            const checkbox = document.querySelector(`[data-exercise-id="${index}"] .exercise-checkbox`);
+            if (checkbox) {
+                checkbox.classList.toggle('checked');
+            }
+
+            // Update progress
+            updateRehabProgress();
+
+            // Save session
+            saveSession();
+        }
+
+        // Update progress bar
+        function updateRehabProgress() {
+            const totalExercises = document.querySelectorAll('.exercise-card').length;
+            const completedExercises = assessmentData.completedExercises?.length || 0;
+            const percentage = totalExercises > 0 ? Math.round((completedExercises / totalExercises) * 100) : 0;
+
+            const progressFill = document.getElementById('progressBarFill');
+            const progressPercentage = document.getElementById('progressPercentage');
+
+            if (progressFill) {
+                progressFill.style.width = `${percentage}%`;
+            }
+
+            if (progressPercentage) {
+                progressPercentage.textContent = `${percentage}%`;
+            }
+        }
+
+        // Update difficulty
+        function updateRehabDifficulty(difficulty) {
+            displayRehabPlan();
+            speak(`Difficulty changed to ${difficulty}`);
+        }
+
+        // Regenerate plan
+        function regenerateRehabPlan() {
+            speak('Regenerating rehabilitation plan');
+
+            // Clear completed exercises
+            assessmentData.completedExercises = [];
+
+            // Regenerate plan
+            displayRehabPlan();
+        }
+
+        // Download rehab plan as PDF
+        function downloadRehabPlan() {
+            speak('Preparing your rehabilitation plan for download');
+
+            // Reuse existing downloadPDF function but focus on rehab plan
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+
+            doc.setFontSize(20);
+            doc.setTextColor(243, 112, 33);
+            doc.text('Rehabilitation Plan', 20, 20);
+
+            doc.setFontSize(12);
+            doc.setTextColor(0, 0, 0);
+            doc.text(`Body Part: ${assessmentData.bodyPart || 'Back'}`, 20, 35);
+            doc.text(`Difficulty: ${document.getElementById('difficultySelector')?.value || 'Intermediate'}`, 20, 42);
+            doc.text(`Date: ${new Date().toLocaleDateString()}`, 20, 49);
+
+            const bodyPart = assessmentData.bodyPart || 'back';
+            const difficulty = document.getElementById('difficultySelector')?.value || 'intermediate';
+            const exercises = generateRehabPlan(bodyPart, difficulty);
+
+            let yPos = 65;
+            exercises.forEach((exercise, index) => {
+                if (yPos > 270) {
+                    doc.addPage();
+                    yPos = 20;
+                }
+
+                doc.setFontSize(14);
+                doc.setFont('helvetica', 'bold');
+                doc.text(`${index + 1}. ${exercise.name}`, 20, yPos);
+                yPos += 7;
+
+                doc.setFontSize(10);
+                doc.setFont('helvetica', 'normal');
+                doc.text(`Duration: ${exercise.duration} | Reps: ${exercise.reps}`, 25, yPos);
+                yPos += 7;
+
+                const descLines = doc.splitTextToSize(exercise.description, 170);
+                doc.text(descLines, 25, yPos);
+                yPos += descLines.length * 5 + 5;
+            });
+
+            doc.save(`Rehab-Plan-${new Date().getTime()}.pdf`);
+        }
+
+        // Share rehab plan
+        function shareRehabPlan() {
+            const bodyPart = assessmentData.bodyPart || 'Back';
+            const difficulty = document.getElementById('difficultySelector')?.value || 'intermediate';
+
+            const subject = encodeURIComponent(`Rehabilitation Plan - ${bodyPart}`);
+            const body = encodeURIComponent(
+                `My Rehabilitation Plan\n\n` +
+                `Body Part: ${bodyPart}\n` +
+                `Difficulty Level: ${difficulty}\n` +
+                `Date: ${new Date().toLocaleDateString()}\n\n` +
+                `View full plan: ${window.location.href}`
+            );
+
+            window.location.href = `mailto:?subject=${subject}&body=${body}`;
+            speak('Opening email to share your rehabilitation plan');
         }
 
         // CHART.JS VISUALIZATIONS
