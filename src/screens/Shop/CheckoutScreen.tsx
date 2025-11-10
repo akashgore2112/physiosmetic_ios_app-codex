@@ -438,7 +438,9 @@ export default function CheckoutScreen({ navigation }: any): JSX.Element {
 
         if (!paymentResult.success) {
           if (paymentResult.error === 'Payment canceled') {
-            setError('Payment canceled. Try again when ready.');
+            // User canceled - don't show error, just return to checkout
+            console.log('[Checkout] User canceled Stripe payment');
+            return;
           } else {
             setError(paymentResult.error || 'Payment failed');
           }

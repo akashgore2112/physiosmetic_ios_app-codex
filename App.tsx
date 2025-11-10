@@ -31,7 +31,13 @@ export default function App() {
             ServiceDetail: 'services/:serviceId',
           },
         },
-        Shop: '',
+        Shop: {
+          screens: {
+            ShopMain: 'shop',
+            ProductDetail: 'shop/:productId',
+            Cart: 'cart',
+          },
+        },
         Account: '',
       },
     },
@@ -74,6 +80,16 @@ export default function App() {
         } else {
           navRef.current.navigate('Services', { screen: 'SelectTherapist', params: { serviceId: second } });
         }
+        return;
+      }
+      // Shop deeplinks: physiosmetic://shop/<productId>
+      if (first === 'shop' && second) {
+        navRef.current.navigate('Shop', { screen: 'ProductDetail', params: { id: second } });
+        return;
+      }
+      // Cart deeplink: physiosmetic://cart
+      if (first === 'cart' && !second) {
+        navRef.current.navigate('Shop', { screen: 'Cart' });
         return;
       }
     } catch {}

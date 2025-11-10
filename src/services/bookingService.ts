@@ -440,7 +440,19 @@ export async function bookAppointment(params: {
   therapistId: string;
   slotId: string;
   notes?: string;
-}): Promise<Appointment> {
+  // Payment parameters (NEW)
+  payment?: {
+    payment_method?: string;
+    payment_status?: string;
+    payment_gateway?: string;
+    gateway_order_id?: string;
+    gateway_payment_id?: string;
+  };
+  amountPaid?: number;
+  discountAmount?: number;
+  couponCode?: string;
+  idempotencyKey?: string;
+}): Promise<Appointment & { amount_paid?: number }> {
   // Ensure the user has a corresponding profiles row to satisfy FK constraints
   try { await ensureProfileExists(params.userId, null, null); } catch {}
 
@@ -452,12 +464,22 @@ export async function bookAppointment(params: {
     p_slot_id: params.slotId,
     p_is_online: false,
     p_notes: params.notes ?? null,
+    // Payment parameters
+    p_payment_method: params.payment?.payment_method ?? 'pay_at_clinic',
+    p_payment_status: params.payment?.payment_status ?? 'pending',
+    p_payment_gateway: params.payment?.payment_gateway ?? null,
+    p_gateway_order_id: params.payment?.gateway_order_id ?? null,
+    p_gateway_payment_id: params.payment?.gateway_payment_id ?? null,
+    p_amount_paid: params.amountPaid ?? null,
+    p_discount_amount: params.discountAmount ?? 0,
+    p_coupon_code: params.couponCode ?? null,
+    p_idempotency_key: params.idempotencyKey ?? null,
   });
 
   if (error) throw error;
 
   // Handle JSONB response from enhanced RPC
-  const result = data as { success: boolean; appointment_id?: string; error?: string; message?: string };
+  const result = data as { success: boolean; appointment_id?: string; amount_paid?: number; error?: string; message?: string };
 
   if (!result.success) {
     // Map error codes to user-friendly messages
@@ -482,7 +504,7 @@ export async function bookAppointment(params: {
     throw fetchErr ?? new Error('Failed to fetch appointment details.');
   }
 
-  return appt as Appointment;
+  return { ...(appt as Appointment), amount_paid: result.amount_paid };
 }
 
 export async function cancelAppointment(apptId: string): Promise<void> {

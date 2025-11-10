@@ -3,6 +3,7 @@ import { View, Text, TextInput, ScrollView, Pressable, SectionList, FlatList, Re
 import ProductCardCompact from '../../components/ProductCardCompact';
 import { getProductsGroupedByCategory, searchProducts } from '../../services/productCatalogService';
 import { getBestsellers } from '../../services/productCatalogService';
+import useNetworkStore from '../../store/useNetworkStore';
 
 export default function ShopScreen({ navigation }: any): JSX.Element {
   const [search, setSearch] = useState('');
@@ -15,6 +16,7 @@ export default function ShopScreen({ navigation }: any): JSX.Element {
   const [priceStep, setPriceStep] = useState<null | 'p0' | 'p1' | 'p2'>(null);
   const [sortOption, setSortOption] = useState<'bestsellers' | 'price' | 'newest'>('bestsellers');
   const [rankMap, setRankMap] = useState<Record<string, number>>({});
+  const isOnline = useNetworkStore((s) => s.isOnline);
 
   // Debounce search input
   useEffect(() => {
@@ -127,6 +129,23 @@ export default function ShopScreen({ navigation }: any): JSX.Element {
     })();
     return () => { cancelled = true; };
   }, []);
+
+  // Auto-refresh catalog on reconnect
+  useEffect(() => {
+    if (isOnline) {
+      (async () => {
+        try {
+          if (debounced) {
+            const rows = await searchProducts(debounced);
+            setResults(rows);
+          } else {
+            const m = await getProductsGroupedByCategory();
+            setGroups(m);
+          }
+        } catch {}
+      })();
+    }
+  }, [isOnline]);
 
   const applyFilters = useCallback((arr: any[]) => {
     return arr.filter((p) => {

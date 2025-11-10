@@ -9,6 +9,83 @@ _Last cleaned: 2025-11-09_
 - **2025-11-10**: orderService.ts updated: client-side pricing REMOVED, now uses server-side RPCs for security
 - **2025-11-10**: CheckoutScreen: coupon UI (apply/remove), TotalsCard (subtotal/discount/tax/shipping/total), idempotency keys
 - **2025-11-10**: RLS tightened: order_items INSERT blocked, only via place_order RPC (SECURITY DEFINER), immutable records
+- **2025-11-10**: MyOrdersScreen enhanced: pull-to-refresh, realtime subscription, status pills, payment badges, discount display, date
+- **2025-11-10**: OrderDetailScreen enhanced: comprehensive totals breakdown with TotalsCard, payment info, shipping/pickup details, variant labels
+- **2025-11-10**: Cart persistence: useCartStore wrapped with Zustand persist middleware using AsyncStorage for offline cart persistence
+- **2025-11-10**: ShopScreen: auto-refresh catalog on reconnect for fresh data
+- **2025-11-10**: CartScreen: price reconciliation on reconnect, validates cart prices vs server, shows warning banner if prices changed
+- **2025-11-10**: Shop deeplinks configured: physiosmetic://shop/<productId> and physiosmetic://cart with guarded navigation fallbacks
+- **2025-11-10**: QA checklist created: SHOP_QA_CHECKLIST.md with 11 test categories, 100+ test cases for end-to-end validation
+- **2025-11-10**: Features summary documented: SHOP_FEATURES_SUMMARY.md with complete implementation details, security notes, statistics
+- **2025-11-10**: SERVICE/BOOKING: DB migration added payment fields to appointments (payment_status, payment_method, gateway IDs, amount_paid, idempotency_key)
+- **2025-11-10**: SERVICE/BOOKING: book_appointment RPC v2 updated with payment params, server-side pricing, idempotency support
+- **2025-11-10**: SERVICE/BOOKING: BookingCheckoutScreen created with Razorpay/Stripe/Pay-at-Clinic integration, price breakdown
+- **2025-11-10**: SERVICE/BOOKING: BookingSuccessScreen created with confirmation details, payment receipt
+- **2025-11-10**: SERVICE/BOOKING: bookingService.ts updated to support payment parameters in bookAppointment function
+- **2025-11-10**: SERVICE/BOOKING: SelectTimeSlotScreen updated to navigate to BookingCheckout instead of ConfirmBooking
+- **2025-11-10**: SERVICE/BOOKING: BookingStack navigation updated with BookingCheckout and BookingSuccessScreen routes
+- **2025-11-10**: SERVICE/BOOKING: MyAppointmentsScreen enhanced with payment method badges, payment status pills, amount display
+- **2025-11-10**: SERVICE/BOOKING: AppointmentDetailScreen enhanced with comprehensive payment information section
+- **2025-11-10**: SERVICE/BOOKING: Stripe payment cancellation handling fixed to avoid error display on user cancellation
+
+### SERVICE/BOOKING Payment Integration Complete (2025-11-10)
+**Summary:** Full payment integration for service bookings with Razorpay, Stripe, and Pay-at-Clinic options.
+
+**Key Achievements:**
+- **Payment Flow**: Complete checkout screen with 3 payment methods (Razorpay TEST, Stripe TEST, Pay at Clinic)
+- **Server-Side Pricing**: Service base_price fetched from DB, never trusts client
+- **Idempotency**: Duplicate booking prevention on payment retry
+- **Payment Tracking**: Full payment status, method, gateway IDs stored in appointments table
+- **Success Screen**: Booking confirmation with payment receipt
+- **UI Enhancements**: Payment badges, status pills, amount display in appointments list and detail screens
+- **Security**: Same payment gateway integration as SHOP (Razorpay WebView, Stripe PaymentSheet)
+
+**Database Changes:**
+- Added 9 payment columns to appointments table: payment_status, payment_method, payment_gateway, gateway_order_id, gateway_payment_id, amount_paid, discount_amount, coupon_code, idempotency_key
+- Created indexes on idempotency_key and payment_status
+- Updated book_appointment RPC with 9 new payment parameters
+
+**Files Created:**
+- `scripts/migration_appointments_payment.sql` - DB migration script
+- `scripts/rpc_book_appointment_v2_payment.sql` - Updated RPC with payment support
+- `src/screens/Booking/BookingCheckoutScreen.tsx` - Payment checkout screen
+- `src/screens/Booking/BookingSuccessScreen.tsx` - Booking confirmation screen
+
+**Files Modified:**
+- `src/services/bookingService.ts` - Added payment parameters to bookAppointment
+- `src/screens/Booking/SelectTimeSlotScreen.tsx` - Navigate to BookingCheckout
+- `src/navigation/BookingStack.tsx` - Added new routes
+- `src/screens/Account/MyAppointmentsScreen.tsx` - Payment info display
+- `src/screens/Account/AppointmentDetailScreen.tsx` - Payment details section
+- `src/components/StripePaymentSheet.ts` - Fixed cancellation handling
+
+**Statistics:**
+- 2 SQL scripts created
+- 2 new screens created (checkout + success)
+- 5 screens/services modified
+- 9 DB columns added
+- Full payment parity with SHOP section
+
+### SHOP End-to-End Implementation Complete (2025-11-10)
+**Summary:** Tasks SH9-SH14 fully implemented. Server-side pricing, coupons, orders screens, offline support, deeplinks, QA checklist all complete.
+
+**Key Achievements:**
+- **Security**: Client-side pricing REMOVED, server-side validation via RPCs, RLS hardened
+- **Coupons**: Full validation system (dates, min amount, usage limits, discount caps)
+- **Orders**: Realtime updates, pull-to-refresh, comprehensive detail screens with TotalsCard
+- **Offline**: Cart persistence, price reconciliation, auto-refresh on reconnect
+- **Payments**: COD, Razorpay (TEST WebView), Stripe (TEST PaymentSheet) with idempotency
+- **UX**: Post-login intent, empty states, loading indicators, error handling
+- **Deeplinks**: shop/<id>, cart routes configured
+- **QA**: 100+ test cases covering all flows
+
+**Statistics:**
+- 1 new table (coupons), 2 enhanced tables (orders, order_items)
+- 2 new RPCs (place_order, apply_coupon)
+- RLS policies: 15 → 5 (cleanup + hardening)
+- 5 screens enhanced, 1 component created
+- ~1500+ lines of code changed
+- Database deployed via Supabase MCP
 
 ### Stripe (TEST) PaymentSheet Integration (2025-11-09)
 **Summary:** Stripe (TEST) PaymentSheet scaffold + Edge Functions created; deploy + secrets pending.

@@ -7,6 +7,8 @@ import SelectDateScreen from '../screens/Booking/SelectDateScreen';
 import SelectTimeSlotScreen from '../screens/Booking/SelectTimeSlotScreen';
 import BookingFlowScreen from '../screens/Booking/BookingFlowScreen';
 import ConfirmBookingScreen from '../screens/Booking/ConfirmBookingScreen';
+import BookingCheckoutScreen from '../screens/Booking/BookingCheckoutScreen';
+import BookingSuccessScreen from '../screens/Booking/BookingSuccessScreen';
 
 export type BookingStackParamList = {
   ServicesMain: undefined;
@@ -25,6 +27,19 @@ export type BookingStackParamList = {
     appointmentId?: string;
     oldSlotId?: string;
   };
+  BookingCheckout: {
+    serviceId: string;
+    serviceName: string;
+    therapistId: string;
+    therapistName: string;
+    slot: any;
+    basePrice: number;
+  };
+  BookingSuccess: {
+    appointmentId: string;
+    method: string;
+    amount: number;
+  };
 };
 
 const Stack = createNativeStackNavigator<BookingStackParamList>();
@@ -37,6 +52,8 @@ export default function BookingStackNavigator(): JSX.Element {
       <Stack.Screen name="SelectTherapist" component={SelectTherapistScreen} options={{ title: 'Select Therapist' }} />
       <Stack.Screen name="SelectDate" component={SelectDateScreen} options={{ title: 'Select Date' }} />
       <Stack.Screen name="SelectTimeSlot" component={SelectTimeSlotScreen} options={{ title: 'Select Time Slot' }} />
+      <Stack.Screen name="BookingCheckout" component={BookingCheckoutScreen} options={{ title: 'Checkout' }} />
+      <Stack.Screen name="BookingSuccess" component={BookingSuccessScreen} options={{ title: 'Success', headerShown: false }} />
       <Stack.Screen name="BookingFlow" component={BookingFlowScreen} options={{ title: 'Confirm Booking' }} />
       {/* Alternate confirm screen route as per contract */}
       <Stack.Screen name="ConfirmBooking" component={ConfirmBookingScreen as any} options={{ title: 'Confirm' }} />

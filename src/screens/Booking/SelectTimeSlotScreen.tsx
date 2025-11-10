@@ -4,6 +4,7 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useFocusEffect } from '@react-navigation/native';
 import type { BookingStackParamList } from '../../navigation/BookingStack';
 import { getSlotsForServiceAndDate, SlotWithTherapist } from '../../services/bookingService';
+import { getServiceById } from '../../services/serviceCatalogService';
 import { useToast } from '../../components/feedback/useToast';
 import { formatTime } from '../../utils/formatDate';
 import { isPastSlot } from '../../utils/clinicTime';
@@ -64,23 +65,32 @@ export default function SelectTimeSlotScreen({ route, navigation }: Props): JSX.
 
   const selectedSlot = useMemo(() => slots.find((s) => s.id === selectedId) || null, [selectedId, slots]);
 
-  const onContinue = () => {
+  const onContinue = async () => {
     if (!selectedSlot) return;
     setContinuing(true);
-    navigation.navigate('ConfirmBooking' as any, {
-      serviceId,
-      serviceName,
-      slot: {
-        id: selectedSlot.id,
-        date: selectedSlot.date,
-        start_time: selectedSlot.start_time,
-        end_time: selectedSlot.end_time,
-        therapist_id: selectedSlot.therapist_id,
+
+    try {
+      // Fetch service to get base price
+      const service = await getServiceById(serviceId);
+      const basePrice = service?.base_price || 0;
+
+      navigation.navigate('BookingCheckout' as any, {
+        serviceId,
+        serviceName,
+        therapistId: selectedSlot.therapist_id,
         therapistName: selectedSlot.therapist?.name ?? therapistName,
-      },
-      appointmentId: route.params?.appointmentId,
-      oldSlotId: route.params?.oldSlotId,
-    });
+        slot: {
+          id: selectedSlot.id,
+          date: selectedSlot.date,
+          start_time: selectedSlot.start_time,
+          end_time: selectedSlot.end_time,
+        },
+        basePrice,
+      });
+    } catch (e: any) {
+      show(e?.message || 'Failed to proceed to checkout');
+      setContinuing(false);
+    }
   };
 
   // Auto-retry on reconnect

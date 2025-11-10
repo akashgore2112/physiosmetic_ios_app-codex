@@ -1,4 +1,6 @@
 import { create } from 'zustand';
+import { persist, createJSONStorage } from 'zustand/middleware';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export type CartItem = {
   // Product id (stable)
@@ -24,28 +26,34 @@ type CartState = {
   count: () => number;
 };
 
-export const useCartStore = create<CartState>((set, get) => ({
-  items: [],
-  addItem: (item) =>
-    set((state) => {
-      const index = state.items.findIndex((i) => i.line_id === item.line_id);
-      if (index >= 0) {
-        const updated = [...state.items];
-        const existing = updated[index];
-        updated[index] = { ...existing, qty: existing.qty + item.qty };
-        return { items: updated };
-      }
-      return { items: [...state.items, item] };
+export const useCartStore = create<CartState>()(
+  persist(
+    (set, get) => ({
+      items: [],
+      addItem: (item) =>
+        set((state) => {
+          const index = state.items.findIndex((i) => i.line_id === item.line_id);
+          if (index >= 0) {
+            const updated = [...state.items];
+            const existing = updated[index];
+            updated[index] = { ...existing, qty: existing.qty + item.qty };
+            return { items: updated };
+          }
+          return { items: [...state.items, item] };
+        }),
+      removeItem: (lineId) =>
+        set((state) => ({ items: state.items.filter((i) => i.line_id !== lineId) })),
+      clearCart: () => set({ items: [] }),
+      total: () => get().items.reduce((sum, i) => sum + i.price * i.qty, 0),
+      inc: (lineId) =>
+        set((state) => ({ items: state.items.map((i) => (i.line_id === lineId ? { ...i, qty: i.qty + 1 } : i)) })),
+      dec: (lineId) =>
+        set((state) => ({ items: state.items.map((i) => (i.line_id === lineId ? { ...i, qty: Math.max(1, i.qty - 1) } : i)) })),
+      count: () => get().items.reduce((sum, i) => sum + i.qty, 0),
     }),
-  removeItem: (lineId) =>
-    set((state) => ({ items: state.items.filter((i) => i.line_id !== lineId) })),
-  clearCart: () => set({ items: [] }),
-  total: () => get().items.reduce((sum, i) => sum + i.price * i.qty, 0),
-  inc: (lineId) =>
-    set((state) => ({ items: state.items.map((i) => (i.line_id === lineId ? { ...i, qty: i.qty + 1 } : i)) })),
-  dec: (lineId) =>
-    set((state) => ({ items: state.items.map((i) => (i.line_id === lineId ? { ...i, qty: Math.max(1, i.qty - 1) } : i)) })),
-  count: () => get().items.reduce((sum, i) => sum + i.qty, 0),
-}));
-
-// TODO: Connect to Supabase orders in a later phase
+    {
+      name: 'physiosmetic-cart-storage', // unique key for AsyncStorage
+      storage: createJSONStorage(() => AsyncStorage),
+    }
+  )
+);

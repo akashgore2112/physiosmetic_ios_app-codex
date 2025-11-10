@@ -83,13 +83,14 @@ export async function presentStripePaymentSheet(): Promise<{ success: boolean; p
     const { error } = await presentPaymentSheet();
 
     if (error) {
-      console.error('[StripePaymentSheet] Payment error:', error);
-
-      // User canceled
+      // User canceled - this is expected behavior, not an error
       if (error.code === 'Canceled') {
+        console.log('[StripePaymentSheet] Payment canceled by user');
         return { success: false, error: 'Payment canceled' };
       }
 
+      // Actual payment errors
+      console.error('[StripePaymentSheet] Payment error:', error);
       return { success: false, error: error.message };
     }
 

@@ -94,11 +94,31 @@ export default function MyAppointmentsScreen(): JSX.Element {
             const mins = minutesUntil(item.slot?.date, item.slot?.start_time) ?? 9999;
             const canCancel = item.status === 'booked' && !past && mins >= 60;
             const canReschedule = item.status === 'booked' && !past;
+            const paymentMethodLabel = item.payment_method === 'razorpay' ? 'Razorpay' : item.payment_method === 'stripe' ? 'Stripe' : item.payment_method === 'pay_at_clinic' ? 'Pay at Clinic' : null;
+            const paymentStatusColor = item.payment_status === 'paid' ? '#16a34a' : item.payment_status === 'pending' ? '#d97706' : '#666';
+
             return (
               <View style={{ backgroundColor: '#fff', padding: 14, borderRadius: 10, marginBottom: 8 }}>
-                <Text style={{ fontWeight: '700' }}>{item.service_name || 'Service'} • {item.therapist_name || 'Therapist'}</Text>
+                <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <Text style={{ fontWeight: '700', flex: 1 }}>{item.service_name || 'Service'} • {item.therapist_name || 'Therapist'}</Text>
+                  {item.amount_paid && (
+                    <Text style={{ fontWeight: '600', marginLeft: 8 }}>₹{item.amount_paid}</Text>
+                  )}
+                </View>
                 {!!item.slot && <Text style={{ marginTop: 4 }}>{formatDate(item.slot.date)} • {formatTime(item.slot.start_time)}</Text>}
-                <Text style={{ marginTop: 6, color: effectiveStatus === 'booked' ? '#2e7d32' : '#666' }}>Status: {effectiveStatus}</Text>
+                <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 6, gap: 8 }}>
+                  <Text style={{ color: effectiveStatus === 'booked' ? '#2e7d32' : '#666' }}>Status: {effectiveStatus}</Text>
+                  {paymentMethodLabel && (
+                    <View style={{ backgroundColor: '#f0f9ff', paddingHorizontal: 6, paddingVertical: 2, borderRadius: 4 }}>
+                      <Text style={{ color: '#0369a1', fontSize: 10, fontWeight: '600' }}>{paymentMethodLabel}</Text>
+                    </View>
+                  )}
+                  {item.payment_status && (
+                    <View style={{ backgroundColor: paymentStatusColor, paddingHorizontal: 6, paddingVertical: 2, borderRadius: 4 }}>
+                      <Text style={{ color: '#fff', fontSize: 10, fontWeight: '600', textTransform: 'capitalize' }}>{item.payment_status}</Text>
+                    </View>
+                  )}
+                </View>
                 <View style={{ flexDirection: 'row', gap: 12, marginTop: 10 }}>
                   <TouchableOpacity disabled={!canCancel} onPress={() => onCancel(item)} style={{ padding: 10, backgroundColor: canCancel ? '#eee' : '#f5f5f5', borderRadius: 8 }}>
                     <Text style={{ color: canCancel ? '#000' : '#999' }}>Cancel</Text>
