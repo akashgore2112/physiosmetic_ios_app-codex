@@ -2,6 +2,24 @@
 _Maintained automatically; newest first._
 _Last cleaned: 2025-11-09_
 
+- **2025-11-10**: THEME: Fixed codegen missing files error - regenerated all ReactCodegen artifacts (ShadowNodes, States, Props, etc.)
+- **2025-11-10**: THEME: Fixed Xcode database lock error - killed concurrent builds, cleaned DerivedData and build folders
+- **2025-11-10**: THEME: CRITICAL FIX - Corrected macro name from FOLLY_HAVE_COROUTINES to FOLLY_HAS_COROUTINES in both GCC_PREPROCESSOR_DEFINITIONS and OTHER_CPLUSPLUSFLAGS
+- **2025-11-10**: THEME: Enhanced Folly coroutine fix - added flag to both GCC_PREPROCESSOR_DEFINITIONS and OTHER_CPLUSPLUSFLAGS
+- **2025-11-10**: THEME: Fixed iOS build error - disabled Folly coroutines in Podfile post_install
+- **2025-11-10**: THEME: Fixed TypeScript errors in UI components (Badge, Divider, Skeleton) - added DimensionValue types
+- **2025-11-10**: THEME: Fixed react-native-reanimated worklets version mismatch (downgraded to 3.10.1, cleared pods/cache)
+- **2025-11-10**: THEME: HomeScreen header/hero/CTAs themed—Card/Button/Icon components, orange primary, removed emojis, dark bg
+- **2025-11-10**: THEME: Phase 1 Foundation complete—lucide-react-native provides 35+ icons, custom brand SVGs deferred
+- **2025-11-10**: THEME: usePrefersReducedMotion accessibility hook created, integrated with Skeleton component
+- **2025-11-10**: THEME: Full UI component library completed (Badge, Input, SectionHeader, Skeleton, Divider) with theme integration
+- **2025-11-10**: THEME: UI components created (Button, Card, Icon) with themed variants and accessibility support
+- **2025-11-10**: THEME: Icon component wrapper created with lucide-react-native integration (35+ icons mapped)
+- **2025-11-10**: THEME: Animation libraries installed (react-native-reanimated, moti) for motion system
+- **2025-11-10**: THEME: Icon libraries installed (lucide-react-native, react-native-svg) for SVG icon system
+- **2025-11-10**: THEME: THEME_NOTES.md created documenting all extracted design tokens and implementation strategy
+- **2025-11-10**: THEME: Theme provider and useTheme() hook created in src/theme/index.ts
+- **2025-11-10**: THEME: Design tokens extracted from website reference—colors, gradients, spacing, shadows, typography, motion
 - **2025-11-10**: HOME: Deep link support added with route params to scroll/highlight promos, products, services sections
 - **2025-11-10**: HOME: Unified retry helper with error states and retry buttons for failed data loads
 - **2025-11-10**: HOME: Top Products out-of-stock guard added with visual badge, Add to Cart disabled for unavailable items

@@ -1,6 +1,6 @@
 import { supabase } from '../config/supabaseClient';
 import { sb } from './api';
-import type { Product } from '../types/Product';
+import type { Product } from '../types/product';
 
 export async function getActiveProducts(params?: { category?: string | null; search?: string | null }): Promise<Product[]> {
   let q = supabase

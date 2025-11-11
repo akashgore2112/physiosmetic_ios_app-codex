@@ -1,5 +1,5 @@
 import { supabase } from '../config/supabaseClient';
-import type { Service } from '../types/Service';
+import type { Service } from '../types/service';
 
 // Returns active services only. Attempts to include optional popularity_score when present.
 export async function getAllActiveServices(): Promise<(Service & { popularity_score?: number | null })[]> {

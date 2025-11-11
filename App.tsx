@@ -1,6 +1,9 @@
+import 'react-native-gesture-handler';
+import 'react-native-reanimated';
 import React from 'react';
 import { StatusBar } from 'react-native';
 import { NavigationContainer, createNavigationContainerRef } from '@react-navigation/native';
+import type { LinkingOptions } from '@react-navigation/native';
 import { Linking } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { useAppNetwork } from './src/hooks/useAppNetwork';
@@ -8,6 +11,7 @@ import { supabase } from './src/config/supabaseClient';
 import { useSessionStore } from './src/store/useSessionStore';
 import useNetworkStore from './src/store/useNetworkStore';
 import AppTabs from './src/navigation/AppTabs';
+import type { AppTabParamList } from './src/navigation/AppTabs';
 import { ToastProvider } from './src/components/feedback/ToastProvider';
 import OfflineBanner from './src/components/feedback/OfflineBanner';
 import ErrorBoundary from './src/components/ErrorBoundary';
@@ -20,7 +24,7 @@ export default function App() {
   const navRef = React.useRef(createNavigationContainerRef<any>());
   const navReadyRef = React.useRef(false);
 
-  const linking = React.useMemo(() => ({
+  const linking = React.useMemo<LinkingOptions<AppTabParamList>>(() => ({
     prefixes: ['physiosmetic://'],
     config: {
       screens: {
@@ -38,7 +42,11 @@ export default function App() {
             Cart: 'cart',
           },
         },
-        Account: '',
+        Account: {
+          screens: {
+            AccountMain: 'account',
+          },
+        },
       },
     },
   }), []);

@@ -19,9 +19,9 @@ type AppointmentRow = {
   therapist_id: string;
   slot_id: string | null;
   status: string;
-  availability_slots?: { date: string; start_time: string; end_time: string } | null;
-  services?: { name?: string } | null;
-  therapists?: { name?: string } | null;
+  availability_slots?: { date?: string | null; start_time?: string | null; end_time?: string | null } | null;
+  services?: { name?: string | null } | null;
+  therapists?: { name?: string | null } | null;
 };
 
 export type MyApptItem = {
@@ -30,7 +30,7 @@ export type MyApptItem = {
   therapist_id: string;
   slot_id: string | null;
   status: string;
-  slot: { date: string; start_time: string; end_time: string } | null;
+  slot: { date?: string | null; start_time?: string | null; end_time?: string | null } | null;
   service_name?: string;
   therapist_name?: string;
   isPast?: boolean;
@@ -53,7 +53,11 @@ export async function getMyUpcomingAppointments(limit = 3, userId?: string): Pro
   const rows = (data ?? []) as AppointmentRow[];
   // Filter to future-only using start_time (hide as soon as start passes)
   const items = rows
-    .filter((r) => r.availability_slots && !isPastSlot(r.availability_slots.date, r.availability_slots.start_time))
+    .filter((r) => {
+      const slot = r.availability_slots;
+      if (!slot?.date || !slot?.start_time) return false;
+      return !isPastSlot(slot.date, slot.start_time);
+    })
     .map<MyApptItem>((r) => ({
       id: r.id,
       service_id: r.service_id,
@@ -78,7 +82,7 @@ export async function getMyAllAppointments(): Promise<MyApptItem[]> {
   const rows = (data ?? []) as AppointmentRow[];
   return rows.map<MyApptItem>((r) => {
     const slot = r.availability_slots ? { ...r.availability_slots } : null;
-    const isPast = slot ? isPastSlot(slot.date, slot.start_time) : false;
+    const isPast = slot?.date && slot?.start_time ? isPastSlot(slot.date, slot.start_time) : false;
     return {
       id: r.id,
       service_id: r.service_id,
@@ -142,12 +146,14 @@ export async function getTherapistsForService(serviceId: string): Promise<{ id: 
     .eq('is_booked', false)
     .gte('date', todayStr);
   if (error) throw error;
+  const rows = (data ?? []) as unknown as Array<{ therapists?: { id: string; name: string } | null }>;
   const seen = new Set<string>();
   const out: { id: string; name: string }[] = [];
-  for (const r of data ?? []) {
-    if (r.therapists && !seen.has(r.therapists.id)) {
-      seen.add(r.therapists.id);
-      out.push({ id: r.therapists.id, name: r.therapists.name });
+  for (const r of rows) {
+    const therapist = r.therapists;
+    if (therapist && !seen.has(therapist.id)) {
+      seen.add(therapist.id);
+      out.push({ id: therapist.id, name: therapist.name });
     }
   }
   return out;

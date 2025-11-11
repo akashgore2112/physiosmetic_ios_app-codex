@@ -5,10 +5,10 @@ type SessionState = {
   isLoggedIn: boolean;
   userId: string | null;
   displayName: string | null;
-  profile: { full_name?: string | null; phone?: string | null } | null;
+  profile: { full_name?: string | null; phone?: string | null; email?: string | null } | null;
   postLoginIntent: { action: string; params?: any } | null;
   setSession: (userId: string, displayName?: string | null) => void;
-  setProfile: (profile: { full_name?: string | null; phone?: string | null } | null, authUser?: AuthUserLike | null) => void;
+  setProfile: (profile: { full_name?: string | null; phone?: string | null; email?: string | null } | null, authUser?: AuthUserLike | null) => void;
   clearSession: () => void;
   setPostLoginIntent: (intent: { action: string; params?: any } | null) => void;
   consumePostLoginIntent: () => { action: string; params?: any } | null;

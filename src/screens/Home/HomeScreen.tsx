@@ -17,8 +17,11 @@ import { showReleaseChecklist } from '../../dev/releaseChecklist';
 import { CLINIC_CALL_PHONE_E164, CLINIC_WHATSAPP_E164, CLINIC_PROMOS } from '../../config/clinicConstants';
 import OfflineBanner from '../../components/feedback/OfflineBanner';
 import useNetworkStore from '../../store/useNetworkStore';
+import { useTheme } from '../../theme';
+import { Button, Card, Icon, Badge, SectionHeader, Skeleton } from '../../components/ui';
 
 export default function HomeScreen({ navigation, route }: any): JSX.Element {
+  const theme = useTheme();
   const { isLoggedIn, userId } = useSessionStore();
   const [loading, setLoading] = useState(false);
   const [upcoming, setUpcoming] = useState<any[]>([]);
@@ -226,7 +229,7 @@ export default function HomeScreen({ navigation, route }: any): JSX.Element {
     if (!params?.highlight) return;
 
     const scrollToSection = () => {
-      let targetRef: React.RefObject<View> | null = null;
+      let targetRef: React.RefObject<View | null> | null = null;
 
       switch (params.highlight) {
         case 'promos':
@@ -265,11 +268,11 @@ export default function HomeScreen({ navigation, route }: any): JSX.Element {
   // Cancel handler removed; upcoming card links to Appointment Detail
 
   return (
-    <View style={{ flex: 1, paddingTop: insets.top, paddingBottom: insets.bottom }}>
+    <View style={{ flex: 1, paddingTop: insets.top, paddingBottom: insets.bottom, backgroundColor: theme.colors.darkBg }}>
       <ScrollView
         ref={scrollViewRef}
         style={{ flex: 1 }}
-        contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 16 }}
+        contentContainerStyle={{ paddingHorizontal: theme.spacing.base, paddingBottom: theme.spacing.base }}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
       >
       <OfflineBanner />
@@ -294,21 +297,27 @@ export default function HomeScreen({ navigation, route }: any): JSX.Element {
         }}
         hitSlop={20}
       >
-        <Text style={{ fontSize: 22, fontWeight: '800' }}>Physiosmetic</Text>
+        <Text style={{ fontSize: theme.typography.fontSize['2xl'], fontWeight: theme.typography.fontWeight.bold, color: theme.colors.textPrimary }}>Physiosmetic</Text>
       </Pressable>
 
       {/* Hero - Interactive with CTAs */}
-      <View
-        style={{ marginTop: 12, backgroundColor: '#fff', borderRadius: 12, padding: 16, borderWidth: 1, borderColor: '#eee' }}
-        accessibilityRole="header"
+      <Card
+        variant="glass"
+        style={{ marginTop: theme.spacing.md }}
+        padding="base"
         accessibilityLabel="Physiosmetic clinic information and quick actions"
       >
-        <Text style={{ fontSize: 18, fontWeight: '700' }}>Mumbai's First Holistic & Sports Studio</Text>
-        <Text style={{ color: '#444', marginTop: 4, fontSize: 14 }}>Hours: 10:00 am – 07:00 pm</Text>
+        <Text style={{ fontSize: theme.typography.fontSize.xl, fontWeight: theme.typography.fontWeight.bold, color: theme.colors.textPrimary }}>Mumbai's First Holistic & Sports Studio</Text>
+        <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: theme.spacing.xs }}>
+          <Icon name="Clock" size={16} color={theme.colors.textSecondary} />
+          <Text style={{ color: theme.colors.textSecondary, marginLeft: theme.spacing.xs, fontSize: theme.typography.fontSize.sm }}>Hours: 10:00 am – 07:00 pm</Text>
+        </View>
 
         {/* Primary CTAs */}
-        <View style={{ flexDirection: 'row', marginTop: 12, gap: 8 }}>
-          <Pressable
+        <View style={{ flexDirection: 'row', marginTop: theme.spacing.md, gap: theme.spacing.sm }}>
+          <Button
+            variant="primary"
+            size="md"
             onPress={() => {
               if (!isLoggedIn) {
                 useSessionStore.getState().setPostLoginIntent({
@@ -321,42 +330,22 @@ export default function HomeScreen({ navigation, route }: any): JSX.Element {
               }
               navigation.navigate('Services', { screen: 'ServicesMain' });
             }}
-            accessibilityRole="button"
             accessibilityLabel="Book physiotherapy appointment"
             accessibilityHint={isLoggedIn ? "Opens services list to book an appointment" : "Requires sign in to book"}
-            style={({ pressed }) => ({
-              flex: 1,
-              backgroundColor: '#1e64d4',
-              paddingHorizontal: 16,
-              paddingVertical: 12,
-              borderRadius: 10,
-              opacity: pressed ? 0.85 : 1,
-              minHeight: 44,
-              justifyContent: 'center',
-              alignItems: 'center'
-            })}
+            style={{ flex: 1 }}
           >
-            <Text style={{ color: '#fff', fontWeight: '700', fontSize: 15 }}>Book Physiotherapy</Text>
-          </Pressable>
-          <Pressable
+            Book Physiotherapy
+          </Button>
+          <Button
+            variant="secondary"
+            size="md"
             onPress={() => navigation.navigate('Shop')}
-            accessibilityRole="button"
             accessibilityLabel="Shop deals and products"
             accessibilityHint="Opens product shop"
-            style={({ pressed }) => ({
-              flex: 1,
-              backgroundColor: '#16a34a',
-              paddingHorizontal: 16,
-              paddingVertical: 12,
-              borderRadius: 10,
-              opacity: pressed ? 0.85 : 1,
-              minHeight: 44,
-              justifyContent: 'center',
-              alignItems: 'center'
-            })}
+            style={{ flex: 1 }}
           >
-            <Text style={{ color: '#fff', fontWeight: '700', fontSize: 15 }}>Shop Deals</Text>
-          </Pressable>
+            Shop Deals
+          </Button>
         </View>
 
         {/* Context CTA from server promo (first promo with deep_link) */}
@@ -374,43 +363,49 @@ export default function HomeScreen({ navigation, route }: any): JSX.Element {
             accessibilityLabel={`Special offer: ${promos[0].title}`}
             accessibilityHint="Opens promotional offer"
             style={({ pressed }) => ({
-              marginTop: 8,
-              backgroundColor: '#fef3c7',
-              paddingHorizontal: 16,
-              paddingVertical: 10,
-              borderRadius: 10,
+              marginTop: theme.spacing.sm,
+              backgroundColor: theme.colors.warning + '20',
+              paddingHorizontal: theme.spacing.base,
+              paddingVertical: theme.spacing.sm,
+              borderRadius: theme.radius.md,
               opacity: pressed ? 0.9 : 1,
-              minHeight: 44,
+              minHeight: theme.accessibility.minTapTarget,
               justifyContent: 'center',
               alignItems: 'center',
               borderWidth: 1,
-              borderColor: '#f59e0b'
+              borderColor: theme.colors.warning
             })}
           >
-            <Text style={{ color: '#92400e', fontWeight: '700', fontSize: 14 }}>
-              🎉 {promos[0].title}
-            </Text>
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+              <Icon name="Star" size={16} color={theme.colors.warning} style={{ marginRight: theme.spacing.xs }} />
+              <Text style={{ color: theme.colors.warning, fontWeight: theme.typography.fontWeight.bold, fontSize: theme.typography.fontSize.sm }}>
+                {promos[0].title}
+              </Text>
+            </View>
           </Pressable>
         )}
 
         {/* Contact options */}
-        <View style={{ flexDirection: 'row', marginTop: 12, flexWrap: 'wrap', gap: 8 }}>
+        <View style={{ flexDirection: 'row', marginTop: theme.spacing.md, flexWrap: 'wrap', gap: theme.spacing.sm }}>
           <Pressable
             onPress={() => Linking.openURL('https://maps.app.goo.gl/ftuctsKC5w3c5x957')}
             accessibilityRole="button"
             accessibilityLabel="Open location in Google Maps"
             accessibilityHint="Opens clinic location in maps app"
             style={({ pressed }) => ({
-              backgroundColor: '#e8f5e9',
-              paddingHorizontal: 12,
-              paddingVertical: 8,
-              borderRadius: 10,
+              backgroundColor: theme.colors.success + '20',
+              paddingHorizontal: theme.spacing.md,
+              paddingVertical: theme.spacing.sm,
+              borderRadius: theme.radius.md,
               opacity: pressed ? 0.9 : 1,
-              minHeight: 44,
-              justifyContent: 'center'
+              minHeight: theme.accessibility.minTapTarget,
+              justifyContent: 'center',
+              flexDirection: 'row',
+              alignItems: 'center'
             })}
           >
-            <Text style={{ color: '#1b5e20', fontWeight: '700' }}>📍 Maps</Text>
+            <Icon name="MapPin" size={16} color={theme.colors.success} style={{ marginRight: theme.spacing.xs }} />
+            <Text style={{ color: theme.colors.success, fontWeight: theme.typography.fontWeight.bold }}>Maps</Text>
           </Pressable>
           {!!CLINIC_CALL_PHONE_E164 && (
             <Pressable
@@ -419,45 +414,55 @@ export default function HomeScreen({ navigation, route }: any): JSX.Element {
               accessibilityLabel="Call clinic"
               accessibilityHint="Opens phone dialer to call clinic"
               style={({ pressed }) => ({
-                backgroundColor: '#eef2ff',
-                paddingHorizontal: 12,
-                paddingVertical: 8,
-                borderRadius: 10,
+                backgroundColor: theme.colors.info + '20',
+                paddingHorizontal: theme.spacing.md,
+                paddingVertical: theme.spacing.sm,
+                borderRadius: theme.radius.md,
                 opacity: pressed ? 0.9 : 1,
-                minHeight: 44,
-                justifyContent: 'center'
+                minHeight: theme.accessibility.minTapTarget,
+                justifyContent: 'center',
+                flexDirection: 'row',
+                alignItems: 'center'
               })}
             >
-              <Text style={{ color: '#1e40af', fontWeight: '700' }}>📞 Call</Text>
+              <Icon name="Phone" size={16} color={theme.colors.info} style={{ marginRight: theme.spacing.xs }} />
+              <Text style={{ color: theme.colors.info, fontWeight: theme.typography.fontWeight.bold }}>Call</Text>
             </Pressable>
           )}
-          {!!CLINIC_WHATSAPP_E164 && (
+          {(() => {
+            const whatsappNumber = CLINIC_WHATSAPP_E164;
+            if (!whatsappNumber) return null;
+            return (
             <Pressable
               onPress={() => {
-                const phone = CLINIC_WHATSAPP_E164.replace(/\+/g, '');
+                const phone = whatsappNumber.replace(/\+/g, '');
                 Linking.openURL(`https://wa.me/${phone}?text=${encodeURIComponent('Hello Physiosmetic')}`);
               }}
               accessibilityRole="button"
               accessibilityLabel="Message on WhatsApp"
               accessibilityHint="Opens WhatsApp to message clinic"
               style={({ pressed }) => ({
-                backgroundColor: '#e0f2fe',
-                paddingHorizontal: 12,
-                paddingVertical: 8,
-                borderRadius: 10,
+                backgroundColor: theme.colors.secondary + '20',
+                paddingHorizontal: theme.spacing.md,
+                paddingVertical: theme.spacing.sm,
+                borderRadius: theme.radius.md,
                 opacity: pressed ? 0.9 : 1,
-                minHeight: 44,
-                justifyContent: 'center'
+                minHeight: theme.accessibility.minTapTarget,
+                justifyContent: 'center',
+                flexDirection: 'row',
+                alignItems: 'center'
               })}
             >
-              <Text style={{ color: '#075985', fontWeight: '700' }}>💬 WhatsApp</Text>
+              <Icon name="MessageCircle" size={16} color={theme.colors.secondary} style={{ marginRight: theme.spacing.xs }} />
+              <Text style={{ color: theme.colors.secondary, fontWeight: theme.typography.fontWeight.bold }}>WhatsApp</Text>
             </Pressable>
-          )}
+            );
+          })()}
         </View>
-      </View>
+      </Card>
 
       {/* Quick Actions */}
-      <View style={{ flexDirection: 'row', marginTop: 16, gap: 12, flexWrap: 'wrap' }}>
+      <View style={{ flexDirection: 'row', marginTop: theme.spacing.base, gap: theme.spacing.md, flexWrap: 'wrap' }}>
         {[
           { label: 'Book Physio Care', category: 'Physio Care' },
           { label: 'Sports Performance Studio', category: 'Sports Performance Studio' },
@@ -465,8 +470,9 @@ export default function HomeScreen({ navigation, route }: any): JSX.Element {
           { label: 'Online Consultation', category: 'Physio Care', online: true },
           { label: 'Shop Products', category: null },
         ].map((qa) => (
-          <Pressable
+          <Card
             key={qa.label}
+            variant="default"
             onPress={() => {
               if (qa.category) {
                 // Check auth for booking services
@@ -535,16 +541,16 @@ export default function HomeScreen({ navigation, route }: any): JSX.Element {
                 navigation.navigate('Shop');
               }
             }}
-            accessibilityRole="button"
             accessibilityLabel={qa.category ? `Browse ${qa.label}` : 'Open Shop'}
             accessibilityHint={qa.category && !isLoggedIn ? 'Requires sign in' : undefined}
-            style={({ pressed }) => ({ flexBasis: '48%', backgroundColor: '#fff', borderRadius: 12, padding: 14, minHeight: 44, justifyContent: 'center', opacity: pressed ? 0.85 : 1 })}
+            style={{ flexBasis: '48%', minHeight: theme.accessibility.minTapTarget, justifyContent: 'center' }}
+            padding="md"
           >
-            <Text style={{ fontWeight: '700' }}>{qa.label}</Text>
+            <Text style={{ fontWeight: theme.typography.fontWeight.bold, color: theme.colors.textPrimary }}>{qa.label}</Text>
             {qa.category && !isLoggedIn && (
-              <Text style={{ color: '#666', fontSize: 12, marginTop: 2 }}>Sign in required</Text>
+              <Text style={{ color: theme.colors.textTertiary, fontSize: theme.typography.fontSize.xs, marginTop: theme.spacing.xs }}>Sign in required</Text>
             )}
-          </Pressable>
+          </Card>
         ))}
       </View>
 

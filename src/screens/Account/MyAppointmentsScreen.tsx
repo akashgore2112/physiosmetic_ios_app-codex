@@ -8,7 +8,20 @@ import { formatDate, formatTime } from '../../utils/formatDate';
 import { isPastSlot } from '../../utils/clinicTime';
 import useNetworkStore from '../../store/useNetworkStore';
 
-type Row = { id: string; status: string; service_id: string; therapist_id: string; slot_id: string | null; slot: { date: string; start_time: string; end_time: string } | null; service_name?: string; therapist_name?: string; isPast?: boolean };
+type Row = {
+  id: string;
+  status: string;
+  service_id: string;
+  therapist_id: string;
+  slot_id: string | null;
+  slot: { date: string; start_time: string; end_time: string } | null;
+  service_name?: string;
+  therapist_name?: string;
+  payment_method?: string | null;
+  payment_status?: string | null;
+  amount_paid?: number | null;
+  isPast?: boolean;
+};
 
 export default function MyAppointmentsScreen(): JSX.Element {
   const { userId } = useSessionStore();

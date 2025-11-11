@@ -15,31 +15,35 @@ type Props = {
   nextSlotText?: string | null;
   nextSlotDate?: string | null;
   nextSlotTime?: string | null;
-  onPress: () => void;
+  onPress?: () => void;
   onBook?: () => void;
 };
 
 import { formatDate, formatTime } from '../utils/formatDate';
 import { light as hapticLight } from '../utils/haptics';
 
-function ServiceCardLargeBase({ name, description, nameNode, descriptionNode, base_price, duration_minutes, is_online_allowed, image_url, nextSlotText, nextSlotDate, nextSlotTime, onPress, onBook }: Props) {
+function ServiceCardLargeBase({
+  name,
+  description,
+  nameNode,
+  descriptionNode,
+  base_price,
+  duration_minutes,
+  is_online_allowed,
+  image_url,
+  nextSlotText,
+  nextSlotDate,
+  nextSlotTime,
+  onPress,
+  onBook,
+}: Props) {
   const priceText = typeof base_price === 'number' ? `From ₹${Math.round(base_price)}` : undefined;
   const durText = typeof duration_minutes === 'number' ? `~${duration_minutes} min` : undefined;
   const meta = [priceText, durText].filter(Boolean).join(' • ');
-  const Container: any = onPress ? Pressable : View;
-  const containerProps: any = onPress
-    ? {
-        accessibilityRole: 'button',
-        accessibilityLabel: `View ${name}`,
-        onPress,
-      }
-    : {};
+  const baseStyle = { backgroundColor: '#fff', borderRadius: 12, borderWidth: 1, borderColor: '#eee', marginBottom: 12, overflow: 'hidden' as const };
 
-  return (
-    <Container
-      {...containerProps}
-      style={({ pressed }: any) => ({ backgroundColor: '#fff', borderRadius: 12, borderWidth: 1, borderColor: '#eee', marginBottom: 12, overflow: 'hidden', opacity: onPress && pressed ? 0.95 : 1 })}
-    >
+  const body = (
+    <>
       {image_url ? (
         <CachedImage source={{ uri: image_url }} style={{ width: '100%', height: 160, backgroundColor: '#eee' }} contentFit="cover" fadeIn />
       ) : (
@@ -80,13 +84,11 @@ function ServiceCardLargeBase({ name, description, nameNode, descriptionNode, ba
                 if (sameDay) text = `Today ${timeText}`;
                 else if (nextDay) text = `Tomorrow ${timeText}`;
                 else {
-                  // Use existing formatDate but trim weekday to get "DD Mon"
                   const fd = formatDate(nextSlotDate);
                   const trimmed = (fd.includes(',') ? fd.split(',')[1].trim() : fd);
                   text = `${trimmed} ${timeText}`;
                 }
               } catch {
-                // fallback to provided text
                 text = nextSlotText ?? null;
               }
             } else if (nextSlotText) {
@@ -109,7 +111,26 @@ function ServiceCardLargeBase({ name, description, nameNode, descriptionNode, ba
           </Pressable>
         )}
       </View>
-    </Container>
+    </>
+  );
+
+  if (onPress) {
+    return (
+      <Pressable
+        accessibilityRole="button"
+        accessibilityLabel={`View ${name}`}
+        onPress={onPress}
+        style={({ pressed }) => ({ ...baseStyle, opacity: pressed ? 0.95 : 1 })}
+      >
+        {body}
+      </Pressable>
+    );
+  }
+
+  return (
+    <View style={baseStyle}>
+      {body}
+    </View>
   );
 }
 

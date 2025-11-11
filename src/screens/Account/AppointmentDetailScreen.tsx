@@ -6,9 +6,10 @@ import { formatPrice } from '../../utils/formatPrice';
 
 type Props = {
   route: { params: { id: string } };
+  navigation: any;
 };
 
-export default function AppointmentDetailScreen({ route }: Props): JSX.Element {
+export default function AppointmentDetailScreen({ route, navigation }: Props): JSX.Element {
   const { id } = route.params;
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState<any | null>(null);
@@ -47,7 +48,7 @@ export default function AppointmentDetailScreen({ route }: Props): JSX.Element {
       <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', padding: 16 }}>
         <Text style={{ fontSize: 16, fontWeight: '700', textAlign: 'center' }}>This appointment doesn’t exist or may have expired.</Text>
         <Text style={{ marginTop: 6, color: '#555', textAlign: 'center' }}>Please check My Appointments for the latest status.</Text>
-        <Pressable accessibilityRole="button" accessibilityLabel="Go back" onPress={() => (navigation as any)?.goBack?.()} style={({ pressed }) => ({ marginTop: 16, paddingHorizontal: 16, paddingVertical: 12, borderRadius: 10, backgroundColor: '#efefef', minHeight: 44, justifyContent: 'center', opacity: pressed ? 0.9 : 1 })}>
+        <Pressable accessibilityRole="button" accessibilityLabel="Go back" onPress={() => navigation?.goBack?.()} style={({ pressed }) => ({ marginTop: 16, paddingHorizontal: 16, paddingVertical: 12, borderRadius: 10, backgroundColor: '#efefef', minHeight: 44, justifyContent: 'center', opacity: pressed ? 0.9 : 1 })}>
           <Text style={{ fontWeight: '700' }}>Go Back</Text>
         </Pressable>
       </View>

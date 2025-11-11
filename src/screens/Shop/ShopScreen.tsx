@@ -4,8 +4,11 @@ import ProductCardCompact from '../../components/ProductCardCompact';
 import { getProductsGroupedByCategory, searchProducts } from '../../services/productCatalogService';
 import { getBestsellers } from '../../services/productCatalogService';
 import useNetworkStore from '../../store/useNetworkStore';
+import { useTheme } from '../../theme';
+import { Button, Card, Icon, Badge, Input, SectionHeader, Skeleton } from '../../components/ui';
 
 export default function ShopScreen({ navigation }: any): JSX.Element {
+  const theme = useTheme();
   const [search, setSearch] = useState('');
   const [debounced, setDebounced] = useState('');
   const [searching, setSearching] = useState(false);
@@ -204,8 +207,8 @@ export default function ShopScreen({ navigation }: any): JSX.Element {
     const filteredSorted = useMemo(() => applySort(applyFilters(results)), [results, applyFilters, applySort]);
     return (
       <FlatList
-        style={{ flex: 1 }}
-        contentContainerStyle={{ padding: 12 }}
+        style={{ flex: 1, backgroundColor: theme.colors.darkBg }}
+        contentContainerStyle={{ padding: theme.spacing.base }}
         data={filteredSorted}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
@@ -221,52 +224,84 @@ export default function ShopScreen({ navigation }: any): JSX.Element {
           />
         )}
         ListHeaderComponent={
-          <View style={{ paddingBottom: 8 }}>
-            <Text style={{ fontSize: 20, fontWeight: '800' }}>Shop Products</Text>
+          <View style={{ paddingBottom: theme.spacing.sm }}>
+            <Text style={{ fontSize: theme.typography.fontSize['2xl'], fontWeight: theme.typography.fontWeight.bold, color: theme.colors.textPrimary, marginBottom: theme.spacing.md }}>Shop Products</Text>
             <TextInput
               placeholder="Search products"
+              placeholderTextColor={theme.colors.textTertiary}
               value={search}
               onChangeText={setSearch}
               autoCapitalize="none"
               autoCorrect={false}
-              style={{ marginTop: 10, padding: 10, borderWidth: 1, borderColor: '#eee', borderRadius: 10 }}
+              style={{
+                marginTop: theme.spacing.md,
+                padding: theme.spacing.md,
+                borderWidth: 1,
+                borderColor: theme.colors.borderSecondary,
+                borderRadius: theme.radius.md,
+                backgroundColor: theme.colors.cardBg,
+                color: theme.colors.textPrimary
+              }}
             />
             {/* Filters + Sort Row */}
-            <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 8, flexWrap: 'wrap' }}>
-              <Pressable accessibilityRole="switch" onPress={() => setInStockOnly((v) => !v)} style={({ pressed }) => ({ paddingHorizontal: 10, paddingVertical: 8, borderWidth: 1, borderColor: '#ddd', borderRadius: 9999, marginRight: 8, opacity: pressed ? 0.9 : 1 })}>
-                <Text>{inStockOnly ? 'In stock: ON' : 'In stock: OFF'}</Text>
-              </Pressable>
+            <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: theme.spacing.sm, flexWrap: 'wrap', gap: theme.spacing.xs }}>
+              <Button
+                variant={inStockOnly ? 'primary' : 'secondary'}
+                size="sm"
+                onPress={() => setInStockOnly((v) => !v)}
+                accessibilityLabel="In stock only"
+              >
+                {inStockOnly ? 'In stock: ON' : 'In stock: OFF'}
+              </Button>
               {[
                 { k: 'p0', label: '₹0–999' },
                 { k: 'p1', label: '₹1k–1.9k' },
                 { k: 'p2', label: '₹2k+' },
               ].map((f: any) => (
-                <Pressable key={f.k} onPress={() => setPriceStep((prev) => (prev === f.k ? null : (f.k as any)))} style={({ pressed }) => ({ paddingHorizontal: 10, paddingVertical: 8, borderWidth: 1, borderColor: priceStep === f.k ? '#333' : '#ddd', backgroundColor: priceStep === f.k ? '#f2f2f2' : 'transparent', borderRadius: 9999, marginRight: 8, opacity: pressed ? 0.9 : 1 })}>
-                  <Text>{f.label}</Text>
-                </Pressable>
+                <Badge
+                  key={f.k}
+                  variant={priceStep === f.k ? 'primary' : 'secondary'}
+                  size="sm"
+                  shape="pill"
+                  onPress={() => setPriceStep((prev) => (prev === f.k ? null : (f.k as any)))}
+                >
+                  {f.label}
+                </Badge>
               ))}
-              <Pressable accessibilityRole="button" onPress={() => {
-                const options = ['Bestsellers', 'Price (low→high)', 'Newest', 'Cancel'];
-                const apply = (idx?: number | null) => {
-                  if (idx === 0) setSortOption('bestsellers');
-                  else if (idx === 1) setSortOption('price');
-                  else if (idx === 2) setSortOption('newest');
-                };
-                if (Platform.OS === 'ios' && ActionSheetIOS) ActionSheetIOS.showActionSheetWithOptions({ options, cancelButtonIndex: 3 }, apply);
-                else Alert.alert('Sort by', '', [
-                  { text: 'Bestsellers', onPress: () => apply(0) },
-                  { text: 'Price (low→high)', onPress: () => apply(1) },
-                  { text: 'Newest', onPress: () => apply(2) },
-                  { text: 'Cancel', style: 'cancel' },
-                ]);
-              }} style={({ pressed }) => ({ paddingHorizontal: 10, paddingVertical: 8, borderWidth: 1, borderColor: '#ddd', borderRadius: 9999, opacity: pressed ? 0.9 : 1 })}>
-                <Text>Sort: {sortOption === 'bestsellers' ? 'Bestsellers' : sortOption === 'price' ? 'Price' : 'Newest'}</Text>
-              </Pressable>
-              <Pressable accessibilityRole="button" onPress={resetAll} style={({ pressed }) => ({ paddingHorizontal: 10, paddingVertical: 8, borderWidth: 1, borderColor: '#ddd', borderRadius: 8, marginLeft: 8, opacity: pressed ? 0.9 : 1 })}>
-                <Text>Reset</Text>
-              </Pressable>
+              <Button
+                variant="secondary"
+                size="sm"
+                onPress={() => {
+                  const options = ['Bestsellers', 'Price (low→high)', 'Newest', 'Cancel'];
+                  const apply = (idx?: number | null) => {
+                    if (idx === 0) setSortOption('bestsellers');
+                    else if (idx === 1) setSortOption('price');
+                    else if (idx === 2) setSortOption('newest');
+                  };
+                  if (Platform.OS === 'ios' && ActionSheetIOS) ActionSheetIOS.showActionSheetWithOptions({ options, cancelButtonIndex: 3 }, apply);
+                  else Alert.alert('Sort by', '', [
+                    { text: 'Bestsellers', onPress: () => apply(0) },
+                    { text: 'Price (low→high)', onPress: () => apply(1) },
+                    { text: 'Newest', onPress: () => apply(2) },
+                    { text: 'Cancel', style: 'cancel' },
+                  ]);
+                }}
+                accessibilityLabel="Sort products"
+              >
+                Sort: {sortOption === 'bestsellers' ? 'Bestsellers' : sortOption === 'price' ? 'Price' : 'Newest'}
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                onPress={resetAll}
+                accessibilityLabel="Reset filters"
+              >
+                Reset
+              </Button>
             </View>
-            <Text style={{ color: '#666', marginTop: 6 }}>{searching ? 'Searching…' : `Showing ${results.length} products`}</Text>
+            <Text style={{ color: theme.colors.textSecondary, fontSize: theme.typography.fontSize.sm, marginTop: theme.spacing.xs }}>
+              {searching ? 'Searching…' : `Showing ${filteredSorted.length} products`}
+            </Text>
           </View>
         }
         ListEmptyComponent={<Text>{searching ? 'Searching…' : 'No products found. Try a different keyword.'}</Text>}
@@ -291,15 +326,15 @@ export default function ShopScreen({ navigation }: any): JSX.Element {
 
   return (
     <SectionList
-      style={{ flex: 1 }}
-      contentContainerStyle={{ padding: 12 }}
+      style={{ flex: 1, backgroundColor: theme.colors.darkBg }}
+      contentContainerStyle={{ padding: theme.spacing.base }}
       sections={sections}
       keyExtractor={(item) => item.id}
       renderSectionHeader={({ section }) => (
-        <View style={{ paddingTop: 10, paddingBottom: 6 }}>
-          <Text style={{ fontSize: 20, fontWeight: '800' }}>{section.title}</Text>
-          <View style={{ height: 1, backgroundColor: '#eee', marginTop: 6 }} />
-        </View>
+        <SectionHeader
+          title={section.title}
+          style={{ marginTop: theme.spacing.sm, marginBottom: theme.spacing.sm }}
+        />
       )}
       renderItem={({ item }) => (
         <ProductCardCompact
@@ -314,50 +349,80 @@ export default function ShopScreen({ navigation }: any): JSX.Element {
         />
       )}
       ListHeaderComponent={
-        <View style={{ paddingBottom: 8 }}>
-          <Text style={{ fontSize: 20, fontWeight: '800' }}>Shop Products</Text>
+        <View style={{ paddingBottom: theme.spacing.sm }}>
+          <Text style={{ fontSize: theme.typography.fontSize['2xl'], fontWeight: theme.typography.fontWeight.bold, color: theme.colors.textPrimary, marginBottom: theme.spacing.md }}>Shop Products</Text>
           <TextInput
             placeholder="Search products"
+            placeholderTextColor={theme.colors.textTertiary}
             value={search}
             onChangeText={setSearch}
             autoCapitalize="none"
             autoCorrect={false}
-            style={{ marginTop: 10, padding: 10, borderWidth: 1, borderColor: '#eee', borderRadius: 10 }}
+            style={{
+              marginTop: theme.spacing.md,
+              padding: theme.spacing.md,
+              borderWidth: 1,
+              borderColor: theme.colors.borderSecondary,
+              borderRadius: theme.radius.md,
+              backgroundColor: theme.colors.cardBg,
+              color: theme.colors.textPrimary
+            }}
           />
           {/* Filters + Sort Row */}
-          <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 8, flexWrap: 'wrap' }}>
-            <Pressable accessibilityRole="switch" onPress={() => setInStockOnly((v) => !v)} style={({ pressed }) => ({ paddingHorizontal: 10, paddingVertical: 8, borderWidth: 1, borderColor: '#ddd', borderRadius: 9999, marginRight: 8, opacity: pressed ? 0.9 : 1 })}>
-              <Text>{inStockOnly ? 'In stock: ON' : 'In stock: OFF'}</Text>
-            </Pressable>
+          <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: theme.spacing.sm, flexWrap: 'wrap', gap: theme.spacing.xs }}>
+            <Button
+              variant={inStockOnly ? 'primary' : 'secondary'}
+              size="sm"
+              onPress={() => setInStockOnly((v) => !v)}
+              accessibilityLabel="In stock only"
+            >
+              {inStockOnly ? 'In stock: ON' : 'In stock: OFF'}
+            </Button>
             {[
               { k: 'p0', label: '₹0–999' },
               { k: 'p1', label: '₹1k–1.9k' },
               { k: 'p2', label: '₹2k+' },
             ].map((f: any) => (
-              <Pressable key={f.k} onPress={() => setPriceStep((prev) => (prev === f.k ? null : (f.k as any)))} style={({ pressed }) => ({ paddingHorizontal: 10, paddingVertical: 8, borderWidth: 1, borderColor: priceStep === f.k ? '#333' : '#ddd', backgroundColor: priceStep === f.k ? '#f2f2f2' : 'transparent', borderRadius: 9999, marginRight: 8, opacity: pressed ? 0.9 : 1 })}>
-                <Text>{f.label}</Text>
-              </Pressable>
+              <Badge
+                key={f.k}
+                variant={priceStep === f.k ? 'primary' : 'secondary'}
+                size="sm"
+                shape="pill"
+                onPress={() => setPriceStep((prev) => (prev === f.k ? null : (f.k as any)))}
+              >
+                {f.label}
+              </Badge>
             ))}
-            <Pressable accessibilityRole="button" onPress={() => {
-              const options = ['Bestsellers', 'Price (low→high)', 'Newest', 'Cancel'];
-              const apply = (idx?: number | null) => {
-                if (idx === 0) setSortOption('bestsellers');
-                else if (idx === 1) setSortOption('price');
-                else if (idx === 2) setSortOption('newest');
-              };
-              if (Platform.OS === 'ios' && ActionSheetIOS) ActionSheetIOS.showActionSheetWithOptions({ options, cancelButtonIndex: 3 }, apply);
-              else Alert.alert('Sort by', '', [
-                { text: 'Bestsellers', onPress: () => apply(0) },
-                { text: 'Price (low→high)', onPress: () => apply(1) },
-                { text: 'Newest', onPress: () => apply(2) },
-                { text: 'Cancel', style: 'cancel' },
-              ]);
-            }} style={({ pressed }) => ({ paddingHorizontal: 10, paddingVertical: 8, borderWidth: 1, borderColor: '#ddd', borderRadius: 9999, opacity: pressed ? 0.9 : 1 })}>
-              <Text>Sort: {sortOption === 'bestsellers' ? 'Bestsellers' : sortOption === 'price' ? 'Price' : 'Newest'}</Text>
-            </Pressable>
-            <Pressable accessibilityRole="button" onPress={resetAll} style={({ pressed }) => ({ paddingHorizontal: 10, paddingVertical: 8, borderWidth: 1, borderColor: '#ddd', borderRadius: 8, marginLeft: 8, opacity: pressed ? 0.9 : 1 })}>
-              <Text>Reset</Text>
-            </Pressable>
+            <Button
+              variant="secondary"
+              size="sm"
+              onPress={() => {
+                const options = ['Bestsellers', 'Price (low→high)', 'Newest', 'Cancel'];
+                const apply = (idx?: number | null) => {
+                  if (idx === 0) setSortOption('bestsellers');
+                  else if (idx === 1) setSortOption('price');
+                  else if (idx === 2) setSortOption('newest');
+                };
+                if (Platform.OS === 'ios' && ActionSheetIOS) ActionSheetIOS.showActionSheetWithOptions({ options, cancelButtonIndex: 3 }, apply);
+                else Alert.alert('Sort by', '', [
+                  { text: 'Bestsellers', onPress: () => apply(0) },
+                  { text: 'Price (low→high)', onPress: () => apply(1) },
+                  { text: 'Newest', onPress: () => apply(2) },
+                  { text: 'Cancel', style: 'cancel' },
+                ]);
+              }}
+              accessibilityLabel="Sort products"
+            >
+              Sort: {sortOption === 'bestsellers' ? 'Bestsellers' : sortOption === 'price' ? 'Price' : 'Newest'}
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              onPress={resetAll}
+              accessibilityLabel="Reset filters"
+            >
+              Reset
+            </Button>
           </View>
         </View>
       }

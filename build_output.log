@@ -1,0 +1,1640 @@
+› Planning build
+› Executing react-native Pods/hermes-engine » [CP-User] [Hermes] Replace Hermes for the right configuration, if needed
+› Executing react-native-razorpay Pods/razorpay-core-pod » [CP] Copy XCFrameworks
+› Preparing Pods/react-native-maps-ReactNativeMapsPrivacy » ResourceBundle-ReactNativeMapsPrivacy-react-native-maps-Info.plist
+› Copying   react-native-maps/ReactNativeMapsPrivacy.bundle/PrivacyInfo.xcprivacy ➜ work_repo/physiosmetic/node_modules/react-native-maps/ios/PrivacyInfo.xcprivacy
+› Preparing Pods/react-native-google-maps-GoogleMapsPrivacy » ResourceBundle-GoogleMapsPrivacy-react-native-google-maps-Info.plist
+› Copying   react-native-google-maps/GoogleMapsPrivacy.bundle/GoogleMapsPrivacy.bundle ➜ work_repo/physiosmetic/node_modules/react-native-maps/ios/AirGoogleMaps/Resources/GoogleMapsPrivacy.bundle
+› Preparing Pods/glog-glog_privacy » ResourceBundle-glog_privacy-glog-Info.plist
+› Compiling react-native Pods/glog » vlog_is_on.cc
+› Compiling react-native Pods/glog » utilities.cc
+› Compiling react-native Pods/glog » symbolize.cc
+› Compiling react-native Pods/glog » signalhandler.cc
+› Compiling react-native Pods/glog » raw_logging.cc
+› Compiling react-native Pods/glog » logging.cc
+› Compiling react-native Pods/glog » demangle.cc
+› Compiling react-native Pods/fmt » format.cc
+› Executing react-native Pods/hermes-engine » [CP] Copy XCFrameworks
+› Creating  Pods/react-native-maps-ReactNativeMapsPrivacy » ReactNativeMapsPrivacy.bundle
+› Creating  Pods/react-native-google-maps-GoogleMapsPrivacy » GoogleMapsPrivacy.bundle
+› Preparing Pods/boost-boost_privacy » ResourceBundle-boost_privacy-boost-Info.plist
+› Creating  Pods/glog-glog_privacy » glog_privacy.bundle
+› Compiling react-native Pods/Yoga » event.cpp
+› Compiling react-native Pods/Yoga » YGValue.cpp
+› Compiling react-native Pods/Yoga » YGPixelGrid.cpp
+› Compiling react-native Pods/Yoga » YGNodeStyle.cpp
+› Compiling react-native Pods/Yoga » YGNodeLayout.cpp
+› Compiling react-native Pods/Yoga » YGNode.cpp
+› Compiling react-native Pods/Yoga » YGEnums.cpp
+› Compiling react-native Pods/Yoga » YGConfig.cpp
+› Compiling react-native Pods/Yoga » PixelGrid.cpp
+› Compiling react-native Pods/Yoga » Node.cpp
+› Compiling react-native Pods/Yoga » Log.cpp
+› Compiling react-native Pods/Yoga » LayoutResults.cpp
+› Compiling react-native Pods/Yoga » FlexLine.cpp
+› Compiling react-native Pods/Yoga » Config.cpp
+› Compiling react-native Pods/Yoga » CalculateLayout.cpp
+› Compiling react-native Pods/Yoga » Cache.cpp
+› Compiling react-native Pods/Yoga » Baseline.cpp
+› Compiling react-native Pods/Yoga » AssertFatal.cpp
+› Compiling react-native Pods/Yoga » AbsoluteLayout.cpp
+› Executing react-native-razorpay Pods/razorpay-pod » [CP] Copy XCFrameworks
+› Creating  Pods/boost-boost_privacy » boost_privacy.bundle
+› Copying   StripeUICore/StripeUICoreBundle.bundle/zh-Hant.lproj ➜ work_repo/physiosmetic/ios/Pods/StripeUICore/StripeUICore/StripeUICore/Resources/Localizations/zh-Hant.lproj
+› Copying   StripeUICore/StripeUICoreBundle.bundle/zh-Hans.lproj ➜ work_repo/physiosmetic/ios/Pods/StripeUICore/StripeUICore/StripeUICore/Resources/Localizations/zh-Hans.lproj
+› Copying   StripeUICore/StripeUICoreBundle.bundle/zh-HK.lproj ➜ work_repo/physiosmetic/ios/Pods/StripeUICore/StripeUICore/StripeUICore/Resources/Localizations/zh-HK.lproj
+› Copying   StripeUICore/StripeUICoreBundle.bundle/vi.lproj ➜ work_repo/physiosmetic/ios/Pods/StripeUICore/StripeUICore/StripeUICore/Resources/Localizations/vi.lproj
+› Copying   StripeUICore/StripeUICoreBundle.bundle/tr.lproj ➜ work_repo/physiosmetic/ios/Pods/StripeUICore/StripeUICore/StripeUICore/Resources/Localizations/tr.lproj
+› Copying   StripeUICore/StripeUICoreBundle.bundle/th.lproj ➜ work_repo/physiosmetic/ios/Pods/StripeUICore/StripeUICore/StripeUICore/Resources/Localizations/th.lproj
+› Copying   StripeUICore/StripeUICoreBundle.bundle/sv.lproj ➜ work_repo/physiosmetic/ios/Pods/StripeUICore/StripeUICore/StripeUICore/Resources/Localizations/sv.lproj
+› Copying   StripeUICore/StripeUICoreBundle.bundle/sl-SI.lproj ➜ work_repo/physiosmetic/ios/Pods/StripeUICore/StripeUICore/StripeUICore/Resources/Localizations/sl-SI.lproj
+› Copying   StripeUICore/StripeUICoreBundle.bundle/sk-SK.lproj ➜ work_repo/physiosmetic/ios/Pods/StripeUICore/StripeUICore/StripeUICore/Resources/Localizations/sk-SK.lproj
+› Copying   StripeUICore/StripeUICoreBundle.bundle/ru.lproj ➜ work_repo/physiosmetic/ios/Pods/StripeUICore/StripeUICore/StripeUICore/Resources/Localizations/ru.lproj
+› Copying   StripeUICore/StripeUICoreBundle.bundle/ro-RO.lproj ➜ work_repo/physiosmetic/ios/Pods/StripeUICore/StripeUICore/StripeUICore/Resources/Localizations/ro-RO.lproj
+› Copying   StripeUICore/StripeUICoreBundle.bundle/pt-PT.lproj ➜ work_repo/physiosmetic/ios/Pods/StripeUICore/StripeUICore/StripeUICore/Resources/Localizations/pt-PT.lproj
+› Copying   StripeUICore/StripeUICoreBundle.bundle/pt-BR.lproj ➜ work_repo/physiosmetic/ios/Pods/StripeUICore/StripeUICore/StripeUICore/Resources/Localizations/pt-BR.lproj
+› Copying   StripeUICore/StripeUICoreBundle.bundle/pl-PL.lproj ➜ work_repo/physiosmetic/ios/Pods/StripeUICore/StripeUICore/StripeUICore/Resources/Localizations/pl-PL.lproj
+› Copying   StripeUICore/StripeUICoreBundle.bundle/nl.lproj ➜ work_repo/physiosmetic/ios/Pods/StripeUICore/StripeUICore/StripeUICore/Resources/Localizations/nl.lproj
+› Copying   StripeUICore/StripeUICoreBundle.bundle/nb.lproj ➜ work_repo/physiosmetic/ios/Pods/StripeUICore/StripeUICore/StripeUICore/Resources/Localizations/nb.lproj
+› Copying   StripeUICore/StripeUICoreBundle.bundle/mt.lproj ➜ work_repo/physiosmetic/ios/Pods/StripeUICore/StripeUICore/StripeUICore/Resources/Localizations/mt.lproj
+› Copying   StripeUICore/StripeUICoreBundle.bundle/ms-MY.lproj ➜ work_repo/physiosmetic/ios/Pods/StripeUICore/StripeUICore/StripeUICore/Resources/Localizations/ms-MY.lproj
+› Copying   StripeUICore/StripeUICoreBundle.bundle/lv-LV.lproj ➜ work_repo/physiosmetic/ios/Pods/StripeUICore/StripeUICore/StripeUICore/Resources/Localizations/lv-LV.lproj
+› Copying   StripeUICore/StripeUICoreBundle.bundle/lt-LT.lproj ➜ work_repo/physiosmetic/ios/Pods/StripeUICore/StripeUICore/StripeUICore/Resources/Localizations/lt-LT.lproj
+› Copying   StripeUICore/StripeUICoreBundle.bundle/localized_address_data.json ➜ work_repo/physiosmetic/ios/Pods/StripeUICore/StripeUICore/StripeUICore/Resources/JSON/localized_address_data.json
+› Copying   StripeUICore/StripeUICoreBundle.bundle/ko.lproj ➜ work_repo/physiosmetic/ios/Pods/StripeUICore/StripeUICore/StripeUICore/Resources/Localizations/ko.lproj
+› Copying   StripeUICore/StripeUICoreBundle.bundle/ja.lproj ➜ work_repo/physiosmetic/ios/Pods/StripeUICore/StripeUICore/StripeUICore/Resources/Localizations/ja.lproj
+› Copying   StripeUICore/StripeUICoreBundle.bundle/it.lproj ➜ work_repo/physiosmetic/ios/Pods/StripeUICore/StripeUICore/StripeUICore/Resources/Localizations/it.lproj
+› Copying   StripeUICore/StripeUICoreBundle.bundle/id.lproj ➜ work_repo/physiosmetic/ios/Pods/StripeUICore/StripeUICore/StripeUICore/Resources/Localizations/id.lproj
+› Copying   StripeUICore/StripeUICoreBundle.bundle/hu.lproj ➜ work_repo/physiosmetic/ios/Pods/StripeUICore/StripeUICore/StripeUICore/Resources/Localizations/hu.lproj
+› Copying   StripeUICore/StripeUICoreBundle.bundle/hr.lproj ➜ work_repo/physiosmetic/ios/Pods/StripeUICore/StripeUICore/StripeUICore/Resources/Localizations/hr.lproj
+› Copying   StripeUICore/StripeUICoreBundle.bundle/fr.lproj ➜ work_repo/physiosmetic/ios/Pods/StripeUICore/StripeUICore/StripeUICore/Resources/Localizations/fr.lproj
+› Copying   StripeUICore/StripeUICoreBundle.bundle/fr-CA.lproj ➜ work_repo/physiosmetic/ios/Pods/StripeUICore/StripeUICore/StripeUICore/Resources/Localizations/fr-CA.lproj
+› Copying   StripeUICore/StripeUICoreBundle.bundle/fil.lproj ➜ work_repo/physiosmetic/ios/Pods/StripeUICore/StripeUICore/StripeUICore/Resources/Localizations/fil.lproj
+› Copying   StripeUICore/StripeUICoreBundle.bundle/fi.lproj ➜ work_repo/physiosmetic/ios/Pods/StripeUICore/StripeUICore/StripeUICore/Resources/Localizations/fi.lproj
+› Copying   StripeUICore/StripeUICoreBundle.bundle/et-EE.lproj ➜ work_repo/physiosmetic/ios/Pods/StripeUICore/StripeUICore/StripeUICore/Resources/Localizations/et-EE.lproj
+› Copying   StripeUICore/StripeUICoreBundle.bundle/es.lproj ➜ work_repo/physiosmetic/ios/Pods/StripeUICore/StripeUICore/StripeUICore/Resources/Localizations/es.lproj
+› Copying   StripeUICore/StripeUICoreBundle.bundle/es-419.lproj ➜ work_repo/physiosmetic/ios/Pods/StripeUICore/StripeUICore/StripeUICore/Resources/Localizations/es-419.lproj
+› Copying   StripeUICore/StripeUICoreBundle.bundle/en.lproj ➜ work_repo/physiosmetic/ios/Pods/StripeUICore/StripeUICore/StripeUICore/Resources/Localizations/en.lproj
+› Copying   StripeUICore/StripeUICoreBundle.bundle/en-GB.lproj ➜ work_repo/physiosmetic/ios/Pods/StripeUICore/StripeUICore/StripeUICore/Resources/Localizations/en-GB.lproj
+› Copying   StripeUICore/StripeUICoreBundle.bundle/el-GR.lproj ➜ work_repo/physiosmetic/ios/Pods/StripeUICore/StripeUICore/StripeUICore/Resources/Localizations/el-GR.lproj
+› Copying   StripeUICore/StripeUICoreBundle.bundle/de.lproj ➜ work_repo/physiosmetic/ios/Pods/StripeUICore/StripeUICore/StripeUICore/Resources/Localizations/de.lproj
+› Copying   StripeUICore/StripeUICoreBundle.bundle/da.lproj ➜ work_repo/physiosmetic/ios/Pods/StripeUICore/StripeUICore/StripeUICore/Resources/Localizations/da.lproj
+› Copying   StripeUICore/StripeUICoreBundle.bundle/cs-CZ.lproj ➜ work_repo/physiosmetic/ios/Pods/StripeUICore/StripeUICore/StripeUICore/Resources/Localizations/cs-CZ.lproj
+› Copying   StripeUICore/StripeUICoreBundle.bundle/ca-ES.lproj ➜ work_repo/physiosmetic/ios/Pods/StripeUICore/StripeUICore/StripeUICore/Resources/Localizations/ca-ES.lproj
+› Copying   StripeUICore/StripeUICoreBundle.bundle/bg-BG.lproj ➜ work_repo/physiosmetic/ios/Pods/StripeUICore/StripeUICore/StripeUICore/Resources/Localizations/bg-BG.lproj
+› Copying   StripeUICore/StripeUICoreBundle.bundle/au_becs_bsb.json ➜ work_repo/physiosmetic/ios/Pods/StripeUICore/StripeUICore/StripeUICore/Resources/JSON/au_becs_bsb.json
+› Copying   StripePaymentsUI/StripePaymentsUIBundle.bundle/zh-Hant.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePaymentsUI/StripePaymentsUI/StripePaymentsUI/Resources/Localizations/zh-Hant.lproj
+› Copying   StripePaymentsUI/StripePaymentsUIBundle.bundle/zh-Hans.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePaymentsUI/StripePaymentsUI/StripePaymentsUI/Resources/Localizations/zh-Hans.lproj
+› Copying   StripePaymentsUI/StripePaymentsUIBundle.bundle/zh-HK.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePaymentsUI/StripePaymentsUI/StripePaymentsUI/Resources/Localizations/zh-HK.lproj
+› Copying   StripePaymentsUI/StripePaymentsUIBundle.bundle/vi.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePaymentsUI/StripePaymentsUI/StripePaymentsUI/Resources/Localizations/vi.lproj
+› Copying   StripePaymentsUI/StripePaymentsUIBundle.bundle/tr.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePaymentsUI/StripePaymentsUI/StripePaymentsUI/Resources/Localizations/tr.lproj
+› Copying   StripePaymentsUI/StripePaymentsUIBundle.bundle/tk.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePaymentsUI/StripePaymentsUI/StripePaymentsUI/Resources/Localizations/tk.lproj
+› Copying   StripePaymentsUI/StripePaymentsUIBundle.bundle/th.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePaymentsUI/StripePaymentsUI/StripePaymentsUI/Resources/Localizations/th.lproj
+› Copying   StripePaymentsUI/StripePaymentsUIBundle.bundle/sv.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePaymentsUI/StripePaymentsUI/StripePaymentsUI/Resources/Localizations/sv.lproj
+› Copying   StripePaymentsUI/StripePaymentsUIBundle.bundle/sl-SI.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePaymentsUI/StripePaymentsUI/StripePaymentsUI/Resources/Localizations/sl-SI.lproj
+› Copying   StripePaymentsUI/StripePaymentsUIBundle.bundle/sk-SK.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePaymentsUI/StripePaymentsUI/StripePaymentsUI/Resources/Localizations/sk-SK.lproj
+› Copying   StripePaymentsUI/StripePaymentsUIBundle.bundle/ru.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePaymentsUI/StripePaymentsUI/StripePaymentsUI/Resources/Localizations/ru.lproj
+› Copying   StripePaymentsUI/StripePaymentsUIBundle.bundle/ro-RO.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePaymentsUI/StripePaymentsUI/StripePaymentsUI/Resources/Localizations/ro-RO.lproj
+› Copying   StripePaymentsUI/StripePaymentsUIBundle.bundle/pt-PT.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePaymentsUI/StripePaymentsUI/StripePaymentsUI/Resources/Localizations/pt-PT.lproj
+› Copying   StripePaymentsUI/StripePaymentsUIBundle.bundle/pt-BR.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePaymentsUI/StripePaymentsUI/StripePaymentsUI/Resources/Localizations/pt-BR.lproj
+› Copying   StripePaymentsUI/StripePaymentsUIBundle.bundle/pl-PL.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePaymentsUI/StripePaymentsUI/StripePaymentsUI/Resources/Localizations/pl-PL.lproj
+› Copying   StripePaymentsUI/StripePaymentsUIBundle.bundle/nl.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePaymentsUI/StripePaymentsUI/StripePaymentsUI/Resources/Localizations/nl.lproj
+› Copying   StripePaymentsUI/StripePaymentsUIBundle.bundle/nb.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePaymentsUI/StripePaymentsUI/StripePaymentsUI/Resources/Localizations/nb.lproj
+› Copying   StripePaymentsUI/StripePaymentsUIBundle.bundle/mt.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePaymentsUI/StripePaymentsUI/StripePaymentsUI/Resources/Localizations/mt.lproj
+› Copying   StripePaymentsUI/StripePaymentsUIBundle.bundle/ms-MY.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePaymentsUI/StripePaymentsUI/StripePaymentsUI/Resources/Localizations/ms-MY.lproj
+› Copying   StripePaymentsUI/StripePaymentsUIBundle.bundle/lv-LV.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePaymentsUI/StripePaymentsUI/StripePaymentsUI/Resources/Localizations/lv-LV.lproj
+› Copying   StripePaymentsUI/StripePaymentsUIBundle.bundle/lt-LT.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePaymentsUI/StripePaymentsUI/StripePaymentsUI/Resources/Localizations/lt-LT.lproj
+› Copying   StripePaymentsUI/StripePaymentsUIBundle.bundle/ko.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePaymentsUI/StripePaymentsUI/StripePaymentsUI/Resources/Localizations/ko.lproj
+› Copying   StripePaymentsUI/StripePaymentsUIBundle.bundle/ja.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePaymentsUI/StripePaymentsUI/StripePaymentsUI/Resources/Localizations/ja.lproj
+› Copying   StripePaymentsUI/StripePaymentsUIBundle.bundle/it.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePaymentsUI/StripePaymentsUI/StripePaymentsUI/Resources/Localizations/it.lproj
+› Copying   StripePaymentsUI/StripePaymentsUIBundle.bundle/id.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePaymentsUI/StripePaymentsUI/StripePaymentsUI/Resources/Localizations/id.lproj
+› Copying   StripePaymentsUI/StripePaymentsUIBundle.bundle/hu.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePaymentsUI/StripePaymentsUI/StripePaymentsUI/Resources/Localizations/hu.lproj
+› Copying   StripePaymentsUI/StripePaymentsUIBundle.bundle/hr.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePaymentsUI/StripePaymentsUI/StripePaymentsUI/Resources/Localizations/hr.lproj
+› Copying   StripePaymentsUI/StripePaymentsUIBundle.bundle/fr.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePaymentsUI/StripePaymentsUI/StripePaymentsUI/Resources/Localizations/fr.lproj
+› Copying   StripePaymentsUI/StripePaymentsUIBundle.bundle/fr-CA.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePaymentsUI/StripePaymentsUI/StripePaymentsUI/Resources/Localizations/fr-CA.lproj
+› Copying   StripePaymentsUI/StripePaymentsUIBundle.bundle/fil.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePaymentsUI/StripePaymentsUI/StripePaymentsUI/Resources/Localizations/fil.lproj
+› Copying   StripePaymentsUI/StripePaymentsUIBundle.bundle/fi.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePaymentsUI/StripePaymentsUI/StripePaymentsUI/Resources/Localizations/fi.lproj
+› Copying   StripePaymentsUI/StripePaymentsUIBundle.bundle/et-EE.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePaymentsUI/StripePaymentsUI/StripePaymentsUI/Resources/Localizations/et-EE.lproj
+› Copying   StripePaymentsUI/StripePaymentsUIBundle.bundle/es.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePaymentsUI/StripePaymentsUI/StripePaymentsUI/Resources/Localizations/es.lproj
+› Copying   StripePaymentsUI/StripePaymentsUIBundle.bundle/es-419.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePaymentsUI/StripePaymentsUI/StripePaymentsUI/Resources/Localizations/es-419.lproj
+› Copying   StripePaymentsUI/StripePaymentsUIBundle.bundle/en.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePaymentsUI/StripePaymentsUI/StripePaymentsUI/Resources/Localizations/en.lproj
+› Copying   StripePaymentsUI/StripePaymentsUIBundle.bundle/en-GB.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePaymentsUI/StripePaymentsUI/StripePaymentsUI/Resources/Localizations/en-GB.lproj
+› Copying   StripePaymentsUI/StripePaymentsUIBundle.bundle/el-GR.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePaymentsUI/StripePaymentsUI/StripePaymentsUI/Resources/Localizations/el-GR.lproj
+› Copying   StripePaymentsUI/StripePaymentsUIBundle.bundle/de.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePaymentsUI/StripePaymentsUI/StripePaymentsUI/Resources/Localizations/de.lproj
+› Copying   StripePaymentsUI/StripePaymentsUIBundle.bundle/da.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePaymentsUI/StripePaymentsUI/StripePaymentsUI/Resources/Localizations/da.lproj
+› Copying   StripePaymentsUI/StripePaymentsUIBundle.bundle/cs-CZ.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePaymentsUI/StripePaymentsUI/StripePaymentsUI/Resources/Localizations/cs-CZ.lproj
+› Copying   StripePaymentsUI/StripePaymentsUIBundle.bundle/ca-ES.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePaymentsUI/StripePaymentsUI/StripePaymentsUI/Resources/Localizations/ca-ES.lproj
+› Copying   StripePaymentsUI/StripePaymentsUIBundle.bundle/bg-BG.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePaymentsUI/StripePaymentsUI/StripePaymentsUI/Resources/Localizations/bg-BG.lproj
+› Copying   StripePaymentsUI/StripePaymentsUIBundle.bundle/au_becs_bsb.json ➜ work_repo/physiosmetic/ios/Pods/StripePaymentsUI/StripePaymentsUI/StripePaymentsUI/Resources/JSON/au_becs_bsb.json
+› Preparing Pods/StripePayments-StripePaymentsBundle » ResourceBundle-StripePaymentsBundle-StripePayments-Info.plist
+› Copying   StripePayments/StripePaymentsBundle.bundle/zh-Hant.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePayments/StripePayments/StripePayments/Resources/Localizations/zh-Hant.lproj
+› Copying   StripePayments/StripePaymentsBundle.bundle/zh-Hans.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePayments/StripePayments/StripePayments/Resources/Localizations/zh-Hans.lproj
+› Copying   StripePayments/StripePaymentsBundle.bundle/zh-HK.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePayments/StripePayments/StripePayments/Resources/Localizations/zh-HK.lproj
+› Copying   StripePayments/StripePaymentsBundle.bundle/vi.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePayments/StripePayments/StripePayments/Resources/Localizations/vi.lproj
+› Copying   StripePayments/StripePaymentsBundle.bundle/tr.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePayments/StripePayments/StripePayments/Resources/Localizations/tr.lproj
+› Copying   StripePayments/StripePaymentsBundle.bundle/tk.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePayments/StripePayments/StripePayments/Resources/Localizations/tk.lproj
+› Copying   StripePayments/StripePaymentsBundle.bundle/th.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePayments/StripePayments/StripePayments/Resources/Localizations/th.lproj
+› Copying   StripePayments/StripePaymentsBundle.bundle/sv.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePayments/StripePayments/StripePayments/Resources/Localizations/sv.lproj
+› Copying   StripePayments/StripePaymentsBundle.bundle/sl-SI.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePayments/StripePayments/StripePayments/Resources/Localizations/sl-SI.lproj
+› Copying   StripePayments/StripePaymentsBundle.bundle/sk-SK.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePayments/StripePayments/StripePayments/Resources/Localizations/sk-SK.lproj
+› Copying   StripePayments/StripePaymentsBundle.bundle/ru.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePayments/StripePayments/StripePayments/Resources/Localizations/ru.lproj
+› Copying   StripePayments/StripePaymentsBundle.bundle/ro-RO.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePayments/StripePayments/StripePayments/Resources/Localizations/ro-RO.lproj
+› Copying   StripePayments/StripePaymentsBundle.bundle/pt-PT.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePayments/StripePayments/StripePayments/Resources/Localizations/pt-PT.lproj
+› Copying   StripePayments/StripePaymentsBundle.bundle/pt-BR.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePayments/StripePayments/StripePayments/Resources/Localizations/pt-BR.lproj
+› Copying   StripePayments/StripePaymentsBundle.bundle/pl-PL.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePayments/StripePayments/StripePayments/Resources/Localizations/pl-PL.lproj
+› Copying   StripePayments/StripePaymentsBundle.bundle/nl.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePayments/StripePayments/StripePayments/Resources/Localizations/nl.lproj
+› Copying   StripePayments/StripePaymentsBundle.bundle/nb.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePayments/StripePayments/StripePayments/Resources/Localizations/nb.lproj
+› Copying   StripePayments/StripePaymentsBundle.bundle/mt.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePayments/StripePayments/StripePayments/Resources/Localizations/mt.lproj
+› Copying   StripePayments/StripePaymentsBundle.bundle/ms-MY.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePayments/StripePayments/StripePayments/Resources/Localizations/ms-MY.lproj
+› Copying   StripePayments/StripePaymentsBundle.bundle/lv-LV.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePayments/StripePayments/StripePayments/Resources/Localizations/lv-LV.lproj
+› Copying   StripePayments/StripePaymentsBundle.bundle/lt-LT.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePayments/StripePayments/StripePayments/Resources/Localizations/lt-LT.lproj
+› Copying   StripePayments/StripePaymentsBundle.bundle/ko.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePayments/StripePayments/StripePayments/Resources/Localizations/ko.lproj
+› Copying   StripePayments/StripePaymentsBundle.bundle/ja.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePayments/StripePayments/StripePayments/Resources/Localizations/ja.lproj
+› Copying   StripePayments/StripePaymentsBundle.bundle/it.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePayments/StripePayments/StripePayments/Resources/Localizations/it.lproj
+› Copying   StripePayments/StripePaymentsBundle.bundle/id.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePayments/StripePayments/StripePayments/Resources/Localizations/id.lproj
+› Copying   StripePayments/StripePaymentsBundle.bundle/hu.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePayments/StripePayments/StripePayments/Resources/Localizations/hu.lproj
+› Copying   StripePayments/StripePaymentsBundle.bundle/hr.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePayments/StripePayments/StripePayments/Resources/Localizations/hr.lproj
+› Copying   StripePayments/StripePaymentsBundle.bundle/fr.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePayments/StripePayments/StripePayments/Resources/Localizations/fr.lproj
+› Copying   StripePayments/StripePaymentsBundle.bundle/fr-CA.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePayments/StripePayments/StripePayments/Resources/Localizations/fr-CA.lproj
+› Copying   StripePayments/StripePaymentsBundle.bundle/fil.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePayments/StripePayments/StripePayments/Resources/Localizations/fil.lproj
+› Copying   StripePayments/StripePaymentsBundle.bundle/fi.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePayments/StripePayments/StripePayments/Resources/Localizations/fi.lproj
+› Copying   StripePayments/StripePaymentsBundle.bundle/et-EE.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePayments/StripePayments/StripePayments/Resources/Localizations/et-EE.lproj
+› Copying   StripePayments/StripePaymentsBundle.bundle/es.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePayments/StripePayments/StripePayments/Resources/Localizations/es.lproj
+› Copying   StripePayments/StripePaymentsBundle.bundle/es-419.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePayments/StripePayments/StripePayments/Resources/Localizations/es-419.lproj
+› Copying   StripePayments/StripePaymentsBundle.bundle/en.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePayments/StripePayments/StripePayments/Resources/Localizations/en.lproj
+› Copying   StripePayments/StripePaymentsBundle.bundle/en-GB.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePayments/StripePayments/StripePayments/Resources/Localizations/en-GB.lproj
+› Copying   StripePayments/StripePaymentsBundle.bundle/el-GR.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePayments/StripePayments/StripePayments/Resources/Localizations/el-GR.lproj
+› Copying   StripePayments/StripePaymentsBundle.bundle/de.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePayments/StripePayments/StripePayments/Resources/Localizations/de.lproj
+› Copying   StripePayments/StripePaymentsBundle.bundle/da.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePayments/StripePayments/StripePayments/Resources/Localizations/da.lproj
+› Copying   StripePayments/StripePaymentsBundle.bundle/cs-CZ.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePayments/StripePayments/StripePayments/Resources/Localizations/cs-CZ.lproj
+› Copying   StripePayments/StripePaymentsBundle.bundle/ca-ES.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePayments/StripePayments/StripePayments/Resources/Localizations/ca-ES.lproj
+› Copying   StripePayments/StripePaymentsBundle.bundle/bg-BG.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePayments/StripePayments/StripePayments/Resources/Localizations/bg-BG.lproj
+› Copying   StripePayments/Stripe3DS2.bundle/zh-Hant.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePayments/Stripe3DS2/Stripe3DS2/Resources/zh-Hant.lproj
+› Copying   StripePayments/Stripe3DS2.bundle/zh-Hans.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePayments/Stripe3DS2/Stripe3DS2/Resources/zh-Hans.lproj
+› Copying   StripePayments/Stripe3DS2.bundle/zh-HK.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePayments/Stripe3DS2/Stripe3DS2/Resources/zh-HK.lproj
+› Copying   StripePayments/Stripe3DS2.bundle/vi.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePayments/Stripe3DS2/Stripe3DS2/Resources/vi.lproj
+› Copying   StripePayments/Stripe3DS2.bundle/tr.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePayments/Stripe3DS2/Stripe3DS2/Resources/tr.lproj
+› Copying   StripePayments/Stripe3DS2.bundle/sv.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePayments/Stripe3DS2/Stripe3DS2/Resources/sv.lproj
+› Copying   StripePayments/Stripe3DS2.bundle/sl-SI.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePayments/Stripe3DS2/Stripe3DS2/Resources/sl-SI.lproj
+› Copying   StripePayments/Stripe3DS2.bundle/sk-SK.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePayments/Stripe3DS2/Stripe3DS2/Resources/sk-SK.lproj
+› Copying   StripePayments/Stripe3DS2.bundle/ru.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePayments/Stripe3DS2/Stripe3DS2/Resources/ru.lproj
+› Copying   StripePayments/Stripe3DS2.bundle/ro-RO.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePayments/Stripe3DS2/Stripe3DS2/Resources/ro-RO.lproj
+› Copying   StripePayments/Stripe3DS2.bundle/pt-PT.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePayments/Stripe3DS2/Stripe3DS2/Resources/pt-PT.lproj
+› Copying   StripePayments/Stripe3DS2.bundle/pt-BR.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePayments/Stripe3DS2/Stripe3DS2/Resources/pt-BR.lproj
+› Copying   StripePayments/Stripe3DS2.bundle/pl-PL.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePayments/Stripe3DS2/Stripe3DS2/Resources/pl-PL.lproj
+› Copying   StripePayments/Stripe3DS2.bundle/nl.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePayments/Stripe3DS2/Stripe3DS2/Resources/nl.lproj
+› Copying   StripePayments/Stripe3DS2.bundle/nb.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePayments/Stripe3DS2/Stripe3DS2/Resources/nb.lproj
+› Copying   StripePayments/Stripe3DS2.bundle/mt.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePayments/Stripe3DS2/Stripe3DS2/Resources/mt.lproj
+› Copying   StripePayments/Stripe3DS2.bundle/ms-MY.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePayments/Stripe3DS2/Stripe3DS2/Resources/ms-MY.lproj
+› Copying   StripePayments/Stripe3DS2.bundle/lv-LV.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePayments/Stripe3DS2/Stripe3DS2/Resources/lv-LV.lproj
+› Copying   StripePayments/Stripe3DS2.bundle/lt-LT.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePayments/Stripe3DS2/Stripe3DS2/Resources/lt-LT.lproj
+› Copying   StripePayments/Stripe3DS2.bundle/ko.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePayments/Stripe3DS2/Stripe3DS2/Resources/ko.lproj
+› Copying   StripePayments/Stripe3DS2.bundle/ja.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePayments/Stripe3DS2/Stripe3DS2/Resources/ja.lproj
+› Copying   StripePayments/Stripe3DS2.bundle/it.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePayments/Stripe3DS2/Stripe3DS2/Resources/it.lproj
+› Copying   StripePayments/Stripe3DS2.bundle/id.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePayments/Stripe3DS2/Stripe3DS2/Resources/id.lproj
+› Copying   StripePayments/Stripe3DS2.bundle/hu.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePayments/Stripe3DS2/Stripe3DS2/Resources/hu.lproj
+› Copying   StripePayments/Stripe3DS2.bundle/hr.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePayments/Stripe3DS2/Stripe3DS2/Resources/hr.lproj
+› Copying   StripePayments/Stripe3DS2.bundle/fr.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePayments/Stripe3DS2/Stripe3DS2/Resources/fr.lproj
+› Copying   StripePayments/Stripe3DS2.bundle/fr-CA.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePayments/Stripe3DS2/Stripe3DS2/Resources/fr-CA.lproj
+› Copying   StripePayments/Stripe3DS2.bundle/fil.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePayments/Stripe3DS2/Stripe3DS2/Resources/fil.lproj
+› Copying   StripePayments/Stripe3DS2.bundle/fi.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePayments/Stripe3DS2/Stripe3DS2/Resources/fi.lproj
+› Copying   StripePayments/Stripe3DS2.bundle/et-EE.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePayments/Stripe3DS2/Stripe3DS2/Resources/et-EE.lproj
+› Copying   StripePayments/Stripe3DS2.bundle/es.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePayments/Stripe3DS2/Stripe3DS2/Resources/es.lproj
+› Copying   StripePayments/Stripe3DS2.bundle/es-419.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePayments/Stripe3DS2/Stripe3DS2/Resources/es-419.lproj
+› Copying   StripePayments/Stripe3DS2.bundle/en.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePayments/Stripe3DS2/Stripe3DS2/Resources/en.lproj
+› Copying   StripePayments/Stripe3DS2.bundle/en-GB.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePayments/Stripe3DS2/Stripe3DS2/Resources/en-GB.lproj
+› Copying   StripePayments/Stripe3DS2.bundle/el-GR.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePayments/Stripe3DS2/Stripe3DS2/Resources/el-GR.lproj
+› Copying   StripePayments/Stripe3DS2.bundle/de.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePayments/Stripe3DS2/Stripe3DS2/Resources/de.lproj
+› Copying   StripePayments/Stripe3DS2.bundle/da.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePayments/Stripe3DS2/Stripe3DS2/Resources/da.lproj
+› Copying   StripePayments/Stripe3DS2.bundle/cs-CZ.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePayments/Stripe3DS2/Stripe3DS2/Resources/cs-CZ.lproj
+› Copying   StripePayments/Stripe3DS2.bundle/ca-ES.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePayments/Stripe3DS2/Stripe3DS2/Resources/ca-ES.lproj
+› Copying   StripePayments/Stripe3DS2.bundle/bg-BG.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePayments/Stripe3DS2/Stripe3DS2/Resources/bg-BG.lproj
+› Copying   StripePayments/Stripe3DS2.bundle/PrivacyInfo.xcprivacy ➜ work_repo/physiosmetic/ios/Pods/StripePayments/Stripe3DS2/Stripe3DS2/PrivacyInfo.xcprivacy
+› Copying   StripePaymentSheet/StripePaymentSheetBundle.bundle/zh-Hant.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePaymentSheet/StripePaymentSheet/StripePaymentSheet/Resources/Localizations/zh-Hant.lproj
+› Copying   StripePaymentSheet/StripePaymentSheetBundle.bundle/zh-Hans.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePaymentSheet/StripePaymentSheet/StripePaymentSheet/Resources/Localizations/zh-Hans.lproj
+› Copying   StripePaymentSheet/StripePaymentSheetBundle.bundle/zh-HK.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePaymentSheet/StripePaymentSheet/StripePaymentSheet/Resources/Localizations/zh-HK.lproj
+› Copying   StripePaymentSheet/StripePaymentSheetBundle.bundle/vi.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePaymentSheet/StripePaymentSheet/StripePaymentSheet/Resources/Localizations/vi.lproj
+› Copying   StripePaymentSheet/StripePaymentSheetBundle.bundle/tr.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePaymentSheet/StripePaymentSheet/StripePaymentSheet/Resources/Localizations/tr.lproj
+› Copying   StripePaymentSheet/StripePaymentSheetBundle.bundle/tk.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePaymentSheet/StripePaymentSheet/StripePaymentSheet/Resources/Localizations/tk.lproj
+› Copying   StripePaymentSheet/StripePaymentSheetBundle.bundle/th.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePaymentSheet/StripePaymentSheet/StripePaymentSheet/Resources/Localizations/th.lproj
+› Copying   StripePaymentSheet/StripePaymentSheetBundle.bundle/sv.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePaymentSheet/StripePaymentSheet/StripePaymentSheet/Resources/Localizations/sv.lproj
+› Copying   StripePaymentSheet/StripePaymentSheetBundle.bundle/sl-SI.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePaymentSheet/StripePaymentSheet/StripePaymentSheet/Resources/Localizations/sl-SI.lproj
+› Copying   StripePaymentSheet/StripePaymentSheetBundle.bundle/sk-SK.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePaymentSheet/StripePaymentSheet/StripePaymentSheet/Resources/Localizations/sk-SK.lproj
+› Copying   StripePaymentSheet/StripePaymentSheetBundle.bundle/ru.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePaymentSheet/StripePaymentSheet/StripePaymentSheet/Resources/Localizations/ru.lproj
+› Copying   StripePaymentSheet/StripePaymentSheetBundle.bundle/ro-RO.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePaymentSheet/StripePaymentSheet/StripePaymentSheet/Resources/Localizations/ro-RO.lproj
+› Copying   StripePaymentSheet/StripePaymentSheetBundle.bundle/pt-PT.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePaymentSheet/StripePaymentSheet/StripePaymentSheet/Resources/Localizations/pt-PT.lproj
+› Copying   StripePaymentSheet/StripePaymentSheetBundle.bundle/pt-BR.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePaymentSheet/StripePaymentSheet/StripePaymentSheet/Resources/Localizations/pt-BR.lproj
+› Copying   StripePaymentSheet/StripePaymentSheetBundle.bundle/pl-PL.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePaymentSheet/StripePaymentSheet/StripePaymentSheet/Resources/Localizations/pl-PL.lproj
+› Copying   StripePaymentSheet/StripePaymentSheetBundle.bundle/nl.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePaymentSheet/StripePaymentSheet/StripePaymentSheet/Resources/Localizations/nl.lproj
+› Copying   StripePaymentSheet/StripePaymentSheetBundle.bundle/nb.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePaymentSheet/StripePaymentSheet/StripePaymentSheet/Resources/Localizations/nb.lproj
+› Copying   StripePaymentSheet/StripePaymentSheetBundle.bundle/mt.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePaymentSheet/StripePaymentSheet/StripePaymentSheet/Resources/Localizations/mt.lproj
+› Copying   StripePaymentSheet/StripePaymentSheetBundle.bundle/ms-MY.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePaymentSheet/StripePaymentSheet/StripePaymentSheet/Resources/Localizations/ms-MY.lproj
+› Copying   StripePaymentSheet/StripePaymentSheetBundle.bundle/lv-LV.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePaymentSheet/StripePaymentSheet/StripePaymentSheet/Resources/Localizations/lv-LV.lproj
+› Copying   StripePaymentSheet/StripePaymentSheetBundle.bundle/lt-LT.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePaymentSheet/StripePaymentSheet/StripePaymentSheet/Resources/Localizations/lt-LT.lproj
+› Copying   StripePaymentSheet/StripePaymentSheetBundle.bundle/ko.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePaymentSheet/StripePaymentSheet/StripePaymentSheet/Resources/Localizations/ko.lproj
+› Copying   StripePaymentSheet/StripePaymentSheetBundle.bundle/ja.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePaymentSheet/StripePaymentSheet/StripePaymentSheet/Resources/Localizations/ja.lproj
+› Copying   StripePaymentSheet/StripePaymentSheetBundle.bundle/it.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePaymentSheet/StripePaymentSheet/StripePaymentSheet/Resources/Localizations/it.lproj
+› Copying   StripePaymentSheet/StripePaymentSheetBundle.bundle/id.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePaymentSheet/StripePaymentSheet/StripePaymentSheet/Resources/Localizations/id.lproj
+› Copying   StripePaymentSheet/StripePaymentSheetBundle.bundle/hu.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePaymentSheet/StripePaymentSheet/StripePaymentSheet/Resources/Localizations/hu.lproj
+› Copying   StripePaymentSheet/StripePaymentSheetBundle.bundle/hr.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePaymentSheet/StripePaymentSheet/StripePaymentSheet/Resources/Localizations/hr.lproj
+› Copying   StripePaymentSheet/StripePaymentSheetBundle.bundle/fr.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePaymentSheet/StripePaymentSheet/StripePaymentSheet/Resources/Localizations/fr.lproj
+› Copying   StripePaymentSheet/StripePaymentSheetBundle.bundle/fr-CA.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePaymentSheet/StripePaymentSheet/StripePaymentSheet/Resources/Localizations/fr-CA.lproj
+› Copying   StripePaymentSheet/StripePaymentSheetBundle.bundle/form_specs.json ➜ work_repo/physiosmetic/ios/Pods/StripePaymentSheet/StripePaymentSheet/StripePaymentSheet/Resources/JSON/form_specs.json
+› Copying   StripePaymentSheet/StripePaymentSheetBundle.bundle/fil.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePaymentSheet/StripePaymentSheet/StripePaymentSheet/Resources/Localizations/fil.lproj
+› Copying   StripePaymentSheet/StripePaymentSheetBundle.bundle/fi.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePaymentSheet/StripePaymentSheet/StripePaymentSheet/Resources/Localizations/fi.lproj
+› Copying   StripePaymentSheet/StripePaymentSheetBundle.bundle/et-EE.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePaymentSheet/StripePaymentSheet/StripePaymentSheet/Resources/Localizations/et-EE.lproj
+› Copying   StripePaymentSheet/StripePaymentSheetBundle.bundle/es.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePaymentSheet/StripePaymentSheet/StripePaymentSheet/Resources/Localizations/es.lproj
+› Copying   StripePaymentSheet/StripePaymentSheetBundle.bundle/es-419.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePaymentSheet/StripePaymentSheet/StripePaymentSheet/Resources/Localizations/es-419.lproj
+› Copying   StripePaymentSheet/StripePaymentSheetBundle.bundle/en.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePaymentSheet/StripePaymentSheet/StripePaymentSheet/Resources/Localizations/en.lproj
+› Copying   StripePaymentSheet/StripePaymentSheetBundle.bundle/en-GB.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePaymentSheet/StripePaymentSheet/StripePaymentSheet/Resources/Localizations/en-GB.lproj
+› Copying   StripePaymentSheet/StripePaymentSheetBundle.bundle/el-GR.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePaymentSheet/StripePaymentSheet/StripePaymentSheet/Resources/Localizations/el-GR.lproj
+› Copying   StripePaymentSheet/StripePaymentSheetBundle.bundle/de.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePaymentSheet/StripePaymentSheet/StripePaymentSheet/Resources/Localizations/de.lproj
+› Copying   StripePaymentSheet/StripePaymentSheetBundle.bundle/da.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePaymentSheet/StripePaymentSheet/StripePaymentSheet/Resources/Localizations/da.lproj
+› Copying   StripePaymentSheet/StripePaymentSheetBundle.bundle/cs-CZ.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePaymentSheet/StripePaymentSheet/StripePaymentSheet/Resources/Localizations/cs-CZ.lproj
+› Copying   StripePaymentSheet/StripePaymentSheetBundle.bundle/ca-ES.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePaymentSheet/StripePaymentSheet/StripePaymentSheet/Resources/Localizations/ca-ES.lproj
+› Copying   StripePaymentSheet/StripePaymentSheetBundle.bundle/bg-BG.lproj ➜ work_repo/physiosmetic/ios/Pods/StripePaymentSheet/StripePaymentSheet/StripePaymentSheet/Resources/Localizations/bg-BG.lproj
+› Copying   StripePaymentSheet/StripePaymentSheetBundle.bundle/PrivacyInfo.xcprivacy ➜ work_repo/physiosmetic/ios/Pods/StripePaymentSheet/StripePaymentSheet/StripePaymentSheet/PrivacyInfo.xcprivacy
+› Compiling react-native-safe-area-context Pods/react-native-safe-area-context » RNCSafeAreaContext.mm
+› Preparing Pods/StripeFinancialConnections-StripeFinancialConnectionsBundle » ResourceBundle-StripeFinancialConnectionsBundle-StripeFinancialConnections-Info.plist
+› Copying   StripeFinancialConnections/StripeFinancialConnectionsBundle.bundle/zh-Hant.lproj ➜ work_repo/physiosmetic/ios/Pods/StripeFinancialConnections/StripeFinancialConnections/StripeFinancialConnections/Resources/Localizations/zh-Hant.lproj
+› Copying   StripeFinancialConnections/StripeFinancialConnectionsBundle.bundle/zh-Hans.lproj ➜ work_repo/physiosmetic/ios/Pods/StripeFinancialConnections/StripeFinancialConnections/StripeFinancialConnections/Resources/Localizations/zh-Hans.lproj
+› Copying   StripeFinancialConnections/StripeFinancialConnectionsBundle.bundle/zh-HK.lproj ➜ work_repo/physiosmetic/ios/Pods/StripeFinancialConnections/StripeFinancialConnections/StripeFinancialConnections/Resources/Localizations/zh-HK.lproj
+› Copying   StripeFinancialConnections/StripeFinancialConnectionsBundle.bundle/vi.lproj ➜ work_repo/physiosmetic/ios/Pods/StripeFinancialConnections/StripeFinancialConnections/StripeFinancialConnections/Resources/Localizations/vi.lproj
+› Copying   StripeFinancialConnections/StripeFinancialConnectionsBundle.bundle/tr.lproj ➜ work_repo/physiosmetic/ios/Pods/StripeFinancialConnections/StripeFinancialConnections/StripeFinancialConnections/Resources/Localizations/tr.lproj
+› Copying   StripeFinancialConnections/StripeFinancialConnectionsBundle.bundle/sv.lproj ➜ work_repo/physiosmetic/ios/Pods/StripeFinancialConnections/StripeFinancialConnections/StripeFinancialConnections/Resources/Localizations/sv.lproj
+› Copying   StripeFinancialConnections/StripeFinancialConnectionsBundle.bundle/sl-SI.lproj ➜ work_repo/physiosmetic/ios/Pods/StripeFinancialConnections/StripeFinancialConnections/StripeFinancialConnections/Resources/Localizations/sl-SI.lproj
+› Copying   StripeFinancialConnections/StripeFinancialConnectionsBundle.bundle/sk-SK.lproj ➜ work_repo/physiosmetic/ios/Pods/StripeFinancialConnections/StripeFinancialConnections/StripeFinancialConnections/Resources/Localizations/sk-SK.lproj
+› Copying   StripeFinancialConnections/StripeFinancialConnectionsBundle.bundle/ru.lproj ➜ work_repo/physiosmetic/ios/Pods/StripeFinancialConnections/StripeFinancialConnections/StripeFinancialConnections/Resources/Localizations/ru.lproj
+› Copying   StripeFinancialConnections/StripeFinancialConnectionsBundle.bundle/ro-RO.lproj ➜ work_repo/physiosmetic/ios/Pods/StripeFinancialConnections/StripeFinancialConnections/StripeFinancialConnections/Resources/Localizations/ro-RO.lproj
+› Copying   StripeFinancialConnections/StripeFinancialConnectionsBundle.bundle/pt-PT.lproj ➜ work_repo/physiosmetic/ios/Pods/StripeFinancialConnections/StripeFinancialConnections/StripeFinancialConnections/Resources/Localizations/pt-PT.lproj
+› Copying   StripeFinancialConnections/StripeFinancialConnectionsBundle.bundle/pt-BR.lproj ➜ work_repo/physiosmetic/ios/Pods/StripeFinancialConnections/StripeFinancialConnections/StripeFinancialConnections/Resources/Localizations/pt-BR.lproj
+› Copying   StripeFinancialConnections/StripeFinancialConnectionsBundle.bundle/pl-PL.lproj ➜ work_repo/physiosmetic/ios/Pods/StripeFinancialConnections/StripeFinancialConnections/StripeFinancialConnections/Resources/Localizations/pl-PL.lproj
+› Copying   StripeFinancialConnections/StripeFinancialConnectionsBundle.bundle/nl.lproj ➜ work_repo/physiosmetic/ios/Pods/StripeFinancialConnections/StripeFinancialConnections/StripeFinancialConnections/Resources/Localizations/nl.lproj
+› Copying   StripeFinancialConnections/StripeFinancialConnectionsBundle.bundle/nb.lproj ➜ work_repo/physiosmetic/ios/Pods/StripeFinancialConnections/StripeFinancialConnections/StripeFinancialConnections/Resources/Localizations/nb.lproj
+› Copying   StripeFinancialConnections/StripeFinancialConnectionsBundle.bundle/mt.lproj ➜ work_repo/physiosmetic/ios/Pods/StripeFinancialConnections/StripeFinancialConnections/StripeFinancialConnections/Resources/Localizations/mt.lproj
+› Copying   StripeFinancialConnections/StripeFinancialConnectionsBundle.bundle/ms-MY.lproj ➜ work_repo/physiosmetic/ios/Pods/StripeFinancialConnections/StripeFinancialConnections/StripeFinancialConnections/Resources/Localizations/ms-MY.lproj
+› Copying   StripeFinancialConnections/StripeFinancialConnectionsBundle.bundle/lv-LV.lproj ➜ work_repo/physiosmetic/ios/Pods/StripeFinancialConnections/StripeFinancialConnections/StripeFinancialConnections/Resources/Localizations/lv-LV.lproj
+› Copying   StripeFinancialConnections/StripeFinancialConnectionsBundle.bundle/lt-LT.lproj ➜ work_repo/physiosmetic/ios/Pods/StripeFinancialConnections/StripeFinancialConnections/StripeFinancialConnections/Resources/Localizations/lt-LT.lproj
+› Copying   StripeFinancialConnections/StripeFinancialConnectionsBundle.bundle/ko.lproj ➜ work_repo/physiosmetic/ios/Pods/StripeFinancialConnections/StripeFinancialConnections/StripeFinancialConnections/Resources/Localizations/ko.lproj
+› Copying   StripeFinancialConnections/StripeFinancialConnectionsBundle.bundle/ja.lproj ➜ work_repo/physiosmetic/ios/Pods/StripeFinancialConnections/StripeFinancialConnections/StripeFinancialConnections/Resources/Localizations/ja.lproj
+› Copying   StripeFinancialConnections/StripeFinancialConnectionsBundle.bundle/it.lproj ➜ work_repo/physiosmetic/ios/Pods/StripeFinancialConnections/StripeFinancialConnections/StripeFinancialConnections/Resources/Localizations/it.lproj
+› Copying   StripeFinancialConnections/StripeFinancialConnectionsBundle.bundle/id.lproj ➜ work_repo/physiosmetic/ios/Pods/StripeFinancialConnections/StripeFinancialConnections/StripeFinancialConnections/Resources/Localizations/id.lproj
+› Copying   StripeFinancialConnections/StripeFinancialConnectionsBundle.bundle/hu.lproj ➜ work_repo/physiosmetic/ios/Pods/StripeFinancialConnections/StripeFinancialConnections/StripeFinancialConnections/Resources/Localizations/hu.lproj
+› Copying   StripeFinancialConnections/StripeFinancialConnectionsBundle.bundle/hr.lproj ➜ work_repo/physiosmetic/ios/Pods/StripeFinancialConnections/StripeFinancialConnections/StripeFinancialConnections/Resources/Localizations/hr.lproj
+› Copying   StripeFinancialConnections/StripeFinancialConnectionsBundle.bundle/fr.lproj ➜ work_repo/physiosmetic/ios/Pods/StripeFinancialConnections/StripeFinancialConnections/StripeFinancialConnections/Resources/Localizations/fr.lproj
+› Copying   StripeFinancialConnections/StripeFinancialConnectionsBundle.bundle/fr-CA.lproj ➜ work_repo/physiosmetic/ios/Pods/StripeFinancialConnections/StripeFinancialConnections/StripeFinancialConnections/Resources/Localizations/fr-CA.lproj
+› Copying   StripeFinancialConnections/StripeFinancialConnectionsBundle.bundle/fil.lproj ➜ work_repo/physiosmetic/ios/Pods/StripeFinancialConnections/StripeFinancialConnections/StripeFinancialConnections/Resources/Localizations/fil.lproj
+› Copying   StripeFinancialConnections/StripeFinancialConnectionsBundle.bundle/fi.lproj ➜ work_repo/physiosmetic/ios/Pods/StripeFinancialConnections/StripeFinancialConnections/StripeFinancialConnections/Resources/Localizations/fi.lproj
+› Copying   StripeFinancialConnections/StripeFinancialConnectionsBundle.bundle/es.lproj ➜ work_repo/physiosmetic/ios/Pods/StripeFinancialConnections/StripeFinancialConnections/StripeFinancialConnections/Resources/Localizations/es.lproj
+› Copying   StripeFinancialConnections/StripeFinancialConnectionsBundle.bundle/et-EE.lproj ➜ work_repo/physiosmetic/ios/Pods/StripeFinancialConnections/StripeFinancialConnections/StripeFinancialConnections/Resources/Localizations/et-EE.lproj
+› Copying   StripeFinancialConnections/StripeFinancialConnectionsBundle.bundle/es-419.lproj ➜ work_repo/physiosmetic/ios/Pods/StripeFinancialConnections/StripeFinancialConnections/StripeFinancialConnections/Resources/Localizations/es-419.lproj
+› Copying   StripeFinancialConnections/StripeFinancialConnectionsBundle.bundle/en.lproj ➜ work_repo/physiosmetic/ios/Pods/StripeFinancialConnections/StripeFinancialConnections/StripeFinancialConnections/Resources/Localizations/en.lproj
+› Copying   StripeFinancialConnections/StripeFinancialConnectionsBundle.bundle/en-GB.lproj ➜ work_repo/physiosmetic/ios/Pods/StripeFinancialConnections/StripeFinancialConnections/StripeFinancialConnections/Resources/Localizations/en-GB.lproj
+› Copying   StripeFinancialConnections/StripeFinancialConnectionsBundle.bundle/el-GR.lproj ➜ work_repo/physiosmetic/ios/Pods/StripeFinancialConnections/StripeFinancialConnections/StripeFinancialConnections/Resources/Localizations/el-GR.lproj
+› Copying   StripeFinancialConnections/StripeFinancialConnectionsBundle.bundle/de.lproj ➜ work_repo/physiosmetic/ios/Pods/StripeFinancialConnections/StripeFinancialConnections/StripeFinancialConnections/Resources/Localizations/de.lproj
+› Copying   StripeFinancialConnections/StripeFinancialConnectionsBundle.bundle/da.lproj ➜ work_repo/physiosmetic/ios/Pods/StripeFinancialConnections/StripeFinancialConnections/StripeFinancialConnections/Resources/Localizations/da.lproj
+› Copying   StripeFinancialConnections/StripeFinancialConnectionsBundle.bundle/cs-CZ.lproj ➜ work_repo/physiosmetic/ios/Pods/StripeFinancialConnections/StripeFinancialConnections/StripeFinancialConnections/Resources/Localizations/cs-CZ.lproj
+› Copying   StripeFinancialConnections/StripeFinancialConnectionsBundle.bundle/ca-ES.lproj ➜ work_repo/physiosmetic/ios/Pods/StripeFinancialConnections/StripeFinancialConnections/StripeFinancialConnections/Resources/Localizations/ca-ES.lproj
+› Copying   StripeFinancialConnections/StripeFinancialConnectionsBundle.bundle/bg-BG.lproj ➜ work_repo/physiosmetic/ios/Pods/StripeFinancialConnections/StripeFinancialConnections/StripeFinancialConnections/Resources/Localizations/bg-BG.lproj
+› Copying   StripeFinancialConnections/StripeFinancialConnectionsBundle.bundle/PrivacyInfo.xcprivacy ➜ work_repo/physiosmetic/ios/Pods/StripeFinancialConnections/StripeFinancialConnections/StripeFinancialConnections/PrivacyInfo.xcprivacy
+› Creating  Pods/StripePayments-StripePaymentsBundle » StripePaymentsBundle.bundle
+› Preparing Pods/StripeCore-StripeCoreBundle » ResourceBundle-StripeCoreBundle-StripeCore-Info.plist
+› Copying   StripeCore/StripeCoreBundle.bundle/zh-Hant.lproj ➜ work_repo/physiosmetic/ios/Pods/StripeCore/StripeCore/StripeCore/Resources/Localizations/zh-Hant.lproj
+› Copying   StripeCore/StripeCoreBundle.bundle/zh-Hans.lproj ➜ work_repo/physiosmetic/ios/Pods/StripeCore/StripeCore/StripeCore/Resources/Localizations/zh-Hans.lproj
+› Copying   StripeCore/StripeCoreBundle.bundle/zh-HK.lproj ➜ work_repo/physiosmetic/ios/Pods/StripeCore/StripeCore/StripeCore/Resources/Localizations/zh-HK.lproj
+› Copying   StripeCore/StripeCoreBundle.bundle/vi.lproj ➜ work_repo/physiosmetic/ios/Pods/StripeCore/StripeCore/StripeCore/Resources/Localizations/vi.lproj
+› Copying   StripeCore/StripeCoreBundle.bundle/tr.lproj ➜ work_repo/physiosmetic/ios/Pods/StripeCore/StripeCore/StripeCore/Resources/Localizations/tr.lproj
+› Copying   StripeCore/StripeCoreBundle.bundle/th.lproj ➜ work_repo/physiosmetic/ios/Pods/StripeCore/StripeCore/StripeCore/Resources/Localizations/th.lproj
+› Copying   StripeCore/StripeCoreBundle.bundle/sv.lproj ➜ work_repo/physiosmetic/ios/Pods/StripeCore/StripeCore/StripeCore/Resources/Localizations/sv.lproj
+› Copying   StripeCore/StripeCoreBundle.bundle/sl-SI.lproj ➜ work_repo/physiosmetic/ios/Pods/StripeCore/StripeCore/StripeCore/Resources/Localizations/sl-SI.lproj
+› Copying   StripeCore/StripeCoreBundle.bundle/ru.lproj ➜ work_repo/physiosmetic/ios/Pods/StripeCore/StripeCore/StripeCore/Resources/Localizations/ru.lproj
+› Copying   StripeCore/StripeCoreBundle.bundle/sk-SK.lproj ➜ work_repo/physiosmetic/ios/Pods/StripeCore/StripeCore/StripeCore/Resources/Localizations/sk-SK.lproj
+› Copying   StripeCore/StripeCoreBundle.bundle/ro-RO.lproj ➜ work_repo/physiosmetic/ios/Pods/StripeCore/StripeCore/StripeCore/Resources/Localizations/ro-RO.lproj
+› Copying   StripeCore/StripeCoreBundle.bundle/pt-PT.lproj ➜ work_repo/physiosmetic/ios/Pods/StripeCore/StripeCore/StripeCore/Resources/Localizations/pt-PT.lproj
+› Copying   StripeCore/StripeCoreBundle.bundle/pt-BR.lproj ➜ work_repo/physiosmetic/ios/Pods/StripeCore/StripeCore/StripeCore/Resources/Localizations/pt-BR.lproj
+› Copying   StripeCore/StripeCoreBundle.bundle/pl-PL.lproj ➜ work_repo/physiosmetic/ios/Pods/StripeCore/StripeCore/StripeCore/Resources/Localizations/pl-PL.lproj
+› Copying   StripeCore/StripeCoreBundle.bundle/nl.lproj ➜ work_repo/physiosmetic/ios/Pods/StripeCore/StripeCore/StripeCore/Resources/Localizations/nl.lproj
+› Copying   StripeCore/StripeCoreBundle.bundle/nb.lproj ➜ work_repo/physiosmetic/ios/Pods/StripeCore/StripeCore/StripeCore/Resources/Localizations/nb.lproj
+› Copying   StripeCore/StripeCoreBundle.bundle/mt.lproj ➜ work_repo/physiosmetic/ios/Pods/StripeCore/StripeCore/StripeCore/Resources/Localizations/mt.lproj
+› Copying   StripeCore/StripeCoreBundle.bundle/ms-MY.lproj ➜ work_repo/physiosmetic/ios/Pods/StripeCore/StripeCore/StripeCore/Resources/Localizations/ms-MY.lproj
+› Copying   StripeCore/StripeCoreBundle.bundle/lv-LV.lproj ➜ work_repo/physiosmetic/ios/Pods/StripeCore/StripeCore/StripeCore/Resources/Localizations/lv-LV.lproj
+› Copying   StripeCore/StripeCoreBundle.bundle/lt-LT.lproj ➜ work_repo/physiosmetic/ios/Pods/StripeCore/StripeCore/StripeCore/Resources/Localizations/lt-LT.lproj
+› Copying   StripeCore/StripeCoreBundle.bundle/ko.lproj ➜ work_repo/physiosmetic/ios/Pods/StripeCore/StripeCore/StripeCore/Resources/Localizations/ko.lproj
+› Copying   StripeCore/StripeCoreBundle.bundle/ja.lproj ➜ work_repo/physiosmetic/ios/Pods/StripeCore/StripeCore/StripeCore/Resources/Localizations/ja.lproj
+› Copying   StripeCore/StripeCoreBundle.bundle/it.lproj ➜ work_repo/physiosmetic/ios/Pods/StripeCore/StripeCore/StripeCore/Resources/Localizations/it.lproj
+› Copying   StripeCore/StripeCoreBundle.bundle/id.lproj ➜ work_repo/physiosmetic/ios/Pods/StripeCore/StripeCore/StripeCore/Resources/Localizations/id.lproj
+› Copying   StripeCore/StripeCoreBundle.bundle/hu.lproj ➜ work_repo/physiosmetic/ios/Pods/StripeCore/StripeCore/StripeCore/Resources/Localizations/hu.lproj
+› Copying   StripeCore/StripeCoreBundle.bundle/hr.lproj ➜ work_repo/physiosmetic/ios/Pods/StripeCore/StripeCore/StripeCore/Resources/Localizations/hr.lproj
+› Copying   StripeCore/StripeCoreBundle.bundle/fr.lproj ➜ work_repo/physiosmetic/ios/Pods/StripeCore/StripeCore/StripeCore/Resources/Localizations/fr.lproj
+› Copying   StripeCore/StripeCoreBundle.bundle/fil.lproj ➜ work_repo/physiosmetic/ios/Pods/StripeCore/StripeCore/StripeCore/Resources/Localizations/fil.lproj
+› Copying   StripeCore/StripeCoreBundle.bundle/fr-CA.lproj ➜ work_repo/physiosmetic/ios/Pods/StripeCore/StripeCore/StripeCore/Resources/Localizations/fr-CA.lproj
+› Copying   StripeCore/StripeCoreBundle.bundle/fi.lproj ➜ work_repo/physiosmetic/ios/Pods/StripeCore/StripeCore/StripeCore/Resources/Localizations/fi.lproj
+› Copying   StripeCore/StripeCoreBundle.bundle/et-EE.lproj ➜ work_repo/physiosmetic/ios/Pods/StripeCore/StripeCore/StripeCore/Resources/Localizations/et-EE.lproj
+› Copying   StripeCore/StripeCoreBundle.bundle/es.lproj ➜ work_repo/physiosmetic/ios/Pods/StripeCore/StripeCore/StripeCore/Resources/Localizations/es.lproj
+› Copying   StripeCore/StripeCoreBundle.bundle/es-419.lproj ➜ work_repo/physiosmetic/ios/Pods/StripeCore/StripeCore/StripeCore/Resources/Localizations/es-419.lproj
+› Copying   StripeCore/StripeCoreBundle.bundle/en.lproj ➜ work_repo/physiosmetic/ios/Pods/StripeCore/StripeCore/StripeCore/Resources/Localizations/en.lproj
+› Copying   StripeCore/StripeCoreBundle.bundle/en-GB.lproj ➜ work_repo/physiosmetic/ios/Pods/StripeCore/StripeCore/StripeCore/Resources/Localizations/en-GB.lproj
+› Copying   StripeCore/StripeCoreBundle.bundle/el-GR.lproj ➜ work_repo/physiosmetic/ios/Pods/StripeCore/StripeCore/StripeCore/Resources/Localizations/el-GR.lproj
+› Copying   StripeCore/StripeCoreBundle.bundle/de.lproj ➜ work_repo/physiosmetic/ios/Pods/StripeCore/StripeCore/StripeCore/Resources/Localizations/de.lproj
+› Copying   StripeCore/StripeCoreBundle.bundle/da.lproj ➜ work_repo/physiosmetic/ios/Pods/StripeCore/StripeCore/StripeCore/Resources/Localizations/da.lproj
+› Copying   StripeCore/StripeCoreBundle.bundle/cs-CZ.lproj ➜ work_repo/physiosmetic/ios/Pods/StripeCore/StripeCore/StripeCore/Resources/Localizations/cs-CZ.lproj
+› Copying   StripeCore/StripeCoreBundle.bundle/bg-BG.lproj ➜ work_repo/physiosmetic/ios/Pods/StripeCore/StripeCore/StripeCore/Resources/Localizations/bg-BG.lproj
+› Copying   StripeCore/StripeCoreBundle.bundle/ca-ES.lproj ➜ work_repo/physiosmetic/ios/Pods/StripeCore/StripeCore/StripeCore/Resources/Localizations/ca-ES.lproj
+› Copying   StripeCore/StripeCoreBundle.bundle/PrivacyInfo.xcprivacy ➜ work_repo/physiosmetic/ios/Pods/StripeCore/StripeCore/StripeCore/PrivacyInfo.xcprivacy
+› Copying   Stripe/StripeBundle.bundle/PrivacyInfo.xcprivacy ➜ work_repo/physiosmetic/ios/Pods/Stripe/Stripe/StripeiOS/PrivacyInfo.xcprivacy
+› Compiling react-native Pods/glog » glog-dummy.m
+› Compiling react-native Pods/fmt » fmt-dummy.m
+› Packaging react-native Pods/glog » libglog.a
+› Packaging react-native Pods/fmt » libfmt.a
+› Compiling react-native-safe-area-context Pods/react-native-safe-area-context » react-native-safe-area-context-dummy.m
+› Compiling react-native-safe-area-context Pods/react-native-safe-area-context » RNCOnInsetsChangeEvent.m
+› Compiling react-native-maps Pods/react-native-maps » react-native-maps-dummy.m
+› Compiling react-native-maps Pods/react-native-maps » SMCalloutView.m
+› Compiling react-native-maps Pods/react-native-maps » AIRWeakTimerReference.m
+› Compiling react-native-maps Pods/react-native-maps » AIRMapCalloutSubview.m
+› Compiling react-native-maps Pods/react-native-maps » AIRMapCallout.m
+› Compiling react-native Pods/Yoga » Yoga-dummy.m
+› Compiling expo Pods/SocketRocket » SocketRocket-dummy.m
+› Compiling expo Pods/SocketRocket » SRWebSocket.m
+› Packaging react-native Pods/Yoga » libYoga.a
+› Compiling expo Pods/SocketRocket » SRURLUtilities.m
+› Compiling expo Pods/SocketRocket » SRSecurityPolicy.m
+› Compiling expo Pods/SocketRocket » SRSIMDHelpers.m
+› Compiling expo Pods/SocketRocket » SRRunLoopThread.m
+› Compiling expo Pods/SocketRocket » SRRandom.m
+› Compiling expo Pods/SocketRocket » SRProxyConnect.m
+› Compiling expo Pods/SocketRocket » SRPinningSecurityPolicy.m
+› Compiling expo Pods/SocketRocket » SRMutex.m
+› Compiling expo Pods/SocketRocket » SRLog.m
+› Compiling expo Pods/SocketRocket » SRIOConsumerPool.m
+› Compiling expo Pods/SocketRocket » SRIOConsumer.m
+› Compiling expo Pods/SocketRocket » SRHTTPConnectMessage.m
+› Compiling expo Pods/SocketRocket » SRError.m
+› Compiling expo Pods/SocketRocket » SRHash.m
+› Compiling react-native-safe-area-context Pods/react-native-safe-area-context » RNCSafeAreaViewMode.m
+› Compiling react-native-safe-area-context Pods/react-native-safe-area-context » RNCSafeAreaViewManager.m
+› Compiling react-native-safe-area-context Pods/react-native-safe-area-context » RNCSafeAreaViewLocalData.m
+› Compiling react-native-safe-area-context Pods/react-native-safe-area-context » RNCSafeAreaViewEdges.m
+› Compiling react-native-safe-area-context Pods/react-native-safe-area-context » RNCSafeAreaViewEdgeMode.m
+› Compiling react-native-safe-area-context Pods/react-native-safe-area-context » RNCSafeAreaView.m
+› Compiling react-native-safe-area-context Pods/react-native-safe-area-context » RNCSafeAreaUtils.m
+› Compiling react-native-safe-area-context Pods/react-native-safe-area-context » RNCSafeAreaShadowView.m
+› Compiling react-native-safe-area-context Pods/react-native-safe-area-context » RNCSafeAreaProviderManager.m
+› Compiling react-native-safe-area-context Pods/react-native-safe-area-context » RNCSafeAreaProvider.m
+› Compiling react-native-maps Pods/react-native-maps » RCTComponentData+Maps.m
+› Compiling react-native-maps Pods/react-native-maps » RCTConvert+AirMap.m
+› Compiling react-native-maps Pods/react-native-maps » AIRWeakMapReference.m
+› Compiling react-native-maps Pods/react-native-maps » AIRMapWMSTileManager.m
+› Compiling react-native-maps Pods/react-native-maps » AIRMapWMSTile.m
+› Compiling react-native-maps Pods/react-native-maps » AIRMapUrlTileManager.m
+› Compiling react-native-maps Pods/react-native-maps » AIRMapUrlTileCachedOverlay.m
+› Compiling react-native-maps Pods/react-native-maps » AIRMapUrlTile.m
+› Compiling react-native-maps Pods/react-native-maps » AIRMapPolylineRenderer.m
+› Compiling react-native-maps Pods/react-native-maps » AIRMapPolylineManager.m
+› Compiling react-native-maps Pods/react-native-maps » AIRMapPolyline.m
+› Compiling react-native-maps Pods/react-native-maps » AIRMapPolygonManager.m
+› Compiling react-native-maps Pods/react-native-maps » AIRMapPolygon.m
+› Compiling react-native-maps Pods/react-native-maps » AIRMapOverlayRenderer.m
+› Compiling react-native-maps Pods/react-native-maps » AIRMapOverlayManager.m
+› Compiling react-native-maps Pods/react-native-maps » AIRMapOverlay.m
+› Compiling react-native-maps Pods/react-native-maps » AIRMapMarkerManager.m
+› Compiling react-native-maps Pods/react-native-maps » AIRMapMarker.m
+› Compiling react-native-maps Pods/react-native-maps » AIRMapManager.m
+› Compiling react-native-maps Pods/react-native-maps » AIRMapLocalTileOverlay.m
+› Compiling react-native-maps Pods/react-native-maps » AIRMapLocalTileManager.m
+› Compiling react-native-maps Pods/react-native-maps » AIRMapLocalTile.m
+› Compiling react-native-maps Pods/react-native-maps » AIRMapCoordinate.m
+› Compiling react-native-maps Pods/react-native-maps » AIRMapCircleManager.m
+› Compiling react-native-maps Pods/react-native-maps » AIRMapCircle.m
+› Compiling react-native-maps Pods/react-native-maps » AIRMapCalloutSubviewManager.m
+› Compiling react-native-maps Pods/react-native-maps » AIRMapCalloutManager.m
+› Compiling react-native-maps Pods/react-native-maps » AIRMap.m
+› Compiling expo Pods/SocketRocket » SRDelegateController.m
+› Compiling expo Pods/SocketRocket » SRConstants.m
+› Compiling expo Pods/SocketRocket » NSURLRequest+SRWebSocket.m
+› Compiling expo Pods/SocketRocket » NSRunLoop+SRWebSocket.m
+› Creating  Pods/StripeFinancialConnections-StripeFinancialConnectionsBundle » StripeFinancialConnectionsBundle.bundle
+› Preparing Pods/Sentry-Sentry » ResourceBundle-Sentry-Sentry-Info.plist
+› Copying   Sentry/Sentry.bundle/PrivacyInfo.xcprivacy ➜ work_repo/physiosmetic/ios/Pods/Sentry/Sources/Resources/PrivacyInfo.xcprivacy
+› Packaging expo Pods/SocketRocket » libSocketRocket.a
+› Compiling react-native Pods/ReactCommon » TurboModuleWithJSIBindings.cpp
+› Compiling react-native Pods/ReactCommon » TurboModuleUtils.cpp
+› Compiling react-native Pods/ReactCommon » TurboModulePerfLogger.cpp
+› Compiling react-native Pods/ReactCommon » TurboModuleBinding.cpp
+› Compiling react-native Pods/ReactCommon » TurboModule.cpp
+› Compiling react-native Pods/ReactCommon » TurboCxxModule.cpp
+› Compiling react-native Pods/ReactCommon » LongLivedObject.cpp
+› Compiling react-native Pods/ReactCommon » CxxTurboModuleUtils.cpp
+› Creating  Pods/StripeCore-StripeCoreBundle » StripeCoreBundle.bundle
+› Creating  Pods/Sentry-Sentry » Sentry.bundle
+› Compiling react-native Pods/React-utils » jsi-utils.cpp
+› Compiling react-native Pods/React-utils » RunLoopObserver.cpp
+› Compiling react-native Pods/React-utils » ManagedObjectWrapper.mm
+› Compiling react-native Pods/React-utils » LowPriorityExecutor.mm
+› Compiling react-native Pods/React-utils » FollyConvert.mm
+› Preparing Pods/StripeUICore-StripeUICoreBundle » ResourceBundle-StripeUICoreBundle-StripeUICore-Info.plist
+› Preparing Pods/StripePayments-Stripe3DS2 » ResourceBundle-Stripe3DS2-StripePayments-Info.plist
+› Creating  Pods/StripeUICore-StripeUICoreBundle » StripeUICoreBundle.bundle
+› Creating  Pods/StripePayments-Stripe3DS2 » Stripe3DS2.bundle
+› Compiling react-native Pods/React-runtimescheduler » Task.cpp
+› Compiling react-native Pods/React-runtimescheduler » RuntimeScheduler_Modern.cpp
+› Compiling react-native Pods/React-runtimescheduler » RuntimeScheduler_Legacy.cpp
+› Compiling react-native Pods/React-runtimescheduler » RuntimeSchedulerCallInvoker.cpp
+› Compiling react-native Pods/React-runtimescheduler » RuntimeSchedulerBinding.cpp
+› Compiling react-native Pods/React-utils » React-utils-dummy.m
+› Compiling react-native Pods/React-runtimescheduler » RuntimeScheduler.cpp
+› Preparing Pods/Stripe-StripeBundle » ResourceBundle-StripeBundle-Stripe-Info.plist
+› Compiling react-native Pods/React-runtimescheduler » React-runtimescheduler-dummy.m
+› Creating  Pods/Stripe-StripeBundle » StripeBundle.bundle
+› Compiling react-native Pods/React-runtimeexecutor » RuntimeExecutorSyncUIThreadUtils.mm
+› Compiling react-native Pods/React-runtimeexecutor » React-runtimeexecutor-dummy.m
+› Compiling react-native Pods/React-rendererdebug » DebugStringConvertibleItem.cpp
+› Compiling react-native Pods/React-rendererdebug » DebugStringConvertible.cpp
+› Compiling react-native Pods/React-rendererconsistency » ShadowTreeRevisionConsistencyManager.cpp
+› Compiling react-native Pods/React-renderercss » CSSDummy.cpp
+› Compiling react-native Pods/React-performancetimeline » PerformanceObserverRegistry.cpp
+› Compiling react-native Pods/React-performancetimeline » PerformanceObserver.cpp
+› Compiling react-native Pods/React-performancetimeline » PerformanceEntryReporter.cpp
+› Compiling react-native Pods/React-rendererdebug » React-rendererdebug-dummy.m
+› Compiling react-native Pods/React-performancetimeline » PerformanceEntryKeyedBuffer.cpp
+› Compiling react-native Pods/React-performancetimeline » PerformanceEntryCircularBuffer.cpp
+› Compiling react-native Pods/React-rendererconsistency » React-rendererconsistency-dummy.m
+› Packaging react-native Pods/React-rendererconsistency » libReact-rendererconsistency.a
+› Compiling react-native Pods/React-renderercss » React-renderercss-dummy.m
+› Preparing Pods/StripePaymentsUI-StripePaymentsUIBundle » ResourceBundle-StripePaymentsUIBundle-StripePaymentsUI-Info.plist
+› Compiling react-native Pods/ReactCommon » ReactCommon-dummy.m
+› Preparing Pods/StripePaymentSheet-StripePaymentSheetBundle » ResourceBundle-StripePaymentSheetBundle-StripePaymentSheet-Info.plist
+› Compiling Pods/Sentry » SentryTraceProfiler.mm
+› Compiling Pods/Sentry » SentryTime.mm
+› Compiling Pods/Sentry » SentryThreadMetadataCache.cpp
+› Compiling Pods/Sentry » SentryThreadHandle.cpp
+› Compiling Pods/Sentry » SentryThread.mm
+› Compiling Pods/Sentry » SentrySystemWrapper.mm
+› Compiling @stripe/stripe-react-native Pods/StripeCore » StripeCore-dummy.m
+› Compiling Pods/Sentry » SentrySamplingProfiler.cpp
+› Packaging @stripe/stripe-react-native Pods/StripeCore » libStripeCore.a
+› Compiling Pods/Sentry » SentryProfilerState.mm
+› Compiling Pods/Sentry » SentryProfiler.mm
+› Compiling Pods/Sentry » SentryProfiledTracerConcurrency.mm
+› Compiling Pods/Sentry » SentryProfileCollector.mm
+› Compiling Pods/Sentry » SentryMachLogging.cpp
+› Compiling Pods/Sentry » SentryError.mm
+› Compiling Pods/Sentry » SentryCrashMonitor_CPPException.cpp
+› Compiling Pods/Sentry » SentryContinuousProfiler.mm
+› Compiling Pods/Sentry » SentryBacktrace.cpp
+› Compiling react-native Pods/React-performancetimeline » React-performancetimeline-dummy.m
+› Compiling react-native Pods/React-perflogger » ReactPerfettoLogger.cpp
+› Compiling react-native Pods/React-perflogger » ReactPerfettoCategories.cpp
+› Compiling react-native Pods/React-perflogger » ReactPerfetto.cpp
+› Compiling react-native Pods/React-perflogger » HermesPerfettoDataSource.cpp
+› Compiling react-native Pods/React-perflogger » FuseboxTracer.cpp
+› Compiling react-native Pods/React-perflogger » FuseboxPerfettoDataSource.cpp
+› Compiling react-native Pods/React-perflogger » BridgeNativeModulePerfLogger.cpp
+› Compiling Pods/Sentry » _SentryDispatchQueueWrapperInternal.m
+› Compiling Pods/Sentry » UIViewController+Sentry.m
+› Compiling Pods/Sentry » SentryWeakMap.m
+› Compiling Pods/Sentry » SentyOptionsInternal.m
+› Compiling Pods/Sentry » SentryWatchdogTerminationTrackingIntegration.m
+› Compiling Pods/Sentry » SentryWatchdogTerminationTracker.m
+› Compiling Pods/Sentry » SentryWatchdogTerminationScopeObserver.m
+› Compiling Pods/Sentry » SentryWatchdogTerminationLogic.m
+› Compiling Pods/Sentry » SentryWatchdogTerminationBreadcrumbProcessor.m
+› Compiling Pods/Sentry » SentryViewHierarchyProviderHelper.m
+› Compiling Pods/Sentry » SentryViewHierarchyIntegration.m
+› Compiling Pods/Sentry » SentryUserFeedbackIntegration.m
+› Compiling Pods/Sentry » SentryUserAccess.m
+› Compiling Pods/Sentry » SentryUser.m
+› Compiling Pods/Sentry » SentryUseNSExceptionCallstackWrapper.m
+› Compiling Pods/Sentry » SentryUncaughtNSExceptions.m
+› Compiling Pods/Sentry » SentryUIViewControllerSwizzling.m
+› Compiling Pods/Sentry » SentryUIViewControllerPerformanceTracker.m
+› Compiling Pods/Sentry » SentryUIEventTrackingIntegration.m
+› Compiling Pods/Sentry » SentryUIEventTracker.m
+› Compiling Pods/Sentry » SentryTransportAdapter.m
+› Compiling Pods/Sentry » SentryTransportFactory.m
+› Compiling Pods/Sentry » SentryUIEventTrackerTransactionMode.m
+› Compiling Pods/Sentry » SentryTransactionContext.m
+› Compiling Pods/Sentry » SentryTracerConfiguration.m
+› Compiling Pods/Sentry » SentryTransaction.m
+› Compiling Pods/Sentry » SentryTracer.m
+› Compiling Pods/Sentry » SentryTraceOrigin.m
+› Compiling Pods/Sentry » SentryTraceHeader.m
+› Compiling Pods/Sentry » SentryTraceContext.m
+› Compiling Pods/Sentry » SentryTimeToDisplayTracker.m
+› Compiling Pods/Sentry » SentryThreadInspector.m
+› Compiling Pods/Sentry » SentrySysctlObjC.m
+› Compiling Pods/Sentry » SentrySwizzleWrapper.m
+› Compiling Pods/Sentry » SentrySwizzle.m
+› Compiling Pods/Sentry » SentrySystemEventBreadcrumbs.m
+› Compiling Pods/Sentry » SentrySwiftAsyncIntegration.m
+› Compiling Pods/Sentry » SentrySubClassFinder.m
+› Compiling Pods/Sentry » SentryStacktraceBuilder.m
+› Compiling Pods/Sentry » SentryStacktrace.m
+› Compiling Pods/Sentry » SentrySpotlightTransport.m
+› Compiling Pods/Sentry » SentrySpanStatus.m
+› Compiling Pods/Sentry » SentrySpanId.m
+› Compiling Pods/Sentry » SentrySpanOperation.m
+› Compiling Pods/Sentry » SentrySpanDataKey.m
+› Compiling Pods/Sentry » SentrySpanContext.m
+› Compiling Pods/Sentry » SentrySessionTracker.m
+› Compiling Pods/Sentry » SentrySessionInternal.m
+› Compiling Pods/Sentry » SentrySpan.m
+› Compiling Pods/Sentry » SentryScreenshotIntegration.m
+› Compiling Pods/Sentry » SentrySerialization.m
+› Compiling Pods/Sentry » SentrySessionReplayIntegration.m
+› Compiling Pods/Sentry » SentryScreenFrames.m
+› Compiling Pods/Sentry » SentrySamplingContext.m
+› Compiling Pods/Sentry » SentryScope.m
+› Compiling Pods/Sentry » SentrySampling.m
+› Compiling Pods/Sentry » SentrySamplerDecision.m
+› Compiling Pods/Sentry » SentrySampleDecision.m
+› Compiling Pods/Sentry » SentrySample.m
+› Compiling Pods/Sentry » SentrySDKInternal.m
+› Compiling Pods/Sentry » SentryRetryAfterHeaderParser.m
+› Compiling Pods/Sentry » SentryRequest.m
+› Compiling Pods/Sentry » SentryRequestOperation.m
+› Compiling Pods/Sentry » SentryReplayApi.m
+› Compiling Pods/Sentry » SentryScopeSyncC.c
+› Compiling Pods/Sentry » SentryReachability.m
+› Compiling Pods/Sentry » SentryRateLimitParser.m
+› Compiling Pods/Sentry » SentryQueueableRequestManager.m
+› Compiling Pods/Sentry » SentryPropagationContext.m
+› Compiling Pods/Sentry » SentryProfilingSwiftHelpers.m
+› Compiling Pods/Sentry » SentryProfilerSerialization.m
+› Compiling Pods/Sentry » SentryProfilerTestHelpers.m
+› Compiling Pods/Sentry » SentryProfileTimeseries.m
+› Compiling Pods/Sentry » SentryProfileConfiguration.m
+› Compiling Pods/Sentry » SentryPredicateDescriptor.m
+› Compiling Pods/Sentry » SentryPerformanceTracker.m
+› Compiling Pods/Sentry » SentryPerformanceTrackingIntegration.m
+› Compiling Pods/Sentry » SentryOptions.m
+› Compiling Pods/Sentry » SentryNoOpSpan.m
+› Compiling Pods/Sentry » SentryNetworkTrackingIntegration.m
+› Compiling Pods/Sentry » SentryNetworkTracker.m
+› Compiling Pods/Sentry » SentryNSURLSessionTaskSearch.m
+› Compiling Pods/Sentry » SentrySessionReplaySyncC.c
+› Compiling Pods/Sentry » SentryNSFileManagerSwizzling.m
+› Compiling Pods/Sentry » SentryNSError.m
+› Compiling Pods/Sentry » SentryNSURLRequestBuilder.m
+› Compiling Pods/Sentry » SentryNSDictionarySanitize.m
+› Compiling Pods/Sentry » SentryNSDataSwizzling.m
+› Compiling Pods/Sentry » SentryMsgPackSerializer.m
+› Compiling Pods/Sentry » SentryNSDataUtils.m
+› Compiling Pods/Sentry » SentryMetricProfiler.m
+› Compiling Pods/Sentry » SentryMetricKitIntegration.m
+› Compiling Pods/Sentry » SentryMeta.m
+› Compiling Pods/Sentry » SentryMessage.m
+› Compiling Pods/Sentry » SentryMechanismMeta.m
+› Compiling Pods/Sentry » SentryMechanism.m
+› Compiling Pods/Sentry » SentryMeasurementUnit.m
+› Compiling Pods/Sentry » SentryLogC.m
+› Compiling Pods/Sentry » SentryLevelHelper.m
+› Compiling Pods/Sentry » SentryLaunchProfiling.m
+› Compiling Pods/Sentry » SentryInstallation.m
+› Compiling Pods/Sentry » SentryHub.m
+› Compiling Pods/Sentry » SentryLevelMapper.m
+› Compiling Pods/Sentry » SentryHttpDateParser.m
+› Compiling Pods/Sentry » SentryHttpStatusCodeRange.m
+› Compiling Pods/Sentry » SentryHttpTransport.m
+› Compiling Pods/Sentry » SentryGeo.m
+› Compiling Pods/Sentry » SentryFramesTrackingIntegration.m
+› Compiling Pods/Sentry » SentryFramesTracker.m
+› Compiling Pods/Sentry » SentryFrame.m
+› Compiling Pods/Sentry » SentryFileManager.m
+› Compiling Pods/Sentry » SentryFileIOTrackingIntegration.m
+› Compiling Pods/Sentry » SentryFeedbackAPI.m
+› Compiling Pods/Sentry » SentryFileIOTracker.m
+› Compiling Pods/Sentry » SentryExtraContextProvider.m
+› Compiling Pods/Sentry » SentryException.m
+› Compiling Pods/Sentry » SentryEventSwiftHelper.m
+› Compiling Pods/Sentry » SentryEnvelopeRateLimit.m
+› Compiling Pods/Sentry » SentryEnvelopeItemHeader.m
+› Compiling Pods/Sentry » SentryEvent.m
+› Compiling Pods/Sentry » SentryEnvelopeHeaderHelper.m
+› Compiling Pods/Sentry » SentryDummyPublicEmptyClass.m
+› Compiling Pods/Sentry » SentryEnvelopeAttachmentHeader.m
+› Compiling Pods/Sentry » SentryDummyPrivateEmptyClass.m
+› Compiling Pods/Sentry » SentryDsn.m
+› Compiling Pods/Sentry » SentryDisplayLinkWrapper.m
+› Compiling Pods/Sentry » SentryDispatchFactory.m
+› Compiling Pods/Sentry » SentryDiscardReasonMapper.m
+› Compiling Pods/Sentry » SentryDevice.m
+› Compiling Pods/Sentry » SentryDictionaryDeepSearch.m
+› Compiling Pods/Sentry » SentryDependencyContainerSwiftHelper.m
+› Compiling Pods/Sentry » SentryDelayedFrame.m
+› Compiling Pods/Sentry » SentryDelayedFramesTracker.m
+› Compiling Pods/Sentry » SentryDebugMeta.m
+› Compiling Pods/Sentry » SentryDependencyContainer.m
+› Compiling Pods/Sentry » SentryDefaultRateLimits.m
+› Compiling Pods/Sentry » SentryDateUtils.m
+› Compiling Pods/Sentry » SentryDebugImageProvider.m
+› Compiling Pods/Sentry » SentryDataCategoryMapper.m
+› Compiling Pods/Sentry » SentryCrashUUIDConversion.c
+› Compiling Pods/Sentry » SentryDateUtil.m
+› Compiling Pods/Sentry » SentryCrashSysCtl.c
+› Compiling Pods/Sentry » SentryCrashSymbolicator.c
+› Compiling Pods/Sentry » SentryCrashString.c
+› Compiling Pods/Sentry » SentryCrashThread.c
+› Compiling Pods/Sentry » SentryCrashStackCursor_MachineContext.c
+› Compiling Pods/Sentry » SentryCrashStackCursor_SelfThread.m
+› Compiling Pods/Sentry » SentryCrashStackEntryMapper.m
+› Compiling Pods/Sentry » SentryCrashStackCursor_Backtrace.c
+› Compiling Pods/Sentry » SentryCrashStackCursor.c
+› Compiling Pods/Sentry » SentryCrashSignalInfo.c
+› Compiling Pods/Sentry » SentryCrashReportStore.c
+› Compiling Pods/Sentry » SentryCrashReportFixer.c
+› Compiling Pods/Sentry » SentryCrashReportSink.m
+› Compiling Pods/Sentry » SentryCrashScopeObserver.m
+› Compiling Pods/Sentry » SentryCrashReportFilterBasic.m
+› Compiling Pods/Sentry » SentryCrashReportConverter.m
+› Compiling Pods/Sentry » SentryCrashReport.c
+› Compiling Pods/Sentry » SentryCrashMonitor_System.m
+› Compiling Pods/Sentry » SentryCrashMonitor_Signal.c
+› Compiling Pods/Sentry » SentryCrashNSErrorUtil.m
+› Compiling Pods/Sentry » SentryCrashMonitor_NSException.m
+› Compiling Pods/Sentry » SentryCrashMonitor_AppState.c
+› Compiling Pods/Sentry » SentryCrashMonitor_MachException.c
+› Compiling Pods/Sentry » SentryCrashMonitorType.c
+› Compiling Pods/Sentry » SentryCrashMonitor.c
+› Compiling Pods/Sentry » SentryCrashMemory.c
+› Compiling Pods/Sentry » SentryCrashMachineContext.c
+› Compiling Pods/Sentry » SentryCrashMach.c
+› Compiling Pods/Sentry » SentryCrashJSONCodecObjC.m
+› Compiling Pods/Sentry » SentryCrashJSONCodec.c
+› Compiling Pods/Sentry » SentryCrashInstallationReporter.m
+› Compiling Pods/Sentry » SentryCrashIntegrationSessionHandler.m
+› Compiling Pods/Sentry » SentryCrashID.c
+› Compiling Pods/Sentry » SentryCrashIntegration.m
+› Compiling Pods/Sentry » SentryCrashMach-O.c
+› Compiling Pods/Sentry » SentryCrashFileUtils.c
+› Compiling Pods/Sentry » SentryCrashObjC.c
+› Compiling Pods/Sentry » SentryCrashInstallation.m
+› Compiling Pods/Sentry » SentryCrashExceptionApplicationHelper.m
+› Compiling Pods/Sentry » SentryCrashDynamicLinker.c
+› Compiling Pods/Sentry » SentryCrashDoctor.m
+› Compiling Pods/Sentry » SentryCrashDefaultBinaryImageProvider.m
+› Compiling Pods/Sentry » SentryCrashDefaultMachineContextWrapper.m
+› Compiling Pods/Sentry » SentryCrashDebug.c
+› Compiling Pods/Sentry » SentryCrashExceptionApplication.m
+› Compiling Pods/Sentry » SentryCrashDate.c
+› Compiling Pods/Sentry » SentryCrashCPU_x86_32.c
+› Compiling Pods/Sentry » SentryCrashCxaThrowSwapper.c
+› Compiling Pods/Sentry » SentryCrashCPU_arm64.c
+› Compiling Pods/Sentry » SentryCrashCPU_x86_64.c
+› Compiling Pods/Sentry » SentryCrashCPU_arm.c
+› Compiling Pods/Sentry » SentryCrashC.c
+› Compiling Pods/Sentry » SentryCrashBinaryImageCache.c
+› Compiling Pods/Sentry » SentryCrashCachedData.c
+› Compiling Pods/Sentry » SentryCrashCPU.c
+› Compiling Pods/Sentry » SentryCrash.m
+› Compiling Pods/Sentry » SentryConcurrentRateLimitsDictionary.m
+› Compiling Pods/Sentry » SentryByteCountFormatter.m
+› Compiling Pods/Sentry » SentryBuildAppStartSpans.m
+› Compiling Pods/Sentry » SentryBreadcrumbTracker.m
+› Compiling Pods/Sentry » SentryBreadcrumb.m
+› Compiling Pods/Sentry » SentryBinaryImageCacheCallbacks.m
+› Compiling Pods/Sentry » SentryClient.m
+› Compiling Pods/Sentry » SentryBaseIntegration.m
+› Compiling Pods/Sentry » SentryAutoBreadcrumbTrackingIntegration.m
+› Compiling Pods/Sentry » SentryAutoSessionTrackingIntegration.m
+› Compiling Pods/Sentry » SentryAttachment.m
+› Compiling Pods/Sentry » SentryBaggage.m
+› Compiling Pods/Sentry » SentryCoreDataTrackingIntegration.m
+› Compiling Pods/Sentry » SentryCoreDataTracker.m
+› Compiling Pods/Sentry » SentryCoreDataSwizzling.m
+› Compiling Pods/Sentry » SentryAsynchronousOperation.m
+› Compiling Pods/Sentry » SentryAsyncSafeLog.c
+› Compiling Pods/Sentry » SentryAsyncLog.m
+› Compiling Pods/Sentry » SentryArray.m
+› Compiling Pods/Sentry » SentryAppStartTrackingIntegration.m
+› Compiling Pods/Sentry » SentryAppStartMeasurement.m
+› Compiling Pods/Sentry » SentryAppStateManager.m
+› Compiling Pods/Sentry » SentryAppStartTracker.m
+› Compiling Pods/Sentry » SentryANRTrackerV2.m
+› Compiling Pods/Sentry » SentryANRTrackingIntegration.m
+› Compiling Pods/Sentry » Sentry-dummy.m
+› Compiling Pods/Sentry » SentryANRTrackerV1.m
+› Compiling Pods/Sentry » PrivateSentrySDKOnly.m
+› Compiling Pods/Sentry » NSLocale+Sentry.m
+› Compiling Pods/Sentry » NSMutableDictionary+Sentry.m
+› Executing @stripe/stripe-react-native Pods/StripeCore » Copy generated compatibility header
+› Creating  Pods/StripePaymentsUI-StripePaymentsUIBundle » StripePaymentsUIBundle.bundle
+› Compiling react-native Pods/React-oscompat » OSCompatWindows.cpp
+› Compiling react-native Pods/React-oscompat » OSCompatPosix.cpp
+› Creating  Pods/StripePaymentSheet-StripePaymentSheetBundle » StripePaymentSheetBundle.bundle
+› Compiling react-native Pods/React-logger » react_native_log.cpp
+› Compiling react-native Pods/React-jsitooling » JSRuntimeFactoryCAPI.cpp
+› Compiling react-native Pods/React-jsitooling » JSRuntimeFactory.cpp
+› Compiling react-native Pods/React-jsinspectortracing » RuntimeSamplingProfileTraceEventSerializer.cpp
+› Compiling react-native Pods/React-jsinspectortracing » PerformanceTracer.cpp
+› Compiling react-native Pods/React-jsinspectortracing » EventLoopReporter.cpp
+› Packaging Pods/Sentry » libSentry.a
+› Compiling react-native Pods/React-perflogger » React-perflogger-dummy.m
+› Compiling react-native Pods/React-jsinspectornetwork » NetworkReporter.cpp
+› Compiling react-native Pods/React-jsinspectornetwork » HttpUtils.cpp
+› Compiling react-native Pods/React-jsinspectornetwork » CdpNetwork.cpp
+› Compiling react-native Pods/React-oscompat » React-oscompat-dummy.m
+› Compiling react-native Pods/React-logger » React-logger-dummy.m
+› Packaging react-native Pods/React-oscompat » libReact-oscompat.a
+› Compiling react-native Pods/React-jsinspectornetwork » BoundedRequestBuffer.cpp
+› Compiling react-native Pods/React-jsitooling » React-jsitooling-dummy.m
+› Compiling react-native Pods/React-jsinspectortracing » React-jsinspectortracing-dummy.m
+› Executing Pods/Sentry » Copy generated compatibility header
+› Compiling react-native Pods/React-jsinspectornetwork » React-jsinspectornetwork-dummy.m
+› Compiling react-native Pods/React-jsinspectorcdp » CdpJson.cpp
+› Preparing Pods/React-cxxreact-React-cxxreact_privacy » ResourceBundle-React-cxxreact_privacy-React-cxxreact-Info.plist
+› Copying   React-cxxreact/React-cxxreact_privacy.bundle/PrivacyInfo.xcprivacy ➜ work_repo/physiosmetic/node_modules/react-native/ReactCommon/cxxreact/PrivacyInfo.xcprivacy
+› Compiling @stripe/stripe-react-native Pods/StripeUICore » StripeUICore-dummy.m
+› Compiling react-native Pods/React-jsinspectorcdp » React-jsinspectorcdp-dummy.m
+› Compiling @stripe/stripe-react-native Pods/StripePayments » UIViewController+Stripe3DS2.m
+› Compiling @stripe/stripe-react-native Pods/StripePayments » UIButton+CustomInitialization.m
+› Compiling @stripe/stripe-react-native Pods/StripePayments » UIView+LayoutSupport.m
+› Compiling @stripe/stripe-react-native Pods/StripePayments » UIFont+DefaultFonts.m
+› Compiling @stripe/stripe-react-native Pods/StripePayments » UIColor+ThirteenSupport.m
+› Compiling @stripe/stripe-react-native Pods/StripePayments » UIColor+DefaultColors.m
+› Compiling @stripe/stripe-react-native Pods/StripePayments » StripePayments-dummy.m
+› Compiling @stripe/stripe-react-native Pods/StripePayments » STDSWhitelistView.m
+› Compiling @stripe/stripe-react-native Pods/StripePayments » STDSWarning.m
+› Compiling @stripe/stripe-react-native Pods/StripePayments » STDSUICustomization.m
+› Compiling @stripe/stripe-react-native Pods/StripePayments » STDSTransaction.m
+› Compiling @stripe/stripe-react-native Pods/StripePayments » STDSThreeDS2Service.m
+› Compiling @stripe/stripe-react-native Pods/StripePayments » STDSThreeDSProtocolVersion.m
+› Compiling @stripe/stripe-react-native Pods/StripePayments » STDSSynchronousLocationManager.m
+› Compiling @stripe/stripe-react-native Pods/StripePayments » STDSTextFieldCustomization.m
+› Compiling @stripe/stripe-react-native Pods/StripePayments » STDSTextChallengeView.m
+› Compiling @stripe/stripe-react-native Pods/StripePayments » STDSSwiftTryCatch.m
+› Compiling @stripe/stripe-react-native Pods/StripePayments » STDSStripe3DS2Error.m
+› Compiling @stripe/stripe-react-native Pods/StripePayments » STDSStackView.m
+› Compiling @stripe/stripe-react-native Pods/StripePayments » STDSSpacerView.m
+› Compiling @stripe/stripe-react-native Pods/StripePayments » STDSSelectionButton.m
+› Compiling @stripe/stripe-react-native Pods/StripePayments » STDSSimulatorChecker.m
+› Compiling @stripe/stripe-react-native Pods/StripePayments » STDSSelectionCustomization.m
+› Compiling @stripe/stripe-react-native Pods/StripePayments » STDSRuntimeException.m
+› Compiling @stripe/stripe-react-native Pods/StripePayments » STDSSecTypeUtilities.m
+› Compiling @stripe/stripe-react-native Pods/StripePayments » STDSRuntimeErrorEvent.m
+› Compiling @stripe/stripe-react-native Pods/StripePayments » STDSProtocolErrorEvent.m
+› Compiling @stripe/stripe-react-native Pods/StripePayments » STDSProgressViewController.m
+› Compiling @stripe/stripe-react-native Pods/StripePayments » STDSProcessingView.m
+› Compiling @stripe/stripe-react-native Pods/StripePayments » STDSWebView.m
+› Compiling @stripe/stripe-react-native Pods/StripePayments » STDSOSVersionChecker.m
+› Compiling @stripe/stripe-react-native Pods/StripePayments » STDSNotInitializedException.m
+› Compiling @stripe/stripe-react-native Pods/StripePayments » STDSLabelCustomization.m
+› Compiling @stripe/stripe-react-native Pods/StripePayments » STDSNavigationBarCustomization.m
+› Compiling @stripe/stripe-react-native Pods/StripePayments » STDSJSONWebSignature.m
+› Compiling @stripe/stripe-react-native Pods/StripePayments » STDSJSONEncoder.m
+› Compiling @stripe/stripe-react-native Pods/StripePayments » STDSJailbreakChecker.m
+› Compiling @stripe/stripe-react-native Pods/StripePayments » STDSJSONWebEncryption.m
+› Compiling @stripe/stripe-react-native Pods/StripePayments » STDSInvalidInputException.m
+› Compiling @stripe/stripe-react-native Pods/StripePayments » STDSImageLoader.m
+› Compiling @stripe/stripe-react-native Pods/StripePayments » STDSIPAddress.m
+› Compiling @stripe/stripe-react-native Pods/StripePayments » STDSErrorMessage.m
+› Compiling @stripe/stripe-react-native Pods/StripePayments » STDSIntegrityChecker.m
+› Compiling @stripe/stripe-react-native Pods/StripePayments » STDSExpandableInformationView.m
+› Compiling @stripe/stripe-react-native Pods/StripePayments » STDSErrorMessage+Internal.m
+› Compiling @stripe/stripe-react-native Pods/StripePayments » STDSFooterCustomization.m
+› Compiling @stripe/stripe-react-native Pods/StripePayments » STDSEphemeralKeyPair.m
+› Compiling @stripe/stripe-react-native Pods/StripePayments » STDSException.m
+› Compiling @stripe/stripe-react-native Pods/StripePayments » STDSEllipticCurvePoint.m
+› Compiling @stripe/stripe-react-native Pods/StripePayments » STDSDirectoryServerCertificate.m
+› Compiling @stripe/stripe-react-native Pods/StripePayments » STDSDeviceInformationParameter.m
+› Compiling @stripe/stripe-react-native Pods/StripePayments » STDSDeviceInformationManager.m
+› Compiling @stripe/stripe-react-native Pods/StripePayments » STDSCustomization.m
+› Compiling @stripe/stripe-react-native Pods/StripePayments » STDSDebuggerChecker.m
+› Compiling @stripe/stripe-react-native Pods/StripePayments » STDSCompletionEvent.m
+› Compiling @stripe/stripe-react-native Pods/StripePayments » STDSConfigParameters.m
+› Compiling @stripe/stripe-react-native Pods/StripePayments » STDSDeviceInformation.m
+› Compiling @stripe/stripe-react-native Pods/StripePayments » STDSChallengeSelectionView.m
+› Compiling @stripe/stripe-react-native Pods/StripePayments » STDSChallengeResponseViewController.m
+› Compiling @stripe/stripe-react-native Pods/StripePayments » STDSChallengeResponseSelectionInfoObject.m
+› Compiling @stripe/stripe-react-native Pods/StripePayments » STDSChallengeResponseImageObject.m
+› Compiling @stripe/stripe-react-native Pods/StripePayments » STDSChallengeResponseMessageExtensionObject.m
+› Compiling @stripe/stripe-react-native Pods/StripePayments » STDSChallengeParameters.m
+› Compiling @stripe/stripe-react-native Pods/StripePayments » STDSChallengeInformationView.m
+› Compiling @stripe/stripe-react-native Pods/StripePayments » STDSChallengeResponseObject.m
+› Compiling @stripe/stripe-react-native Pods/StripePayments » STDSChallengeRequestParameters.m
+› Compiling @stripe/stripe-react-native Pods/StripePayments » STDSButtonCustomization.m
+› Compiling @stripe/stripe-react-native Pods/StripePayments » STDSBrandingView.m
+› Compiling @stripe/stripe-react-native Pods/StripePayments » STDSAuthenticationResponseObject.m
+› Compiling @stripe/stripe-react-native Pods/StripePayments » STDSAuthenticationRequestParameters.m
+› Compiling @stripe/stripe-react-native Pods/StripePayments » STDSAlreadyInitializedException.m
+› Compiling @stripe/stripe-react-native Pods/StripePayments » STDSBundleLocator.m
+› Compiling react-native Pods/React-jsinspector » RuntimeTargetConsole.cpp
+› Compiling react-native Pods/React-jsinspector » TracingAgent.cpp
+› Compiling react-native Pods/React-jsinspector » RuntimeTargetDebuggerSessionObserver.cpp
+› Compiling react-native Pods/React-jsinspector » RuntimeTarget.cpp
+› Compiling react-native Pods/React-jsinspector » RuntimeAgent.cpp
+› Compiling react-native Pods/React-jsinspector » NetworkIOAgent.cpp
+› Compiling @stripe/stripe-react-native Pods/StripePayments » STDSACSNetworkingManager.m
+› Compiling @stripe/stripe-react-native Pods/StripePayments » NSString+JWEHelpers.m
+› Compiling @stripe/stripe-react-native Pods/StripePayments » NSString+EmptyChecking.m
+› Compiling @stripe/stripe-react-native Pods/StripePayments » NSLayoutConstraint+LayoutSupport.m
+› Compiling @stripe/stripe-react-native Pods/StripePayments » NSError+Stripe3DS2.m
+› Compiling @stripe/stripe-react-native Pods/StripePayments » NSDictionary+DecodingHelpers.m
+› Compiling @stripe/stripe-react-native Pods/StripePayments » NSData+JWEHelpers.m
+› Compiling react-native Pods/React-jsinspector » InstanceTarget.cpp
+› Compiling react-native Pods/React-jsinspector » InstanceAgent.cpp
+› Compiling react-native Pods/React-jsinspector » InspectorUtilities.cpp
+› Compiling react-native Pods/React-jsinspector » InspectorPackagerConnection.cpp
+› Compiling @stripe/stripe-react-native Pods/StripeApplePay » StripeApplePay-dummy.m
+› Compiling react-native Pods/React-jsinspector » InspectorInterfaces.cpp
+› Compiling react-native Pods/React-jsinspector » InspectorFlags.cpp
+› Compiling react-native Pods/React-jsinspector » HostTarget.cpp
+› Compiling react-native Pods/React-jsinspector » HostAgent.cpp
+› Compiling react-native Pods/React-jsinspector » FallbackRuntimeTargetDelegate.cpp
+› Compiling react-native Pods/React-jsinspector » FallbackRuntimeAgentDelegate.cpp
+› Compiling react-native Pods/React-jsinspector » ExecutionContextManager.cpp
+› Compiling react-native Pods/React-jsinspector » ExecutionContext.cpp
+› Compiling react-native Pods/React-jsinspector » ConsoleMessage.cpp
+› Compiling react-native Pods/React-debug » react_native_assert.cpp
+› Packaging @stripe/stripe-react-native Pods/StripeUICore » libStripeUICore.a
+› Packaging @stripe/stripe-react-native Pods/StripePayments » libStripePayments.a
+› Packaging @stripe/stripe-react-native Pods/StripeApplePay » libStripeApplePay.a
+› Executing @stripe/stripe-react-native Pods/StripeUICore » Copy generated compatibility header
+› Executing @stripe/stripe-react-native Pods/StripeApplePay » Copy generated compatibility header
+› Compiling react-native Pods/React-debug » React-debug-dummy.m
+› Executing @stripe/stripe-react-native Pods/StripePayments » Copy generated compatibility header
+› Packaging react-native Pods/React-debug » libReact-debug.a
+› Compiling react-native Pods/React-jsiexecutor » JSINativeModules.cpp
+› Compiling react-native Pods/React-jsiexecutor » JSIExecutor.cpp
+› Compiling react-native Pods/React-jsiexecutor » React-jsiexecutor-dummy.m
+› Preparing Pods/React-Core-React-Core_privacy » ResourceBundle-React-Core_privacy-React-Core-Info.plist
+› Copying   React-Core/React-Core_privacy.bundle/PrivacyInfo.xcprivacy ➜ work_repo/physiosmetic/node_modules/react-native/React/Resources/PrivacyInfo.xcprivacy
+› Preparing expo-updates Pods/ReachabilitySwift-ReachabilitySwift » ResourceBundle-ReachabilitySwift-ReachabilitySwift-Info.plist
+› Copying   expo-updates ReachabilitySwift/ReachabilitySwift.bundle/PrivacyInfo.xcprivacy ➜ work_repo/physiosmetic/ios/Pods/ReachabilitySwift/Sources/PrivacyInfo.xcprivacy
+› Preparing Pods/RNSVG-RNSVGFilters » ResourceBundle-RNSVGFilters-RNSVG-Info.plist
+› Copying   RNSVG/RNSVGFilters.bundle/RNSVGCompositeXor.iphoneos.metallib ➜ work_repo/physiosmetic/node_modules/react-native-svg/apple/Filters/MetalCI/RNSVGCompositeXor.iphoneos.metallib
+› Copying   RNSVG/RNSVGFilters.bundle/RNSVGArithmeticFilter.iphoneos.metallib ➜ work_repo/physiosmetic/node_modules/react-native-svg/apple/Filters/MetalCI/RNSVGArithmeticFilter.iphoneos.metallib
+› Preparing Pods/RNCAsyncStorage-RNCAsyncStorage_resources » ResourceBundle-RNCAsyncStorage_resources-RNCAsyncStorage-Info.plist
+› Copying   RNCAsyncStorage/RNCAsyncStorage_resources.bundle/PrivacyInfo.xcprivacy ➜ work_repo/physiosmetic/node_modules/@react-native-async-storage/async-storage/ios/PrivacyInfo.xcprivacy
+› Compiling react-native Pods/React-jsi » JSIDynamic.cpp
+› Compiling react-native Pods/React-jsi » React-jsi-dummy.m
+› Compiling react-native Pods/React-jserrorhandler » StackTraceParser.cpp
+› Compiling react-native Pods/React-jserrorhandler » JsErrorHandler.cpp
+› Compiling react-native Pods/React-jsinspector » React-jsinspector-dummy.m
+› Compiling react-native Pods/React-jserrorhandler » React-jserrorhandler-dummy.m
+› Compiling react-native Pods/React-hermes » Registration.cpp
+› Compiling react-native Pods/React-hermes » HermesRuntimeTargetDelegate.cpp
+› Compiling react-native Pods/React-hermes » HermesRuntimeSamplingProfileSerializer.cpp
+› Compiling react-native Pods/React-hermes » HermesRuntimeAgentDelegate.cpp
+› Compiling react-native Pods/React-hermes » HermesExecutorFactory.cpp
+› Compiling react-native Pods/React-hermes » ConnectionDemux.cpp
+› Compiling react-native Pods/React-graphics » Transform.cpp
+› Compiling react-native Pods/React-graphics » RCTPlatformColorUtils.mm
+› Compiling react-native Pods/React-graphics » PlatformColorParser.mm
+› Compiling react-native Pods/React-graphics » HostPlatformColor.mm
+› Compiling react-native Pods/React-graphics » ColorComponents.cpp
+› Compiling react-native Pods/React-graphics » Color.cpp
+› Compiling react-native Pods/React-featureflags » ReactNativeFeatureFlagsAccessor.cpp
+› Compiling react-native Pods/React-featureflags » ReactNativeFeatureFlags.cpp
+› Compiling @stripe/stripe-react-native Pods/StripePaymentsUI » StripePaymentsUI-dummy.m
+› Compiling @stripe/stripe-react-native Pods/StripeFinancialConnections » StripeFinancialConnections-dummy.m
+› Compiling react-native Pods/React-graphics » React-graphics-dummy.m
+› Packaging @stripe/stripe-react-native Pods/StripePaymentsUI » libStripePaymentsUI.a
+› Executing @stripe/stripe-react-native Pods/StripePaymentsUI » Copy generated compatibility header
+› Compiling react-native Pods/React-cxxreact » ReactMarker.cpp
+› Compiling react-native Pods/React-featureflags » React-featureflags-dummy.m
+› Compiling react-native Pods/React-cxxreact » RAMBundleRegistry.cpp
+› Compiling react-native Pods/React-cxxreact » NativeToJsBridge.cpp
+› Compiling react-native Pods/React-cxxreact » ModuleRegistry.cpp
+› Compiling react-native Pods/React-cxxreact » MethodCall.cpp
+› Compiling react-native Pods/React-cxxreact » JSIndexedRAMBundle.cpp
+› Compiling react-native Pods/React-cxxreact » JSExecutor.cpp
+› Compiling react-native Pods/React-cxxreact » JSBundleType.cpp
+› Compiling react-native Pods/React-cxxreact » JSBigString.cpp
+› Compiling react-native Pods/React-cxxreact » Instance.cpp
+› Compiling react-native Pods/React-cxxreact » CxxNativeModule.cpp
+› Packaging @stripe/stripe-react-native Pods/StripeFinancialConnections » libStripeFinancialConnections.a
+› Executing @stripe/stripe-react-native Pods/StripeFinancialConnections » Copy generated compatibility header
+› Compiling react-native Pods/React-RuntimeHermes » HermesInstance.cpp
+› Compiling react-native Pods/React-cxxreact » React-cxxreact-dummy.m
+› Compiling react-native Pods/React-RuntimeCore » TimerManager.cpp
+› Compiling react-native Pods/React-RuntimeCore » ReactInstance.cpp
+› Compiling react-native Pods/React-RuntimeCore » LegacyUIManagerConstantsProviderBinding.cpp
+› Compiling react-native Pods/React-RuntimeCore » BufferedRuntimeExecutor.cpp
+› Compiling react-native Pods/React-RuntimeCore » BridgelessNativeMethodCallInvoker.cpp
+› Compiling react-native Pods/React-RCTText » RCTVirtualTextViewManager.mm
+› Compiling react-native Pods/React-RCTText » RCTVirtualTextView.mm
+› Compiling react-native Pods/React-RCTText » RCTVirtualTextShadowView.mm
+› Compiling react-native Pods/React-RCTText » RCTUITextView.mm
+› Compiling react-native Pods/React-RCTText » RCTUITextField.mm
+› Compiling react-native Pods/React-RCTText » RCTTextViewManager.mm
+› Compiling react-native Pods/React-RCTText » RCTTextView.mm
+› Compiling react-native Pods/React-RCTText » RCTTextShadowView.mm
+› Compiling react-native Pods/React-RCTText » RCTTextSelection.mm
+› Compiling react-native Pods/React-RCTText » RCTTextAttributes.mm
+› Compiling react-native Pods/React-RCTText » RCTSinglelineTextInputViewManager.mm
+› Compiling react-native Pods/React-RCTText » RCTSinglelineTextInputView.mm
+› Compiling react-native Pods/React-RCTText » RCTRawTextViewManager.mm
+› Compiling react-native Pods/React-RCTText » RCTRawTextShadowView.mm
+› Compiling react-native Pods/React-RCTText » RCTMultilineTextInputViewManager.mm
+› Compiling react-native Pods/React-RCTText » RCTMultilineTextInputView.mm
+› Compiling react-native Pods/React-RCTText » RCTInputAccessoryViewManager.mm
+› Compiling react-native Pods/React-RCTText » RCTInputAccessoryViewContent.mm
+› Compiling react-native Pods/React-RCTText » RCTInputAccessoryView.mm
+› Compiling react-native Pods/React-RCTText » RCTInputAccessoryShadowView.mm
+› Compiling react-native Pods/React-RCTText » RCTDynamicTypeRamp.mm
+› Compiling react-native Pods/React-RCTText » RCTConvert+Text.mm
+› Compiling react-native Pods/React-RCTText » RCTBaseTextViewManager.mm
+› Compiling react-native Pods/React-RCTText » RCTBaseTextShadowView.mm
+› Compiling react-native Pods/React-RCTText » RCTBaseTextInputViewManager.mm
+› Compiling react-native Pods/React-RCTText » RCTBaseTextInputView.mm
+› Compiling react-native Pods/React-RCTText » RCTBaseTextInputShadowView.mm
+› Compiling react-native Pods/React-RCTText » RCTBackedTextInputDelegateAdapter.mm
+› Compiling react-native Pods/React-NativeModulesApple » RCTTurboModuleManager.mm
+› Compiling react-native Pods/React-NativeModulesApple » RCTTurboModule.mm
+› Compiling react-native Pods/React-NativeModulesApple » RCTInteropTurboModule.mm
+› Compiling react-native Pods/React-hermes » React-hermes-dummy.m
+› Compiling react-native Pods/React-RuntimeCore » React-RuntimeCore-dummy.m
+› Compiling react-native Pods/React-RCTText » React-RCTText-dummy.m
+› Compiling react-native Pods/React-RCTText » NSTextStorage+FontScaling.m
+› Compiling react-native Pods/React-Mapbuffer » MapBufferBuilder.cpp
+› Compiling @stripe/stripe-react-native Pods/StripePaymentSheet » StripePaymentSheet-dummy.m
+› Compiling react-native Pods/React-NativeModulesApple » React-NativeModulesApple-dummy.m
+› Compiling react-native Pods/React-Mapbuffer » MapBuffer.cpp
+› Compiling react-native Pods/React-ImageManager » RCTSyncImageManager.mm
+› Compiling react-native Pods/React-ImageManager » RCTImageManager.mm
+› Compiling react-native Pods/React-ImageManager » ImageManager.mm
+› Compiling react-native Pods/React-FabricImage » ImageState.cpp
+› Compiling react-native Pods/React-FabricImage » ImageShadowNode.cpp
+› Compiling react-native Pods/React-FabricImage » ImageProps.cpp
+› Compiling react-native Pods/React-FabricImage » ImageEventEmitter.cpp
+› Compiling react-native Pods/React-FabricImage » ImageComponentDescriptor.cpp
+› Compiling react-native Pods/React-Fabric » utils.cpp
+› Compiling react-native Pods/React-Fabric » updateMountedFlag.cpp
+› Compiling react-native Pods/React-Fabric » stubs.cpp
+› Compiling react-native Pods/React-Fabric » sliceChildShadowNodeViewPairs.cpp
+› Compiling react-native Pods/React-Fabric » componentNameByReactViewName.cpp
+› Compiling react-native Pods/React-Fabric » YogaStylableProps.cpp
+› Compiling react-native Pods/React-Fabric » YogaLayoutableShadowNode.cpp
+› Compiling react-native Pods/React-Fabric » WeakFamilyRegistry.cpp
+› Compiling react-native Pods/React-Fabric » ViewShadowNode.cpp
+› Compiling react-native Pods/React-Fabric » ValueFactoryEventPayload.cpp
+› Compiling react-native Pods/React-Fabric » UnstableLegacyViewManagerAutomaticShadowNode.cpp
+› Compiling react-native Pods/React-Fabric » UnstableLegacyViewManagerAutomaticComponentDescriptor.cpp
+› Compiling react-native Pods/React-Fabric » UIManagerUpdateShadowTree.cpp
+› Compiling react-native Pods/React-Fabric » UIManagerBinding.cpp
+› Compiling react-native Pods/React-Fabric » UIManager.cpp
+› Compiling react-native Pods/React-Fabric » TransactionTelemetry.cpp
+› Compiling react-native Pods/React-Fabric » TouchEventEmitter.cpp
+› Compiling react-native Pods/React-Fabric » TouchEvent.cpp
+› Compiling react-native Pods/React-Fabric » TextAttributes.cpp
+› Compiling react-native Pods/React-Fabric » TelemetryController.cpp
+› Compiling react-native Pods/React-Fabric » SurfaceTelemetry.cpp
+› Compiling react-native Pods/React-Fabric » SurfaceManager.cpp
+› Compiling react-native Pods/React-Fabric » SurfaceHandler.cpp
+› Compiling react-native Pods/React-Fabric » StubViewTree.cpp
+› Compiling react-native Pods/React-Fabric » StubView.cpp
+› Compiling react-native Pods/React-Fabric » StateUpdate.cpp
+› Compiling react-native Pods/React-Fabric » State.cpp
+› Compiling react-native Pods/React-Fabric » ShadowViewMutation.cpp
+› Compiling react-native Pods/React-Fabric » ShadowView.cpp
+› Compiling react-native Pods/React-Fabric » ShadowTreeRevisionConsistencyManager.cpp
+› Compiling react-native Pods/React-Fabric » ShadowTreeRevision.cpp
+› Compiling react-native Pods/React-Fabric » ShadowTreeRegistry.cpp
+› Compiling react-native Pods/React-Fabric » ShadowTree.cpp
+› Compiling react-native Pods/React-Fabric » ShadowNodeTraits.cpp
+› Compiling react-native Pods/React-Fabric » ShadowNodeFragment.cpp
+› Compiling react-native Pods/React-Fabric » ShadowNodeFamily.cpp
+› Compiling react-native Pods/React-Fabric » ShadowNode.cpp
+› Compiling react-native Pods/React-Fabric » Sealable.cpp
+› Compiling react-native Pods/React-Fabric » ScrollViewState.cpp
+› Compiling react-native Pods/React-Fabric » ScrollViewShadowNode.cpp
+› Compiling react-native Pods/React-Fabric » ScrollViewEventEmitter.cpp
+› Compiling react-native Pods/React-Fabric » ScrollEvent.cpp
+› Compiling react-native Pods/React-Fabric » Scheduler.cpp
+› Compiling react-native Pods/React-Fabric » RootShadowNode.cpp
+› Compiling react-native Pods/React-Fabric » RootProps.cpp
+› Compiling react-native Pods/React-Fabric » ReactRootViewTagGenerator.cpp
+› Compiling react-native Pods/React-Fabric » RawValue.cpp
+› Compiling react-native Pods/React-Fabric » RawPropsParser.cpp
+› Compiling react-native Pods/React-Fabric » RawPropsKeyMap.cpp
+› Compiling react-native Pods/React-Fabric » RawPropsKey.cpp
+› Compiling react-native Pods/React-Fabric » RawProps.cpp
+› Compiling react-native Pods/React-Fabric » RawEvent.cpp
+› Compiling react-native Pods/React-Fabric » RCTLegacyViewManagerInteropCoordinator.mm
+› Compiling react-native Pods/React-Fabric » Props.cpp
+› Compiling react-native Pods/React-Fabric » PointerHoverTracker.cpp
+› Compiling react-native Pods/React-Fabric » PointerEventsProcessor.cpp
+› Compiling react-native Pods/React-Fabric » PointerEvent.cpp
+› Compiling react-native Pods/React-Fabric » ParagraphAttributes.cpp
+› Compiling react-native Pods/React-Fabric » NativeComponentRegistryBinding.cpp
+› Compiling react-native Pods/React-Fabric » MountingTransaction.cpp
+› Compiling react-native Pods/React-Fabric » MountingCoordinator.cpp
+› Compiling react-native Pods/React-Fabric » LegacyViewManagerInteropViewProps.cpp
+› Compiling react-native Pods/React-Fabric » LegacyViewManagerInteropState.mm
+› Compiling react-native Pods/React-Fabric » LegacyViewManagerInteropShadowNode.cpp
+› Compiling react-native Pods/React-Fabric » LegacyViewManagerInteropComponentDescriptor.mm
+› Compiling react-native Pods/React-Fabric » LeakChecker.cpp
+› Compiling react-native Pods/React-Fabric » LazyShadowTreeRevisionConsistencyManager.cpp
+› Compiling react-native Pods/React-Fabric » LayoutableShadowNode.cpp
+› Compiling react-native Pods/React-Fabric » LayoutMetrics.cpp
+› Compiling react-native Pods/React-Fabric » LayoutConstraints.cpp
+› Compiling react-native Pods/React-Fabric » LayoutAnimationKeyFrameManager.cpp
+› Compiling react-native Pods/React-Fabric » LayoutAnimationDriver.cpp
+› Compiling react-native Pods/React-Fabric » InstanceHandle.cpp
+› Compiling react-native Pods/React-Fabric » ImageTelemetry.cpp
+› Compiling react-native Pods/React-Fabric » ImageResponseObserverCoordinator.cpp
+› Compiling react-native Pods/React-Fabric » ImageResponse.cpp
+› Compiling react-native Pods/React-Fabric » ImageRequest.cpp
+› Compiling react-native Pods/React-Fabric » EventTarget.cpp
+› Compiling react-native Pods/React-Fabric » EventQueueProcessor.cpp
+› Compiling react-native Pods/React-Fabric » EventQueue.cpp
+› Compiling react-native Pods/React-Fabric » EventPerformanceLogger.cpp
+› Compiling react-native Pods/React-Fabric » EventListener.cpp
+› Compiling react-native Pods/React-Fabric » EventEmitter.cpp
+› Compiling react-native Pods/React-Fabric » EventDispatcher.cpp
+› Compiling react-native Pods/React-Fabric » EventBeat.cpp
+› Compiling react-native Pods/React-Fabric » DynamicPropsUtilities.cpp
+› Compiling react-native Pods/React-Fabric » DynamicEventPayload.cpp
+› Compiling react-native Pods/React-Fabric » Differentiator.cpp
+› Compiling react-native Pods/React-Fabric » DOM.cpp
+› Compiling react-native Pods/React-Fabric » CullingContext.cpp
+› Compiling react-native Pods/React-Fabric » ComponentDescriptorRegistry.cpp
+› Compiling react-native Pods/React-Fabric » ComponentDescriptorProviderRegistry.cpp
+› Compiling react-native Pods/React-Fabric » ComponentDescriptor.cpp
+› Compiling react-native Pods/React-Fabric » BaseViewProps.cpp
+› Compiling react-native Pods/React-Fabric » BaseViewEventEmitter.cpp
+› Compiling react-native Pods/React-Fabric » BaseTouch.cpp
+› Compiling react-native Pods/React-Fabric » BaseScrollViewProps.cpp
+› Compiling react-native Pods/React-Fabric » AttributedStringBox.cpp
+› Compiling react-native Pods/React-Fabric » AttributedString.cpp
+› Compiling react-native Pods/React-Fabric » AppRegistryBinding.cpp
+› Compiling react-native Pods/React-Fabric » AccessibilityProps.cpp
+› Compiling react-native Pods/React-Core » RCTUtils.mm
+› Compiling react-native Pods/React-Core » RCTUIManagerObserverCoordinator.mm
+› Compiling react-native Pods/React-Core » RCTUIManager.mm
+› Compiling react-native Pods/React-Core » RCTSurfaceView.mm
+› Compiling react-native Pods/React-Core » RCTSurfaceSizeMeasureMode.mm
+› Compiling react-native Pods/React-Core » RCTSurfaceRootView.mm
+› Compiling react-native Pods/React-Core » RCTSurfaceHostingView.mm
+› Compiling react-native Pods/React-Core » RCTSurfaceHostingProxyRootView.mm
+› Compiling react-native Pods/React-Core » RCTSurface.mm
+› Compiling react-native Pods/React-Core » RCTPerformanceLogger.mm
+› Compiling react-native Pods/React-Core » RCTPausedInDebuggerOverlayController.mm
+› Compiling react-native Pods/React-Core » RCTPackagerConnection.mm
+› Compiling react-native Pods/React-Core » RCTObjcExecutor.mm
+› Compiling react-native Pods/React-Core » RCTNativeModule.mm
+› Compiling react-native Pods/React-Core » RCTModuleMethod.mm
+› Compiling react-native Pods/React-Core » RCTModuleData.mm
+› Compiling react-native Pods/React-Core » RCTMessageThread.mm
+› Compiling react-native Pods/React-Core » RCTManagedPointer.mm
+› Compiling react-native Pods/React-Core » RCTLog.mm
+› Compiling react-native Pods/React-Core » RCTLocalizedString.mm
+› Compiling react-native Pods/React-Core » RCTJavaScriptLoader.mm
+› Compiling react-native Pods/React-Core » RCTJSIExecutorRuntimeInstaller.mm
+› Compiling react-native Pods/React-Core » RCTInspectorUtils.mm
+› Compiling react-native Pods/React-Core » RCTInspectorNetworkHelper.mm
+› Compiling react-native Pods/React-Core » RCTInspectorDevServerHelper.mm
+› Compiling react-native Pods/React-Core » RCTInspector.mm
+› Compiling react-native Pods/React-Core » RCTFont.mm
+› Compiling react-native Pods/React-Core » RCTDefaultCxxLogFunction.mm
+› Compiling react-native Pods/React-Core » RCTCxxUtils.mm
+› Compiling react-native Pods/React-Core » RCTCxxModule.mm
+› Compiling react-native Pods/React-Core » RCTCxxMethod.mm
+› Compiling react-native Pods/React-Core » RCTCxxInspectorWebSocketAdapter.mm
+› Compiling react-native Pods/React-Core » RCTCxxInspectorPackagerConnectionDelegate.mm
+› Compiling react-native Pods/React-Core » RCTCxxInspectorPackagerConnection.mm
+› Compiling react-native Pods/React-Core » RCTCxxBridge.mm
+› Compiling react-native Pods/React-Core » RCTConvert.mm
+› Compiling react-native Pods/React-Core » RCTComponentData.mm
+› Compiling react-native Pods/React-Core » RCTCallInvoker.mm
+› Compiling react-native Pods/React-Core » RCTBundleURLProvider.mm
+› Compiling react-native Pods/React-Core » RCTBridgeProxy.mm
+› Compiling react-native Pods/React-Core » RCTBridge.mm
+› Compiling react-native Pods/React-Core » NSDataBigString.mm
+› Compiling expo-updates Pods/ReachabilitySwift » ReachabilitySwift-dummy.m
+› Compiling react-native-svg Pods/RNSVG » RNSVGViewBox.mm
+› Compiling react-native-svg Pods/RNSVG » RNSVGUseManager.mm
+› Compiling react-native-svg Pods/RNSVG » RNSVGUse.mm
+› Compiling react-native-svg Pods/RNSVG » RNSVGTopAlignedLabel.ios.mm
+› Compiling react-native-svg Pods/RNSVG » RNSVGTextProperties.mm
+› Compiling react-native-svg Pods/RNSVG » RNSVGTextPathManager.mm
+› Compiling react-native-svg Pods/RNSVG » RNSVGTextPath.mm
+› Compiling react-native-svg Pods/RNSVG » RNSVGTextManager.mm
+› Compiling react-native-svg Pods/RNSVG » RNSVGText.mm
+› Compiling react-native-svg Pods/RNSVG » RNSVGTSpanManager.mm
+› Compiling react-native-svg Pods/RNSVG » RNSVGTSpan.mm
+› Compiling react-native-svg Pods/RNSVG » RNSVGSymbolManager.mm
+› Compiling react-native-svg Pods/RNSVG » RNSVGSymbol.mm
+› Compiling react-native-svg Pods/RNSVG » RNSVGSvgViewModule.mm
+› Compiling react-native-svg Pods/RNSVG » RNSVGSvgViewManager.mm
+› Compiling react-native-svg Pods/RNSVG » RNSVGSvgView.mm
+› Compiling react-native-svg Pods/RNSVG » RNSVGSolidColorBrush.mm
+› Compiling react-native-svg Pods/RNSVG » RNSVGRenderableModule.mm
+› Compiling react-native-svg Pods/RNSVG » RNSVGRenderableManager.mm
+› Compiling react-native-svg Pods/RNSVG » RNSVGRenderable.mm
+› Compiling react-native-svg Pods/RNSVG » RNSVGRenderUtils.mm
+› Compiling react-native-svg Pods/RNSVG » RNSVGRectManager.mm
+› Compiling react-native-svg Pods/RNSVG » RNSVGRect.mm
+› Compiling react-native-svg Pods/RNSVG » RNSVGRadialGradientManager.mm
+› Compiling react-native-svg Pods/RNSVG » RNSVGRadialGradient.mm
+› Compiling react-native-svg Pods/RNSVG » RNSVGPropHelper.mm
+› Compiling react-native-svg Pods/RNSVG » RNSVGPatternManager.mm
+› Compiling react-native-svg Pods/RNSVG » RNSVGPattern.mm
+› Compiling react-native-svg Pods/RNSVG » RNSVGPathParser.mm
+› Compiling react-native-svg Pods/RNSVG » RNSVGPathMeasure.mm
+› Compiling react-native-svg Pods/RNSVG » RNSVGPathManager.mm
+› Compiling react-native-svg Pods/RNSVG » RNSVGPath.mm
+› Compiling react-native-svg Pods/RNSVG » RNSVGPainterBrush.mm
+› Compiling react-native-svg Pods/RNSVG » RNSVGPainter.mm
+› Compiling react-native-svg Pods/RNSVG » RNSVGNodeManager.mm
+› Compiling react-native-svg Pods/RNSVG » RNSVGNode.mm
+› Compiling react-native-svg Pods/RNSVG » RNSVGMaskManager.mm
+› Compiling react-native-svg Pods/RNSVG » RNSVGMask.mm
+› Compiling react-native-svg Pods/RNSVG » RNSVGMarkerPosition.mm
+› Compiling react-native-svg Pods/RNSVG » RNSVGMarkerManager.mm
+› Compiling react-native-svg Pods/RNSVG » RNSVGMarker.mm
+› Compiling react-native-svg Pods/RNSVG » RNSVGLinearGradientManager.mm
+› Compiling react-native-svg Pods/RNSVG » RNSVGLinearGradient.mm
+› Compiling react-native-svg Pods/RNSVG » RNSVGLineManager.mm
+› Compiling react-native-svg Pods/RNSVG » RNSVGLine.mm
+› Compiling react-native-svg Pods/RNSVG » RNSVGLength.mm
+› Compiling react-native-svg Pods/RNSVG » RNSVGImageManager.mm
+› Compiling react-native-svg Pods/RNSVG » RNSVGImage.mm
+› Compiling react-native-svg Pods/RNSVG » RNSVGGroupManager.mm
+› Compiling react-native-svg Pods/RNSVG » RNSVGGroup.mm
+› Compiling react-native-svg Pods/RNSVG » RNSVGGlyphContext.mm
+› Compiling react-native-svg Pods/RNSVG » RNSVGForeignObjectManager.mm
+› Compiling react-native-svg Pods/RNSVG » RNSVGForeignObject.mm
+› Compiling react-native-svg Pods/RNSVG » RNSVGFontData.mm
+› Compiling react-native-svg Pods/RNSVG » RNSVGFilterRegion.mm
+› Compiling react-native-svg Pods/RNSVG » RNSVGFilterPrimitiveManager.mm
+› Compiling react-native-svg Pods/RNSVG » RNSVGFilterPrimitive.mm
+› Compiling react-native-svg Pods/RNSVG » RNSVGFilterManager.mm
+› Compiling react-native-svg Pods/RNSVG » RNSVGFilter.mm
+› Compiling react-native-svg Pods/RNSVG » RNSVGFeOffsetManager.mm
+› Compiling react-native-svg Pods/RNSVG » RNSVGFeOffset.mm
+› Compiling react-native-svg Pods/RNSVG » RNSVGFeMergeManager.mm
+› Compiling react-native-svg Pods/RNSVG » RNSVGFeMerge.mm
+› Compiling react-native-svg Pods/RNSVG » RNSVGFeGaussianBlurManager.mm
+› Compiling react-native-svg Pods/RNSVG » RNSVGFeGaussianBlur.mm
+› Compiling react-native-svg Pods/RNSVG » RNSVGFeFloodManager.mm
+› Compiling react-native-svg Pods/RNSVG » RNSVGFeFlood.mm
+› Compiling react-native-svg Pods/RNSVG » RNSVGFeCompositeManager.mm
+› Compiling react-native-svg Pods/RNSVG » RNSVGFeComposite.mm
+› Compiling react-native-svg Pods/RNSVG » RNSVGFeColorMatrixManager.mm
+› Compiling react-native-svg Pods/RNSVG » RNSVGFeColorMatrix.mm
+› Compiling react-native-svg Pods/RNSVG » RNSVGFeBlendManager.mm
+› Compiling react-native-svg Pods/RNSVG » RNSVGFeBlend.mm
+› Compiling react-native-svg Pods/RNSVG » RNSVGEllipseManager.mm
+› Compiling react-native-svg Pods/RNSVG » RNSVGEllipse.mm
+› Compiling react-native-svg Pods/RNSVG » RNSVGDefsManager.mm
+› Compiling react-native-svg Pods/RNSVG » RNSVGDefs.mm
+› Compiling react-native-svg Pods/RNSVG » RNSVGCustomFilter.mm
+› Compiling react-native-svg Pods/RNSVG » RNSVGConvert.mm
+› Compiling react-native-svg Pods/RNSVG » RNSVGContextBrush.mm
+› Compiling react-native-svg Pods/RNSVG » RNSVGCompositeXor.mm
+› Compiling react-native-svg Pods/RNSVG » RNSVGClipPathManager.mm
+› Compiling react-native-svg Pods/RNSVG » RNSVGClipPath.mm
+› Compiling react-native-svg Pods/RNSVG » RNSVGCircleManager.mm
+› Compiling react-native-svg Pods/RNSVG » RNSVGCircle.mm
+› Compiling react-native-svg Pods/RNSVG » RNSVGBrush.mm
+› Compiling react-native-svg Pods/RNSVG » RNSVGBezierElement.mm
+› Compiling react-native-svg Pods/RNSVG » RNSVGArithmeticFilter.mm
+› Compiling react-native-svg Pods/RNSVG » RCTConvert+RNSVG.mm
+› Compiling react-native Pods/React-Mapbuffer » React-Mapbuffer-dummy.m
+› Compiling react-native Pods/React-ImageManager » React-ImageManager-dummy.m
+› Compiling react-native Pods/React-FabricImage » React-FabricImage-dummy.m
+› Compiling react-native Pods/React-Fabric » React-Fabric-dummy.m
+› Preparing Pods/RCT-Folly-RCT-Folly_privacy » ResourceBundle-RCT-Folly_privacy-RCT-Folly-Info.plist
+› Packaging @stripe/stripe-react-native Pods/StripePaymentSheet » libStripePaymentSheet.a
+› Compiling @react-native-async-storage/async-storage Pods/RNCAsyncStorage » RNCAsyncStorage.mm
+› Compiling react-native Pods/RCTTypeSafety » RCTTypedModuleConstants.mm
+› Compiling react-native Pods/RCTTypeSafety » RCTConvertHelpers.mm
+› Creating  Pods/React-cxxreact-React-cxxreact_privacy » React-cxxreact_privacy.bundle
+› Creating  Pods/React-Core-React-Core_privacy » React-Core_privacy.bundle
+› Creating  expo-updates Pods/ReachabilitySwift-ReachabilitySwift » ReachabilitySwift.bundle
+› Packaging expo-updates Pods/ReachabilitySwift » libReachabilitySwift.a
+› Creating  Pods/RNSVG-RNSVGFilters » RNSVGFilters.bundle
+› Executing expo-updates Pods/ReachabilitySwift » Copy generated compatibility header
+› Compiling @react-native-async-storage/async-storage Pods/RNCAsyncStorage » RNCAsyncStorage-dummy.m
+› Compiling react-native Pods/RCTTypeSafety » RCTTypeSafety-dummy.m
+› Executing @stripe/stripe-react-native Pods/StripePaymentSheet » Copy generated compatibility header
+› Compiling react-native Pods/React-RuntimeHermes » React-RuntimeHermes-dummy.m
+› Creating  Pods/RNCAsyncStorage-RNCAsyncStorage_resources » RNCAsyncStorage_resources.bundle
+› Compiling react-native Pods/RCT-Folly » json_pointer.cpp
+› Compiling react-native Pods/RCT-Folly » json.cpp
+› Compiling react-native Pods/RCT-Folly » dynamic.cpp
+› Compiling react-native Pods/RCT-Folly » UniqueInstance.cpp
+› Compiling react-native Pods/RCT-Folly » Unicode.cpp
+› Compiling react-native Pods/RCTDeprecation » RCTDeprecation-dummy.m
+› Compiling react-native Pods/RCT-Folly » ToAscii.cpp
+› Compiling react-native Pods/RCT-Folly » ThreadId.cpp
+› Compiling react-native Pods/RCT-Folly » SysUio.cpp
+› Compiling react-native Pods/RCT-Folly » String.cpp
+› Compiling react-native Pods/RCT-Folly » StaticSingletonManager.cpp
+› Compiling react-native Pods/RCT-Folly » SpookyHashV2.cpp
+› Compiling react-native Pods/RCT-Folly » SplitStringSimd.cpp
+› Compiling react-native Pods/RCT-Folly » SharedMutex.cpp
+› Compiling react-native Pods/RCT-Folly » ScopeGuard.cpp
+› Compiling react-native Pods/RCT-Folly » SanitizeThread.cpp
+› Compiling react-native Pods/RCT-Folly » SafeAssert.cpp
+› Compiling react-native Pods/RCT-Folly » ReentrantAllocator.cpp
+› Compiling react-native Pods/RCT-Folly » ParkingLot.cpp
+› Compiling react-native Pods/RCT-Folly » NetOps.cpp
+› Compiling react-native Pods/RCT-Folly » MallocImpl.cpp
+› Compiling react-native Pods/RCT-Folly » Futex.cpp
+› Compiling react-native Pods/RCT-Folly » Format.cpp
+› Compiling react-native Pods/RCT-Folly » FileUtilDetail.cpp
+› Compiling react-native Pods/RCT-Folly » FileUtil.cpp
+› Compiling react-native Pods/RCT-Folly » F14Table.cpp
+› Compiling react-native Pods/RCT-Folly » Exception.cpp
+› Compiling react-native Pods/RCT-Folly » Demangle.cpp
+› Compiling react-native Pods/RCT-Folly » Conv.cpp
+› Compiling react-native Pods/RCT-Folly » CacheLocality.cpp
+› Compiling react-native Pods/RCT-Folly » CString.cpp
+› Compiling react-native Pods/RCT-Folly » AtFork.cpp
+› Compiling react-native Pods/React-Core » RCTVersion.m
+› Compiling react-native Pods/React-Core » RCTUtilsUIOverride.m
+› Compiling react-native Pods/React-Core » React-Core-dummy.m
+› Compiling react-native Pods/React-Core » RCTUIManagerUtils.m
+› Compiling react-native Pods/React-Core » RCTTouchEvent.m
+› Compiling react-native Pods/React-Core » RCTSurfaceStage.m
+› Compiling react-native Pods/React-Core » RCTSurfacePresenterStub.m
+› Compiling react-native Pods/React-Core » RCTScrollEvent.m
+› Compiling react-native Pods/React-Core » RCTSafeAreaViewLocalData.m
+› Compiling react-native Pods/React-Core » RCTReloadCommand.m
+› Compiling react-native Pods/React-Core » RCTRefreshControl.m
+› Compiling react-native Pods/React-Core » RCTRedBoxSetEnabled.m
+› Compiling react-native Pods/React-Core » RCTRedBoxExtraDataViewController.m
+› Compiling react-native Pods/React-Core » RCTPerformanceLoggerLabels.m
+› Compiling react-native Pods/React-Core » RCTParserUtils.m
+› Compiling react-native Pods/React-Core » RCTPackagerClient.m
+› Compiling react-native Pods/React-Core » RCTMultipartStreamReader.m
+› Compiling react-native Pods/React-Core » RCTMultipartDataTask.m
+› Compiling react-native Pods/React-Core » RCTModuleRegistry.m
+› Compiling react-native Pods/React-Core » RCTModalManager.m
+› Compiling react-native Pods/React-Core » RCTKeyCommands.m
+› Compiling react-native Pods/React-Core » RCTJSThread.m
+› Compiling react-native Pods/React-Core » RCTJSStackFrame.m
+› Compiling react-native Pods/React-Core » RCTI18nUtil.m
+› Compiling react-native Pods/React-Core » RCTFrameUpdate.m
+› Compiling react-native Pods/React-Core » RCTEventEmitter.m
+› Compiling react-native Pods/React-Core » RCTEventDispatcher.m
+› Compiling react-native Pods/React-Core » RCTErrorInfo.m
+› Compiling react-native Pods/React-Core » RCTDisplayLink.m
+› Compiling react-native Pods/React-Core » RCTDevLoadingViewSetEnabled.m
+› Compiling react-native Pods/React-Core » RCTCxxConvert.m
+› Compiling react-native Pods/React-Core » RCTConstants.m
+› Compiling react-native Pods/React-Core » RCTComponentEvent.m
+› Compiling react-native Pods/React-Core » RCTCallableJSModules.m
+› Compiling react-native Pods/React-Core » RCTBundleManager.m
+› Compiling react-native Pods/React-Core » RCTBridgeModuleDecorator.m
+› Compiling react-native Pods/React-Core » RCTBridgeConstants.m
+› Compiling react-native Pods/React-Core » RCTBorderDrawing.m
+› Compiling react-native Pods/React-Core » RCTAssert.m
+› Compiling react-native Pods/React-Core » RCTActivityIndicatorView.m
+› Compiling react-native Pods/React-Core » UIView+React.m
+› Compiling react-native Pods/React-Core » RCTWrapperViewController.m
+› Compiling react-native Pods/React-Core » RCTViewUtils.m
+› Compiling react-native Pods/React-Core » RCTViewRegistry.m
+› Compiling react-native Pods/React-Core » RCTViewManager.m
+› Compiling react-native Pods/React-Core » RCTView.m
+› Compiling react-native Pods/React-Core » RCTTouchHandler.m
+› Compiling react-native Pods/React-Core » RCTSwitchManager.m
+› Compiling react-native Pods/React-Core » RCTSwitch.m
+› Compiling react-native Pods/React-Core » RCTSurfaceRootShadowView.m
+› Compiling react-native Pods/React-Core » RCTShadowView.m
+› Compiling react-native Pods/React-Core » RCTShadowView+Layout.m
+› Compiling react-native Pods/React-Core » RCTShadowView+Internal.m
+› Compiling react-native Pods/React-Core » RCTScrollViewManager.m
+› Compiling react-native Pods/React-Core » RCTScrollView.m
+› Compiling react-native Pods/React-Core » RCTScrollContentViewManager.m
+› Compiling react-native Pods/React-Core » RCTScrollContentView.m
+› Compiling react-native Pods/React-Core » RCTScrollContentShadowView.m
+› Compiling react-native Pods/React-Core » RCTSafeAreaViewManager.m
+› Compiling react-native Pods/React-Core » RCTSafeAreaView.m
+› Compiling react-native Pods/React-Core » RCTSafeAreaShadowView.m
+› Compiling react-native Pods/React-Core » RCTRootView.m
+› Compiling react-native Pods/React-Core » RCTRootShadowView.m
+› Compiling react-native Pods/React-Core » RCTRootContentView.m
+› Compiling react-native Pods/React-Core » RCTRefreshControlManager.m
+› Compiling react-native Pods/React-Core » RCTReconnectingWebSocket.m
+› Compiling react-native Pods/React-Core » RCTProfile.m
+› Compiling react-native Pods/React-Core » RCTModalHostViewManager.m
+› Compiling react-native Pods/React-Core » RCTModalHostViewController.m
+› Compiling react-native Pods/React-Core » RCTModalHostView.m
+› Compiling react-native Pods/React-Core » RCTLayoutAnimationGroup.m
+› Compiling react-native Pods/React-Core » RCTLayoutAnimation.m
+› Compiling react-native Pods/React-Core » RCTLayout.m
+› Compiling react-native Pods/React-Core » RCTImageSource.m
+› Compiling react-native Pods/React-Core » RCTDebuggingOverlayManager.m
+› Compiling react-native Pods/React-Core » RCTDebuggingOverlay.m
+› Compiling react-native Pods/React-Core » RCTConvert+Transform.m
+› Compiling react-native Pods/React-Core » RCTConvert+CoreLocation.m
+› Compiling react-native Pods/React-Core » RCTActivityIndicatorViewManager.m
+› Preparing Pods/GoogleMaps-GoogleMapsResources » ResourceBundle-GoogleMapsResources-GoogleMaps-Info.plist
+› Copying   GoogleMaps/GoogleMapsResources.bundle/GoogleMaps.bundle ➜ work_repo/physiosmetic/ios/Pods/GoogleMaps/Maps/Resources/GoogleMapsResources/GoogleMaps.bundle
+› Preparing Pods/ExpoFileSystem-ExpoFileSystem_privacy » ResourceBundle-ExpoFileSystem_privacy-ExpoFileSystem-Info.plist
+› Compiling react-native Pods/RCT-Folly » RCT-Folly-dummy.m
+› Copying   ExpoFileSystem/ExpoFileSystem_privacy.bundle/PrivacyInfo.xcprivacy ➜ work_repo/physiosmetic/node_modules/expo-file-system/ios/PrivacyInfo.xcprivacy
+› Preparing Pods/ExpoDevice-ExpoDevice_privacy » ResourceBundle-ExpoDevice_privacy-ExpoDevice-Info.plist
+› Copying   ExpoDevice/ExpoDevice_privacy.bundle/PrivacyInfo.xcprivacy ➜ work_repo/physiosmetic/node_modules/expo-device/ios/PrivacyInfo.xcprivacy
+› Compiling @stripe/stripe-react-native Pods/Stripe » Stripe-dummy.m
+› Preparing expo-updates Pods/EXUpdates-EXUpdates » ResourceBundle-EXUpdates-EXUpdates-Info.plist
+› Preparing Pods/EXConstants-ExpoConstants_privacy » ResourceBundle-ExpoConstants_privacy-EXConstants-Info.plist
+› Copying   EXConstants/ExpoConstants_privacy.bundle/PrivacyInfo.xcprivacy ➜ work_repo/physiosmetic/node_modules/expo-constants/ios/PrivacyInfo.xcprivacy
+› Preparing expo-constants Pods/EXConstants-EXConstants » ResourceBundle-EXConstants-EXConstants-Info.plist
+› Preparing Pods/EXApplication-ExpoApplication_privacy » ResourceBundle-ExpoApplication_privacy-EXApplication-Info.plist
+› Copying   EXApplication/ExpoApplication_privacy.bundle/PrivacyInfo.xcprivacy ➜ work_repo/physiosmetic/node_modules/expo-application/ios/PrivacyInfo.xcprivacy
+› Creating  Pods/RCT-Folly-RCT-Folly_privacy » RCT-Folly_privacy.bundle
+› Creating  Pods/GoogleMaps-GoogleMapsResources » GoogleMapsResources.bundle
+› Creating  Pods/ExpoFileSystem-ExpoFileSystem_privacy » ExpoFileSystem_privacy.bundle
+› Executing physiosmetic Pods/GoogleMaps » [CP] Copy XCFrameworks
+› Creating  Pods/ExpoDevice-ExpoDevice_privacy » ExpoDevice_privacy.bundle
+› Creating  expo-updates Pods/EXUpdates-EXUpdates » EXUpdates.bundle
+› Compiling expo-structured-headers Pods/EXStructuredHeaders » EXStructuredHeadersParser.m
+› Compiling expo-structured-headers Pods/EXStructuredHeaders » EXStructuredHeaders-dummy.m
+› Creating  Pods/EXConstants-ExpoConstants_privacy » ExpoConstants_privacy.bundle
+› Compiling react-native-svg Pods/RNSVG » RNSVG-dummy.m
+› Compiling react-native Pods/DoubleConversion » strtod.cc
+› Compiling react-native Pods/DoubleConversion » fast-dtoa.cc
+› Compiling react-native Pods/DoubleConversion » fixed-dtoa.cc
+› Compiling react-native Pods/DoubleConversion » double-conversion.cc
+› Packaging expo-structured-headers Pods/EXStructuredHeaders » libEXStructuredHeaders.a
+› Compiling expo-json-utils Pods/EXJSONUtils » NSDictionary+EXJSONUtils.m
+› Compiling expo-json-utils Pods/EXJSONUtils » EXJSONUtils-dummy.m
+› Compiling react-native Pods/DoubleConversion » diy-fp.cc
+› Packaging @stripe/stripe-react-native Pods/Stripe » libStripe.a
+› Compiling react-native Pods/DoubleConversion » cached-powers.cc
+› Compiling react-native Pods/DoubleConversion » bignum.cc
+› Compiling react-native Pods/DoubleConversion » bignum-dtoa.cc
+› Packaging expo-json-utils Pods/EXJSONUtils » libEXJSONUtils.a
+› Executing @stripe/stripe-react-native Pods/Stripe » Copy generated compatibility header
+› Creating  expo-constants Pods/EXConstants-EXConstants » EXConstants.bundle
+› Creating  Pods/EXApplication-ExpoApplication_privacy » ExpoApplication_privacy.bundle
+› Compiling react-native Pods/DoubleConversion » DoubleConversion-dummy.m
+› Packaging react-native Pods/DoubleConversion » libDoubleConversion.a
+› Packaging react-native Pods/RCT-Folly » libRCT-Folly.a
+› Packaging react-native Pods/React-rendererdebug » libReact-rendererdebug.a
+› Packaging react-native Pods/React-perflogger » libReact-perflogger.a
+› Packaging react-native Pods/React-jsinspectortracing » libReact-jsinspectortracing.a
+› Packaging react-native Pods/React-logger » libReact-logger.a
+› Packaging react-native Pods/React-featureflags » libReact-featureflags.a
+› Packaging react-native Pods/React-jsinspectorcdp » libReact-jsinspectorcdp.a
+› Packaging react-native Pods/React-jsi » libReact-jsi.a
+› Packaging react-native Pods/React-Mapbuffer » libReact-Mapbuffer.a
+› Packaging react-native Pods/React-utils » libReact-utils.a
+› Packaging react-native Pods/React-performancetimeline » libReact-performancetimeline.a
+› Packaging react-native Pods/React-runtimeexecutor » libReact-runtimeexecutor.a
+› Packaging react-native Pods/React-renderercss » libReact-renderercss.a
+› Packaging react-native Pods/React-jsinspectornetwork » libReact-jsinspectornetwork.a
+› Packaging react-native Pods/React-jsinspector » libReact-jsinspector.a
+› Packaging react-native Pods/React-cxxreact » libReact-cxxreact.a
+› Compiling react-native Pods/RCTDeprecation » RCTDeprecation.m
+› Packaging react-native Pods/ReactCommon » libReactCommon.a
+› Packaging react-native Pods/React-runtimescheduler » libReact-runtimescheduler.a
+› Packaging react-native Pods/React-jsiexecutor » libReact-jsiexecutor.a
+› Packaging react-native Pods/React-jsitooling » libReact-jsitooling.a
+› Packaging react-native Pods/RCTDeprecation » libRCTDeprecation.a
+› Packaging react-native Pods/React-hermes » libReact-hermes.a
+› Packaging react-native Pods/React-graphics » libReact-graphics.a
+› Packaging react-native Pods/React-jserrorhandler » libReact-jserrorhandler.a
+› Packaging react-native Pods/React-Core » libReact-Core.a
+› Packaging react-native Pods/React-RCTText » libReact-RCTText.a
+› Packaging react-native Pods/React-NativeModulesApple » libReact-NativeModulesApple.a
+› Packaging react-native-maps Pods/react-native-maps » libreact-native-maps.a
+› Packaging react-native-safe-area-context Pods/react-native-safe-area-context » libreact-native-safe-area-context.a
+› Packaging react-native-svg Pods/RNSVG » libRNSVG.a
+› Packaging @react-native-async-storage/async-storage Pods/RNCAsyncStorage » libRNCAsyncStorage.a
+› Packaging react-native Pods/RCTTypeSafety » libRCTTypeSafety.a
+› Packaging react-native Pods/React-Fabric » libReact-Fabric.a
+› Executing react-native Pods/React-RCTFBReactNativeSpec » [CP-User] [RN]Check FBReactNativeSpec
+› Packaging react-native Pods/React-RuntimeCore » libReact-RuntimeCore.a
+› Packaging react-native Pods/React-ImageManager » libReact-ImageManager.a
+› Packaging react-native Pods/React-FabricImage » libReact-FabricImage.a
+› Packaging react-native Pods/React-RuntimeHermes » libReact-RuntimeHermes.a
+› Compiling react-native Pods/React-RCTFBReactNativeSpec » ShadowNodes.cpp
+› Compiling react-native Pods/React-RCTFBReactNativeSpec » States.cpp
+› Compiling react-native Pods/React-RCTFBReactNativeSpec » FBReactNativeSpec-generated.mm
+› Compiling react-native Pods/React-RCTFBReactNativeSpec » Props.cpp
+› Compiling react-native Pods/React-RCTFBReactNativeSpec » FBReactNativeSpecJSI-generated.cpp
+› Compiling react-native Pods/React-RCTFBReactNativeSpec » EventEmitters.cpp
+› Compiling react-native Pods/React-RCTFBReactNativeSpec » ComponentDescriptors.cpp
+› Compiling react-native-razorpay Pods/react-native-razorpay » react-native-razorpay-dummy.m
+› Compiling react-native-razorpay Pods/react-native-razorpay » RazorpayEventEmitter.m
+› Compiling react-native Pods/React-RCTFBReactNativeSpec » React-RCTFBReactNativeSpec-dummy.m
+› Compiling react-native-razorpay Pods/react-native-razorpay » RazorpayCheckout.m
+› Compiling physiosmetic Pods/Google-Maps-iOS-Utils » Google-Maps-iOS-Utils-dummy.m
+› Compiling physiosmetic Pods/Google-Maps-iOS-Utils » GQTPointQuadTreeChild.m
+› Compiling physiosmetic Pods/Google-Maps-iOS-Utils » GQTPointQuadTree.m
+› Compiling physiosmetic Pods/Google-Maps-iOS-Utils » GMUWrappingDictionaryKey.m
+› Compiling physiosmetic Pods/Google-Maps-iOS-Utils » GMUStyleMap.m
+› Compiling physiosmetic Pods/Google-Maps-iOS-Utils » GMUStyle.m
+› Compiling physiosmetic Pods/Google-Maps-iOS-Utils » GMUStaticCluster.m
+› Compiling physiosmetic Pods/Google-Maps-iOS-Utils » GMUSimpleClusterAlgorithm.m
+› Compiling physiosmetic Pods/Google-Maps-iOS-Utils » GMUWeightedLatLng.m
+› Compiling physiosmetic Pods/Google-Maps-iOS-Utils » GMUPolygon.m
+› Compiling physiosmetic Pods/Google-Maps-iOS-Utils » GMUPoint.m
+› Compiling physiosmetic Pods/Google-Maps-iOS-Utils » GMUPlacemark.m
+› Compiling physiosmetic Pods/Google-Maps-iOS-Utils » GMUPair.m
+› Compiling physiosmetic Pods/Google-Maps-iOS-Utils » GMUNonHierarchicalDistanceBasedAlgorithm.m
+› Compiling physiosmetic Pods/Google-Maps-iOS-Utils » GMULineString.m
+› Compiling physiosmetic Pods/Google-Maps-iOS-Utils » GMUKMLParser.m
+› Compiling physiosmetic Pods/Google-Maps-iOS-Utils » GMUHeatmapTileLayer.m
+› Compiling physiosmetic Pods/Google-Maps-iOS-Utils » GMUGroundOverlay.m
+› Compiling physiosmetic Pods/Google-Maps-iOS-Utils » GMUGridBasedClusterAlgorithm.m
+› Compiling physiosmetic Pods/Google-Maps-iOS-Utils » GMUGradient.m
+› Compiling physiosmetic Pods/Google-Maps-iOS-Utils » GMUGeometryRenderer.m
+› Compiling physiosmetic Pods/Google-Maps-iOS-Utils » GMUGeometryCollection.m
+› Compiling physiosmetic Pods/Google-Maps-iOS-Utils » GMUGeoJSONParser.m
+› Compiling physiosmetic Pods/Google-Maps-iOS-Utils » GMUFeature.m
+› Compiling physiosmetic Pods/Google-Maps-iOS-Utils » GMUDefaultClusterRenderer.m
+› Compiling physiosmetic Pods/Google-Maps-iOS-Utils » GMUDefaultClusterIconGenerator.m
+› Compiling physiosmetic Pods/Google-Maps-iOS-Utils » GMUClusterManager.m
+› Compiling react-native Pods/React-microtasksnativemodule » NativeMicrotasks.cpp
+› Compiling physiosmetic Pods/Google-Maps-iOS-Utils » GMSMarker+GMUClusteritem.m
+› Compiling react-native Pods/React-idlecallbacksnativemodule » NativeIdleCallbacks.cpp
+› Packaging physiosmetic Pods/Google-Maps-iOS-Utils » libGoogle-Maps-iOS-Utils.a
+› Compiling react-native Pods/React-featureflagsnativemodule » NativeReactNativeFeatureFlags.cpp
+› Compiling react-native Pods/React-microtasksnativemodule » React-microtasksnativemodule-dummy.m
+› Compiling react-native Pods/React-idlecallbacksnativemodule » React-idlecallbacksnativemodule-dummy.m
+› Compiling react-native Pods/React-domnativemodule » NativeDOM.cpp
+› Compiling react-native Pods/React-featureflagsnativemodule » React-featureflagsnativemodule-dummy.m
+› Compiling react-native Pods/React-domnativemodule » React-domnativemodule-dummy.m
+› Compiling react-native Pods/React-defaultsnativemodule » DefaultTurboModules.cpp
+› Compiling react-native Pods/React-RuntimeApple » RCTPerformanceLoggerUtils.mm
+› Compiling react-native Pods/React-RuntimeApple » RCTLegacyUIManagerConstantsProvider.mm
+› Compiling react-native Pods/React-RuntimeApple » RCTJSThreadManager.mm
+› Compiling react-native Pods/React-defaultsnativemodule » React-defaultsnativemodule-dummy.m
+› Compiling react-native Pods/React-RuntimeApple » RCTInstance.mm
+› Compiling react-native Pods/React-RuntimeApple » RCTHost.mm
+› Compiling react-native Pods/React-RuntimeApple » RCTHermesInstance.mm
+› Packaging react-native Pods/React-RCTFBReactNativeSpec » libReact-RCTFBReactNativeSpec.a
+› Compiling react-native Pods/React-RuntimeApple » ObjCTimerRegistry.mm
+› Compiling react-native Pods/React-RCTVibration » RCTVibrationPlugins.mm
+› Compiling react-native Pods/React-RCTVibration » RCTVibration.mm
+› Compiling react-native Pods/React-RuntimeApple » React-RuntimeApple-dummy.m
+› Compiling react-native Pods/React-RCTSettings » RCTSettingsPlugins.mm
+› Compiling react-native Pods/React-RCTSettings » RCTSettingsManager.mm
+› Compiling react-native Pods/React-RCTVibration » React-RCTVibration-dummy.m
+› Executing physiosmetic Pods/Google-Maps-iOS-Utils » Copy generated compatibility header
+› Compiling react-native Pods/React-RCTSettings » React-RCTSettings-dummy.m
+› Compiling @stripe/stripe-react-native Pods/stripe-react-native » StripeSdk.mm
+› Compiling @stripe/stripe-react-native Pods/stripe-react-native » stripe-react-native-dummy.m
+› Compiling @stripe/stripe-react-native Pods/stripe-react-native » StripeSdkEventEmitterCompat.m
+› Compiling @stripe/stripe-react-native Pods/stripe-react-native » StripeContainerManager.m
+› Compiling @stripe/stripe-react-native Pods/stripe-react-native » EmbeddedPaymentElementManager.m
+› Compiling @stripe/stripe-react-native Pods/stripe-react-native » CardFormManager.m
+› Compiling @stripe/stripe-react-native Pods/stripe-react-native » CardFieldManager.m
+› Compiling @stripe/stripe-react-native Pods/stripe-react-native » AuBECSDebitFormManager.m
+› Compiling @stripe/stripe-react-native Pods/stripe-react-native » ApplePayButtonManager.m
+› Compiling @stripe/stripe-react-native Pods/stripe-react-native » AddressSheetViewManager.m
+› Compiling react-native Pods/React-RCTRuntime » RCTHermesInstanceFactory.mm
+› Compiling @stripe/stripe-react-native Pods/stripe-react-native » AddToWalletButtonManager.m
+› Packaging @stripe/stripe-react-native Pods/stripe-react-native » libstripe-react-native.a
+› Compiling physiosmetic Pods/react-native-google-maps » react-native-google-maps-dummy.m
+› Compiling react-native Pods/React-RCTRuntime » React-RCTRuntime-dummy.m
+› Executing @stripe/stripe-react-native Pods/stripe-react-native » Copy generated compatibility header
+› Compiling react-native Pods/React-RCTNetwork » RCTNetworking.mm
+› Compiling react-native Pods/React-RCTNetwork » RCTNetworkTask.mm
+› Compiling react-native Pods/React-RCTNetwork » RCTNetworkPlugins.mm
+› Compiling react-native Pods/React-RCTNetwork » RCTInspectorNetworkReporter.mm
+› Compiling react-native Pods/React-RCTNetwork » RCTHTTPRequestHandler.mm
+› Compiling react-native Pods/React-RCTNetwork » RCTFileRequestHandler.mm
+› Compiling react-native Pods/React-RCTNetwork » RCTDataRequestHandler.mm
+› Compiling react-native Pods/React-RCTLinking » RCTLinkingPlugins.mm
+› Compiling react-native Pods/React-RCTLinking » RCTLinkingManager.mm
+› Compiling react-native Pods/React-RCTNetwork » React-RCTNetwork-dummy.m
+› Compiling react-native Pods/React-RCTImage » RCTUIImageViewAnimated.mm
+› Compiling react-native Pods/React-RCTImage » RCTResizeMode.mm
+› Compiling react-native Pods/React-RCTLinking » React-RCTLinking-dummy.m
+› Compiling react-native Pods/React-RCTImage » RCTLocalAssetImageLoader.mm
+› Compiling react-native Pods/React-RCTImage » RCTImageViewManager.mm
+› Compiling react-native Pods/React-RCTImage » RCTImageView.mm
+› Compiling react-native Pods/React-RCTImage » RCTImageUtils.mm
+› Compiling react-native Pods/React-RCTImage » RCTImageURLLoaderWithAttribution.mm
+› Compiling react-native Pods/React-RCTImage » RCTImageStoreManager.mm
+› Compiling react-native Pods/React-RCTImage » RCTImageShadowView.mm
+› Compiling react-native Pods/React-RCTImage » RCTImagePlugins.mm
+› Compiling react-native Pods/React-RCTImage » RCTImageLoader.mm
+› Compiling react-native Pods/React-RCTImage » RCTImageEditingManager.mm
+› Compiling react-native Pods/React-RCTImage » RCTImageCache.mm
+› Compiling react-native Pods/React-RCTImage » RCTImageBlurUtils.mm
+› Compiling react-native Pods/React-RCTImage » RCTGIFImageDecoder.mm
+› Compiling react-native Pods/React-RCTImage » RCTDisplayWeakRefreshable.mm
+› Compiling react-native Pods/React-RCTImage » RCTBundleAssetImageLoader.mm
+› Compiling react-native Pods/React-RCTImage » RCTAnimatedImage.mm
+› Compiling react-native Pods/React-RCTFabric » UIView+ComponentViewProtocol.mm
+› Compiling react-native Pods/React-RCTFabric » RCTVirtualViewComponentView.mm
+› Compiling react-native Pods/React-RCTImage » React-RCTImage-dummy.m
+› Compiling react-native Pods/React-RCTFabric » RCTViewComponentView.mm
+› Compiling react-native Pods/React-RCTFabric » RCTViewAccessibilityElement.mm
+› Compiling react-native-maps Pods/react-native-google-maps » AIRGoogleMapCalloutSubview.m
+› Compiling react-native-maps Pods/react-native-google-maps » AIRGoogleMapCallout.m
+› Compiling react-native-maps Pods/react-native-google-maps » AIRDummyView.m
+› Compiling react-native Pods/React-RCTFabric » RCTUnimplementedViewComponentView.mm
+› Compiling react-native Pods/React-RCTFabric » RCTUnimplementedNativeComponentView.mm
+› Compiling react-native Pods/React-RCTFabric » RCTTextInputUtils.mm
+› Compiling react-native Pods/React-RCTFabric » RCTTextInputComponentView.mm
+› Compiling react-native Pods/React-RCTFabric » RCTSwitchComponentView.mm
+› Compiling react-native Pods/React-RCTFabric » RCTSurfaceTouchHandler.mm
+› Compiling react-native Pods/React-RCTFabric » RCTSurfaceRegistry.mm
+› Compiling react-native Pods/React-RCTFabric » RCTSurfacePresenterBridgeAdapter.mm
+› Compiling react-native Pods/React-RCTFabric » RCTSurfacePresenter.mm
+› Compiling react-native Pods/React-RCTFabric » RCTSurfacePointerHandler.mm
+› Compiling react-native Pods/React-RCTFabric » RCTScrollViewComponentView.mm
+› Compiling react-native Pods/React-RCTFabric » RCTScheduler.mm
+› Compiling react-native Pods/React-RCTFabric » RCTSafeAreaViewComponentView.mm
+› Compiling react-native Pods/React-RCTFabric » RCTRootComponentView.mm
+› Compiling react-native Pods/React-RCTFabric » RCTReactTaggedView.mm
+› Compiling react-native Pods/React-RCTFabric » RCTRadialGradient.mm
+› Compiling react-native Pods/React-RCTFabric » RCTPullToRefreshViewComponentView.mm
+› Compiling react-native Pods/React-RCTFabric » RCTParagraphComponentView.mm
+› Compiling react-native Pods/React-RCTFabric » RCTParagraphComponentAccessibilityProvider.mm
+› Compiling react-native Pods/React-RCTFabric » RCTMountingTransactionObserverCoordinator.mm
+› Compiling react-native Pods/React-RCTFabric » RCTMountingManager.mm
+› Compiling react-native Pods/React-RCTFabric » RCTModalHostViewComponentView.mm
+› Compiling react-native Pods/React-RCTFabric » RCTLocalizationProvider.mm
+› Compiling react-native Pods/React-RCTFabric » RCTLinearGradient.mm
+› Compiling react-native Pods/React-RCTFabric » RCTLegacyViewManagerInteropCoordinatorAdapter.mm
+› Compiling react-native Pods/React-RCTFabric » RCTLegacyViewManagerInteropComponentView.mm
+› Compiling react-native Pods/React-RCTFabric » RCTInputAccessoryContentView.mm
+› Compiling react-native Pods/React-RCTFabric » RCTInputAccessoryComponentView.mm
+› Compiling react-native Pods/React-RCTFabric » RCTImageResponseObserverProxy.mm
+› Compiling react-native Pods/React-RCTFabric » RCTImageComponentView.mm
+› Compiling react-native Pods/React-RCTFabric » RCTGradientUtils.mm
+› Compiling react-native Pods/React-RCTFabric » RCTGenericDelegateSplitter.mm
+› Compiling react-native Pods/React-RCTFabric » RCTFabricSurface.mm
+› Compiling react-native Pods/React-RCTFabric » RCTFabricModalHostViewController.mm
+› Compiling react-native Pods/React-RCTFabric » RCTFabricComponentsPlugins.mm
+› Compiling react-native Pods/React-RCTFabric » RCTEnhancedScrollView.mm
+› Compiling react-native Pods/React-RCTFabric » RCTDebuggingOverlayComponentView.mm
+› Compiling react-native Pods/React-RCTFabric » RCTComponentViewRegistry.mm
+› Compiling react-native Pods/React-RCTFabric » RCTComponentViewFactory.mm
+› Compiling react-native Pods/React-RCTFabric » RCTColorSpaceUtils.mm
+› Compiling react-native Pods/React-RCTFabric » RCTBoxShadow.mm
+› Compiling react-native Pods/React-RCTFabric » RCTActivityIndicatorViewComponentView.mm
+› Compiling react-native Pods/React-RCTFabric » RCTAccessibilityElement.mm
+› Compiling react-native Pods/React-RCTFabric » PlatformRunLoopObserver.mm
+› Compiling react-native Pods/React-RCTFabric » AppleEventBeat.cpp
+› Compiling react-native-maps Pods/react-native-google-maps » AIRGoogleMapWMSTile.m
+› Compiling react-native-maps Pods/react-native-google-maps » RCTConvert+GMSMapViewType.m
+› Compiling react-native-maps Pods/react-native-google-maps » AIRGoogleMapWMSTileManager.m
+› Compiling react-native-maps Pods/react-native-google-maps » AIRGoogleMapUrlTile.m
+› Compiling react-native-maps Pods/react-native-google-maps » AIRGoogleMapURLTileManager.m
+› Compiling react-native-maps Pods/react-native-google-maps » AIRGoogleMapPolylineManager.m
+› Compiling react-native-maps Pods/react-native-google-maps » AIRGoogleMapPolyline.m
+› Compiling react-native-maps Pods/react-native-google-maps » AIRGoogleMapPolygonManager.m
+› Compiling react-native-maps Pods/react-native-google-maps » AIRGoogleMapPolygon.m
+› Compiling react-native-maps Pods/react-native-google-maps » AIRGoogleMapOverlayManager.m
+› Compiling react-native-maps Pods/react-native-google-maps » AIRGoogleMapOverlay.m
+› Compiling react-native-maps Pods/react-native-google-maps » AIRGoogleMapMarkerManager.m
+› Compiling react-native-maps Pods/react-native-google-maps » AIRGoogleMapMarker.m
+› Compiling react-native-maps Pods/react-native-google-maps » AIRGoogleMapManager.m
+› Compiling react-native-maps Pods/react-native-google-maps » AIRGoogleMapHeatmapManager.m
+› Compiling react-native-maps Pods/react-native-google-maps » AIRGoogleMapHeatmap.m
+› Compiling react-native-maps Pods/react-native-google-maps » AIRGoogleMapCircleManager.m
+› Compiling react-native-maps Pods/react-native-google-maps » AIRGoogleMapCircle.m
+› Compiling react-native-maps Pods/react-native-google-maps » AIRGoogleMapCalloutSubviewManager.m
+› Compiling react-native-maps Pods/react-native-google-maps » AIRGoogleMapCalloutManager.m
+› Compiling react-native-maps Pods/react-native-google-maps » AIRGoogleMap.m
+› Compiling react-native-maps Pods/react-native-google-maps » AIRGMSPolyline.m
+› Compiling react-native-maps Pods/react-native-google-maps » AIRGMSPolygon.m
+› Compiling react-native-maps Pods/react-native-google-maps » AIRGMSMarker.m
+› Compiling react-native Pods/React-RCTBlob » RCTFileReaderModule.mm
+› Compiling react-native Pods/React-RCTBlob » RCTBlobPlugins.mm
+› Compiling react-native Pods/React-RCTBlob » RCTBlobManager.mm
+› Compiling react-native Pods/React-RCTBlob » RCTBlobCollector.mm
+› Compiling react-native Pods/React-RCTFabric » React-RCTFabric-dummy.m
+› Packaging react-native Pods/React-microtasksnativemodule » libReact-microtasksnativemodule.a
+› Packaging react-native Pods/React-idlecallbacksnativemodule » libReact-idlecallbacksnativemodule.a
+› Packaging react-native Pods/React-featureflagsnativemodule » libReact-featureflagsnativemodule.a
+› Packaging react-native Pods/React-RCTVibration » libReact-RCTVibration.a
+› Packaging react-native Pods/React-RCTSettings » libReact-RCTSettings.a
+› Packaging react-native Pods/React-RCTNetwork » libReact-RCTNetwork.a
+› Packaging react-native Pods/React-RCTLinking » libReact-RCTLinking.a
+› Compiling react-native Pods/React-RCTAppDelegate » RCTRootViewFactory.mm
+› Compiling react-native Pods/React-RCTAppDelegate » RCTReactNativeFactory.mm
+› Compiling react-native Pods/React-RCTAppDelegate » RCTDefaultReactNativeFactoryDelegate.mm
+› Compiling react-native Pods/React-RCTAppDelegate » RCTAppSetupUtils.mm
+› Compiling react-native Pods/React-RCTBlob » React-RCTBlob-dummy.m
+› Compiling react-native Pods/React-RCTAppDelegate » RCTAppDelegate.mm
+› Compiling react-native Pods/React-RCTAppDelegate » React-RCTAppDelegate-dummy.m
+› Compiling react-native Pods/React-RCTAnimation » RCTValueAnimatedNode.mm
+› Compiling react-native Pods/React-RCTAnimation » RCTTransformAnimatedNode.mm
+› Compiling react-native Pods/React-RCTAnimation » RCTTrackingAnimatedNode.mm
+› Compiling react-native Pods/React-RCTAnimation » RCTSubtractionAnimatedNode.mm
+› Compiling react-native Pods/React-RCTAnimation » RCTStyleAnimatedNode.mm
+› Compiling react-native Pods/React-RCTAnimation » RCTSpringAnimation.mm
+› Compiling react-native Pods/React-RCTAnimation » RCTPropsAnimatedNode.mm
+› Compiling react-native Pods/React-RCTAnimation » RCTObjectAnimatedNode.mm
+› Compiling react-native Pods/React-RCTAnimation » RCTNativeAnimatedTurboModule.mm
+› Compiling react-native Pods/React-RCTAnimation » RCTNativeAnimatedNodesManager.mm
+› Compiling react-native Pods/React-RCTAnimation » RCTNativeAnimatedModule.mm
+› Compiling react-native Pods/React-RCTAnimation » RCTMultiplicationAnimatedNode.mm
+› Compiling react-native Pods/React-RCTAnimation » RCTModuloAnimatedNode.mm
+› Compiling react-native Pods/React-RCTAnimation » RCTInterpolationAnimatedNode.mm
+› Compiling react-native Pods/React-RCTAnimation » RCTFrameAnimation.mm
+› Compiling react-native Pods/React-RCTAnimation » RCTEventAnimation.mm
+› Compiling react-native Pods/React-RCTAnimation » RCTDivisionAnimatedNode.mm
+› Compiling react-native Pods/React-RCTAnimation » RCTDiffClampAnimatedNode.mm
+› Compiling react-native Pods/React-RCTAnimation » RCTDecayAnimation.mm
+› Compiling react-native Pods/React-RCTAnimation » RCTColorAnimatedNode.mm
+› Compiling react-native Pods/React-RCTAnimation » RCTAnimationUtils.mm
+› Compiling react-native Pods/React-RCTAnimation » RCTAnimationPlugins.mm
+› Compiling react-native Pods/React-RCTAnimation » RCTAnimatedNode.mm
+› Compiling react-native Pods/React-RCTAnimation » RCTAdditionAnimatedNode.mm
+› Packaging react-native Pods/React-RCTImage » libReact-RCTImage.a
+› Packaging react-native Pods/React-RCTBlob » libReact-RCTBlob.a
+› Compiling react-native Pods/React-FabricComponents » UnimplementedViewShadowNode.cpp

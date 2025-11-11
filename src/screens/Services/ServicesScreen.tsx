@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { View, Text, ActivityIndicator, ScrollView, Pressable, TextInput, FlatList, RefreshControl, Platform, ActionSheetIOS, Alert } from 'react-native';
 import { useRoute, useFocusEffect } from '@react-navigation/native';
 import { getServicesGroupedByCategory, getAllActiveServices } from '../../services/serviceCatalogService';
-import type { Service } from '../../types/Service';
+import type { Service } from '../../types/service';
 import { useToast } from '../../components/feedback/useToast';
 import ServiceCardLarge from '../../components/ServiceCardLarge';
 import useNetworkStore from '../../store/useNetworkStore';
@@ -10,8 +10,11 @@ import { useSessionStore } from '../../store/useSessionStore';
 import { primeNextSlotsForServices, getCachedNextSlot, getNextSlotsForServices, getNextSlotsLastUpdated } from '../../services/bookingService';
 import { formatDate, formatTime } from '../../utils/formatDate';
 import { light as hapticLight } from '../../utils/haptics';
+import { useTheme } from '../../theme';
+import { Button, Card, Icon, Badge, Input, SectionHeader, Skeleton } from '../../components/ui';
 
 export default function ServicesScreen({ navigation }: any): JSX.Element {
+  const theme = useTheme();
   type CategorySection = { category: string; data: (Service & { popularity_score?: number | null })[] };
   const [loading, setLoading] = useState(true);
   const [groups, setGroups] = useState<Record<string, (Service & { popularity_score?: number | null })[]>>({});
@@ -377,8 +380,21 @@ export default function ServicesScreen({ navigation }: any): JSX.Element {
 
   if (loading) {
     return (
-      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-        <ActivityIndicator />
+      <View style={{ flex: 1, backgroundColor: theme.colors.darkBg, padding: theme.spacing.base }}>
+        <Skeleton variant="text" width="60%" height={32} style={{ marginBottom: theme.spacing.md }} />
+        <Skeleton variant="rounded" height={48} style={{ marginBottom: theme.spacing.md }} />
+        <View style={{ flexDirection: 'row', gap: theme.spacing.sm, marginBottom: theme.spacing.lg }}>
+          <Skeleton variant="pill" width={100} height={36} />
+          <Skeleton variant="pill" width={120} height={36} />
+        </View>
+        {[0, 1, 2, 3].map((i) => (
+          <Card key={`skeleton-${i}`} variant="default" style={{ marginBottom: theme.spacing.md }}>
+            <Skeleton variant="rounded" height={160} style={{ marginBottom: theme.spacing.md }} />
+            <Skeleton variant="text" width="80%" height={20} style={{ marginBottom: theme.spacing.sm }} />
+            <Skeleton variant="text" width="60%" height={16} style={{ marginBottom: theme.spacing.sm }} />
+            <Skeleton variant="text" width="40%" height={16} />
+          </Card>
+        ))}
       </View>
     );
   }
@@ -407,41 +423,51 @@ export default function ServicesScreen({ navigation }: any): JSX.Element {
         ListEmptyComponent={<Text>{searching ? 'Searching…' : 'No services match.'}</Text>}
         ListHeaderComponent={
           <View onLayout={(e) => setSearchHeaderHeight(e.nativeEvent.layout.height)}>
-            <View style={{ position: 'relative', marginBottom: 8 }}>
+            <View style={{ position: 'relative', marginBottom: theme.spacing.sm }}>
               <TextInput
                 placeholder="Search services"
+                placeholderTextColor={theme.colors.textTertiary}
                 value={search}
                 onChangeText={setSearch}
                 autoCapitalize="none"
                 autoCorrect={false}
                 accessibilityLabel="Search services"
-                style={{ borderWidth: 1, borderColor: '#eee', borderRadius: 10, padding: 10, paddingRight: 36 }}
+                style={{
+                  borderWidth: 1,
+                  borderColor: theme.colors.borderSecondary,
+                  borderRadius: theme.radius.md,
+                  padding: theme.spacing.md,
+                  paddingRight: 36,
+                  backgroundColor: theme.colors.cardBg,
+                  color: theme.colors.textPrimary
+                }}
               />
               {!!search && (
-                <Pressable accessibilityRole="button" accessibilityLabel="Clear search" onPress={() => setSearch('')} style={({ pressed }) => ({ position: 'absolute', right: 4, top: 4, paddingHorizontal: 12, paddingVertical: 10, borderRadius: 12, minHeight: 44, minWidth: 44, alignItems: 'center', justifyContent: 'center', opacity: pressed ? 0.8 : 1 })}>
-                  <Text style={{ fontSize: 16 }}>×</Text>
+                <Pressable accessibilityRole="button" accessibilityLabel="Clear search" onPress={() => setSearch('')} style={({ pressed }) => ({ position: 'absolute', right: 4, top: 4, paddingHorizontal: theme.spacing.md, paddingVertical: theme.spacing.md, borderRadius: theme.radius.md, minHeight: 44, minWidth: 44, alignItems: 'center', justifyContent: 'center', opacity: pressed ? 0.8 : 1 })}>
+                  <Text style={{ fontSize: 16, color: theme.colors.textSecondary }}>×</Text>
                 </Pressable>
               )}
             </View>
-            <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 8 }}>
-            <Pressable
-              accessibilityRole="switch"
-              accessibilityLabel="Online only"
-              onPress={() => { hapticLight(); setOnlineOnly((v) => !v); }}
-              style={({ pressed }) => ({ paddingHorizontal: 12, paddingVertical: 10, borderRadius: 9999, borderWidth: 1, borderColor: '#ddd', marginRight: 10, minHeight: 44, justifyContent: 'center', opacity: pressed ? 0.9 : 1 })}
-            >
-              <Text>{onlineOnly ? 'Online only: ON' : 'Online only: OFF'}</Text>
-            </Pressable>
-              <Pressable
-                accessibilityRole="button"
-                accessibilityLabel="Sort services"
+            <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: theme.spacing.sm, gap: theme.spacing.sm }}>
+              <Button
+                variant={onlineOnly ? 'primary' : 'secondary'}
+                size="sm"
+                onPress={() => { hapticLight(); setOnlineOnly((v) => !v); }}
+                accessibilityLabel="Online only"
+                accessibilityHint={onlineOnly ? 'Currently showing online services only' : 'Show online services only'}
+              >
+                {onlineOnly ? 'Online: ON' : 'Online: OFF'}
+              </Button>
+              <Button
+                variant="secondary"
+                size="sm"
                 onPress={() => {
                   const options = ['Name A→Z', 'Price (low→high)', 'Duration (short→long)', 'Cancel'];
-                const apply = (idx: number | undefined | null) => {
-                  if (idx === 0) { setSortKey('name'); hapticLight(); }
-                  else if (idx === 1) { setSortKey('price'); hapticLight(); }
-                  else if (idx === 2) { setSortKey('duration'); hapticLight(); }
-                };
+                  const apply = (idx: number | undefined | null) => {
+                    if (idx === 0) { setSortKey('name'); hapticLight(); }
+                    else if (idx === 1) { setSortKey('price'); hapticLight(); }
+                    else if (idx === 2) { setSortKey('duration'); hapticLight(); }
+                  };
                   if (Platform.OS === 'ios' && ActionSheetIOS) {
                     ActionSheetIOS.showActionSheetWithOptions({ options, cancelButtonIndex: 3 }, apply);
                   } else {
@@ -453,116 +479,127 @@ export default function ServicesScreen({ navigation }: any): JSX.Element {
                     ]);
                   }
                 }}
-                style={({ pressed }) => ({ paddingHorizontal: 12, paddingVertical: 10, borderRadius: 9999, borderWidth: 1, borderColor: '#ddd', minHeight: 44, justifyContent: 'center', opacity: pressed ? 0.9 : 1 })}
+                accessibilityLabel="Sort services"
               >
-                <Text>Sort: {sortKey === 'name' ? 'Name' : sortKey === 'price' ? 'Price' : 'Duration'}</Text>
-              </Pressable>
+                Sort: {sortKey === 'name' ? 'Name' : sortKey === 'price' ? 'Price' : 'Duration'}
+              </Button>
             </View>
             {/* Live region announcing result count in search mode + Reset */}
-            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
-              <Text accessibilityLiveRegion="polite" style={{ color: '#666' }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: theme.spacing.sm }}>
+              <Text accessibilityLiveRegion="polite" style={{ color: theme.colors.textSecondary, fontSize: theme.typography.fontSize.sm }}>
                 Showing {results.length}{searching ? '+' : ''} services
               </Text>
-              <Pressable accessibilityRole="button" accessibilityLabel="Reset filters" onPress={resetAll} style={({ pressed }) => ({ paddingHorizontal: 10, paddingVertical: 6, borderWidth: 1, borderColor: '#ddd', borderRadius: 8, opacity: pressed ? 0.9 : 1 })}>
-                <Text>Reset</Text>
-              </Pressable>
+              <Button
+                variant="ghost"
+                size="sm"
+                onPress={resetAll}
+                accessibilityLabel="Reset filters"
+              >
+                Reset
+              </Button>
             </View>
             {!isOnline && (
-              <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 8 }}>
-                <Text style={{ color: '#666', marginRight: 10 }}>You’re offline—tap retry</Text>
-                <Pressable accessibilityRole="button" accessibilityLabel="Retry" onPress={loadData} style={({ pressed }) => ({ paddingHorizontal: 12, paddingVertical: 10, borderRadius: 8, borderWidth: 1, borderColor: '#ddd', minHeight: 44, justifyContent: 'center', opacity: pressed ? 0.9 : 1 })}>
-                  <Text style={{ fontWeight: '700' }}>Retry</Text>
-                </Pressable>
-              </View>
+              <Card variant="elevated" padding="md" style={{ marginBottom: theme.spacing.sm }}>
+                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+                  <View style={{ flexDirection: 'row', alignItems: 'center', flex: 1 }}>
+                    <Icon name="WifiOff" size={16} color={theme.colors.warning} style={{ marginRight: theme.spacing.sm }} />
+                    <Text style={{ color: theme.colors.textSecondary, fontSize: theme.typography.fontSize.sm }}>You're offline</Text>
+                  </View>
+                  <Button
+                    variant="secondary"
+                    size="sm"
+                    onPress={loadData}
+                    accessibilityLabel="Retry"
+                  >
+                    Retry
+                  </Button>
+                </View>
+              </Card>
             )}
             {recent.length > 0 && (
-              <View style={{ marginBottom: 8 }}>
-                <View style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center' }}>
+              <View style={{ marginBottom: theme.spacing.sm }}>
+                <Text style={{ color: theme.colors.textSecondary, fontSize: theme.typography.fontSize.sm, marginBottom: theme.spacing.xs }}>Recent searches</Text>
+                <View style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: theme.spacing.xs }}>
                   {recent.map((r) => (
-                    <Pressable key={r} onPress={() => setSearch(r)} style={({ pressed }) => ({ paddingHorizontal: 12, paddingVertical: 10, borderWidth: 1, borderColor: '#ddd', borderRadius: 9999, marginRight: 6, marginBottom: 6, minHeight: 44, justifyContent: 'center', opacity: pressed ? 0.9 : 1 })}>
-                      <Text>{r}</Text>
-                    </Pressable>
+                    <Badge
+                      key={r}
+                      variant="secondary"
+                      size="md"
+                      shape="pill"
+                      onPress={() => setSearch(r)}
+                    >
+                      {r}
+                    </Badge>
                   ))}
-                  <Pressable onPress={() => setRecent([])} style={({ pressed }) => ({ paddingHorizontal: 12, paddingVertical: 10, borderWidth: 1, borderColor: '#ddd', borderRadius: 9999, marginBottom: 6, minHeight: 44, justifyContent: 'center', opacity: pressed ? 0.9 : 1 })}>
-                    <Text>Clear history</Text>
-                  </Pressable>
+                  <Badge
+                    variant="ghost"
+                    size="md"
+                    shape="pill"
+                    onPress={() => setRecent([])}
+                  >
+                    Clear history
+                  </Badge>
                 </View>
               </View>
             )}
             {/* Recently viewed chips in search mode */}
             {recentViewedIds.length > 0 && (
-              <View style={{ marginBottom: 8 }}>
-                <Text style={{ color: '#666', marginBottom: 6 }}>Recently viewed</Text>
-                <View style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center' }}>
+              <View style={{ marginBottom: theme.spacing.sm }}>
+                <Text style={{ color: theme.colors.textSecondary, fontSize: theme.typography.fontSize.sm, marginBottom: theme.spacing.xs }}>Recently viewed</Text>
+                <View style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: theme.spacing.xs }}>
                   {recentViewedIds
                     .map((id) => ({ id, name: (allServices.find((s: any) => s.id === id)?.name) || 'View' }))
                     .map(({ id, name }) => (
-                      <Pressable
+                      <Badge
                         key={`rv-${id}`}
+                        variant="primary"
+                        size="md"
+                        shape="pill"
                         onPress={() => navigation.navigate('Services', { screen: 'ServiceDetail', params: { serviceId: id } })}
-                        style={({ pressed }) => ({ paddingHorizontal: 12, paddingVertical: 10, borderWidth: 1, borderColor: '#ddd', borderRadius: 9999, marginRight: 6, marginBottom: 6, minHeight: 44, justifyContent: 'center', opacity: pressed ? 0.9 : 1 })}
                       >
-                        <Text numberOfLines={1}>{name}</Text>
-                      </Pressable>
+                        {name}
+                      </Badge>
                     ))}
                 </View>
               </View>
             )}
             {/* Quick filters: Price & Duration */}
-            <View style={{ marginBottom: 8 }}>
-              <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 6 }}>
-                <Text style={{ marginRight: 10 }}>Price:</Text>
-            {[
-              { k: 'p0', label: '₹0–999' },
-              { k: 'p1', label: '₹1k–1.9k' },
-              { k: 'p2', label: '₹2k+' },
-            ].map((f: any) => (
-              <Pressable
-                key={f.k}
-                onPress={() => { hapticLight(); setPriceFilter((prev) => (prev === f.k ? null : (f.k as any))); }}
-                style={({ pressed }) => ({
-                      paddingHorizontal: 10,
-                      paddingVertical: 8,
-                      borderWidth: 1,
-                      borderColor: priceFilter === f.k ? '#333' : '#ddd',
-                      backgroundColor: priceFilter === f.k ? '#f2f2f2' : 'transparent',
-                      borderRadius: 9999,
-                      marginRight: 8,
-                      minHeight: 36,
-                      justifyContent: 'center',
-                      opacity: pressed ? 0.9 : 1,
-                    })}
+            <View style={{ marginBottom: theme.spacing.sm }}>
+              <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: theme.spacing.xs, flexWrap: 'wrap', gap: theme.spacing.xs }}>
+                <Text style={{ marginRight: theme.spacing.sm, color: theme.colors.textSecondary, fontSize: theme.typography.fontSize.sm }}>Price:</Text>
+                {[
+                  { k: 'p0', label: '₹0–999' },
+                  { k: 'p1', label: '₹1k–1.9k' },
+                  { k: 'p2', label: '₹2k+' },
+                ].map((f: any) => (
+                  <Badge
+                    key={f.k}
+                    variant={priceFilter === f.k ? 'primary' : 'secondary'}
+                    size="sm"
+                    shape="pill"
+                    onPress={() => { hapticLight(); setPriceFilter((prev) => (prev === f.k ? null : (f.k as any))); }}
                   >
-                    <Text>{f.label}</Text>
-                  </Pressable>
+                    {f.label}
+                  </Badge>
                 ))}
               </View>
-              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                <Text style={{ marginRight: 10 }}>Duration:</Text>
-            {[
-              { k: 'd30', label: '≤30m' },
-              { k: 'd45', label: '≤45m' },
-              { k: 'd60', label: '≤60m' },
-              { k: 'd60plus', label: '>60m' },
-            ].map((f: any) => (
-              <Pressable
-                key={f.k}
-                onPress={() => { hapticLight(); setDurationFilter((prev) => (prev === f.k ? null : (f.k as any))); }}
-                style={({ pressed }) => ({
-                      paddingHorizontal: 10,
-                      paddingVertical: 8,
-                      borderWidth: 1,
-                      borderColor: durationFilter === f.k ? '#333' : '#ddd',
-                      backgroundColor: durationFilter === f.k ? '#f2f2f2' : 'transparent',
-                      borderRadius: 9999,
-                      marginRight: 8,
-                      minHeight: 36,
-                      justifyContent: 'center',
-                      opacity: pressed ? 0.9 : 1,
-                    })}
+              <View style={{ flexDirection: 'row', alignItems: 'center', flexWrap: 'wrap', gap: theme.spacing.xs }}>
+                <Text style={{ marginRight: theme.spacing.sm, color: theme.colors.textSecondary, fontSize: theme.typography.fontSize.sm }}>Duration:</Text>
+                {[
+                  { k: 'd30', label: '≤30m' },
+                  { k: 'd45', label: '≤45m' },
+                  { k: 'd60', label: '≤60m' },
+                  { k: 'd60plus', label: '>60m' },
+                ].map((f: any) => (
+                  <Badge
+                    key={f.k}
+                    variant={durationFilter === f.k ? 'primary' : 'secondary'}
+                    size="sm"
+                    shape="pill"
+                    onPress={() => { hapticLight(); setDurationFilter((prev) => (prev === f.k ? null : (f.k as any))); }}
                   >
-                    <Text>{f.label}</Text>
-                  </Pressable>
+                    {f.label}
+                  </Badge>
                 ))}
               </View>
             </View>
@@ -581,84 +618,42 @@ export default function ServicesScreen({ navigation }: any): JSX.Element {
   // If offline with no cache, show skeletons instead of empty grouped view
   if ((order.length === 0 || Object.values(displayedGroups).every((arr) => (arr?.length ?? 0) === 0)) && !isOnline && allServices.length === 0) {
     return (
-      <ScrollView style={{ flex: 1 }} contentContainerStyle={{ padding: 12 }} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
-        <View style={{ position: 'relative', marginBottom: 8 }}>
+      <ScrollView style={{ flex: 1, backgroundColor: theme.colors.darkBg }} contentContainerStyle={{ padding: theme.spacing.base }} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
+        <View style={{ position: 'relative', marginBottom: theme.spacing.sm }}>
           <TextInput
             placeholder="Search services"
+            placeholderTextColor={theme.colors.textTertiary}
             value={search}
             onChangeText={setSearch}
             autoCapitalize="none"
             autoCorrect={false}
-            style={{ borderWidth: 1, borderColor: '#eee', borderRadius: 10, padding: 10, paddingRight: 36 }}
+            style={{
+              borderWidth: 1,
+              borderColor: theme.colors.borderSecondary,
+              borderRadius: theme.radius.md,
+              padding: theme.spacing.md,
+              paddingRight: 36,
+              backgroundColor: theme.colors.cardBg,
+              color: theme.colors.textPrimary
+            }}
           />
         </View>
-        {/* Quick filters: Price & Duration */}
-        <View style={{ marginBottom: 8 }}>
-          <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 6 }}>
-            <Text style={{ marginRight: 10 }}>Price:</Text>
-            {[
-              { k: 'p0', label: '₹0–999' },
-              { k: 'p1', label: '₹1k–1.9k' },
-              { k: 'p2', label: '₹2k+' },
-            ].map((f: any) => (
-              <Pressable
-                key={f.k}
-                onPress={() => { hapticLight(); setPriceFilter((prev) => (prev === f.k ? null : (f.k as any))); }}
-                style={({ pressed }) => ({
-                  paddingHorizontal: 10,
-                  paddingVertical: 8,
-                  borderWidth: 1,
-                  borderColor: priceFilter === f.k ? '#333' : '#ddd',
-                  backgroundColor: priceFilter === f.k ? '#f2f2f2' : 'transparent',
-                  borderRadius: 9999,
-                  marginRight: 8,
-                  minHeight: 36,
-                  justifyContent: 'center',
-                  opacity: pressed ? 0.9 : 1,
-                })}
-              >
-                <Text>{f.label}</Text>
-              </Pressable>
-            ))}
-          </View>
+        {/* Offline notice */}
+        <Card variant="elevated" padding="md" style={{ marginBottom: theme.spacing.md }}>
           <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-            <Text style={{ marginRight: 10 }}>Duration:</Text>
-            {[
-              { k: 'd30', label: '≤30m' },
-              { k: 'd45', label: '≤45m' },
-              { k: 'd60', label: '≤60m' },
-              { k: 'd60plus', label: '>60m' },
-            ].map((f: any) => (
-              <Pressable
-                key={f.k}
-                onPress={() => { hapticLight(); setDurationFilter((prev) => (prev === f.k ? null : (f.k as any))); }}
-                style={({ pressed }) => ({
-                  paddingHorizontal: 10,
-                  paddingVertical: 8,
-                  borderWidth: 1,
-                  borderColor: durationFilter === f.k ? '#333' : '#ddd',
-                  backgroundColor: durationFilter === f.k ? '#f2f2f2' : 'transparent',
-                  borderRadius: 9999,
-                  marginRight: 8,
-                  minHeight: 36,
-                  justifyContent: 'center',
-                  opacity: pressed ? 0.9 : 1,
-                })}
-              >
-                <Text>{f.label}</Text>
-              </Pressable>
-            ))}
+            <Icon name="WifiOff" size={20} color={theme.colors.warning} style={{ marginRight: theme.spacing.sm }} />
+            <Text style={{ color: theme.colors.textPrimary, fontWeight: theme.typography.fontWeight.bold }}>You're offline</Text>
           </View>
-        </View>
-        {[0,1,2,3].map((i) => (
-          <View key={`skel-${i}`} style={{ backgroundColor: '#fff', borderRadius: 12, borderWidth: 1, borderColor: '#eee', marginBottom: 12, overflow: 'hidden' }}>
-            <View style={{ height: 160, backgroundColor: '#f0f0f0' }} />
-            <View style={{ padding: 12 }}>
-              <View style={{ width: '70%', height: 14, backgroundColor: '#eee', borderRadius: 8, marginBottom: 8 }} />
-              <View style={{ width: '90%', height: 12, backgroundColor: '#f2f2f2', borderRadius: 8, marginBottom: 6 }} />
-              <View style={{ width: '50%', height: 12, backgroundColor: '#eee', borderRadius: 8 }} />
-            </View>
-          </View>
+          <Text style={{ color: theme.colors.textSecondary, marginTop: theme.spacing.xs }}>Loading cached data or check your connection</Text>
+        </Card>
+        {/* Skeleton loading states */}
+        {[0, 1, 2, 3].map((i) => (
+          <Card key={`skel-${i}`} variant="default" style={{ marginBottom: theme.spacing.md }}>
+            <Skeleton variant="rounded" height={160} style={{ marginBottom: theme.spacing.md }} />
+            <Skeleton variant="text" width="80%" height={20} style={{ marginBottom: theme.spacing.sm }} />
+            <Skeleton variant="text" width="60%" height={16} style={{ marginBottom: theme.spacing.sm }} />
+            <Skeleton variant="text" width="40%" height={16} />
+          </Card>
         ))}
       </ScrollView>
     );
@@ -669,47 +664,58 @@ export default function ServicesScreen({ navigation }: any): JSX.Element {
   return (
     <ScrollView
       ref={scrollRef}
+      style={{ flex: 1, backgroundColor: theme.colors.darkBg }}
       refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
       keyboardShouldPersistTaps="handled"
-      contentContainerStyle={{ paddingBottom: 12 }}
+      contentContainerStyle={{ paddingBottom: theme.spacing.base }}
     >
-      <View collapsable={false} style={{ paddingHorizontal: 12 }} onLayout={(e) => setHeaderHeight(e.nativeEvent.layout.height)}>
-        <View style={{ position: 'relative', marginBottom: 8 }}>
+      <View collapsable={false} style={{ paddingHorizontal: theme.spacing.base }} onLayout={(e) => setHeaderHeight(e.nativeEvent.layout.height)}>
+        <View style={{ position: 'relative', marginBottom: theme.spacing.sm }}>
           <TextInput
             placeholder="Search services"
+            placeholderTextColor={theme.colors.textTertiary}
             value={search}
             onChangeText={setSearch}
             autoCapitalize="none"
             autoCorrect={false}
             accessibilityLabel="Search services"
-            style={{ borderWidth: 1, borderColor: '#eee', borderRadius: 10, padding: 10, paddingRight: 44 }}
+            style={{
+              borderWidth: 1,
+              borderColor: theme.colors.borderSecondary,
+              borderRadius: theme.radius.md,
+              padding: theme.spacing.md,
+              paddingRight: 44,
+              backgroundColor: theme.colors.cardBg,
+              color: theme.colors.textPrimary
+            }}
           />
           {!!search && (
-            <Pressable accessibilityRole="button" accessibilityLabel="Clear search" onPress={() => setSearch('')} style={({ pressed }) => ({ position: 'absolute', right: 4, top: 4, paddingHorizontal: 12, paddingVertical: 10, borderRadius: 12, minHeight: 44, minWidth: 44, alignItems: 'center', justifyContent: 'center', opacity: pressed ? 0.8 : 1 })}>
-              <Text style={{ fontSize: 16 }}>×</Text>
+            <Pressable accessibilityRole="button" accessibilityLabel="Clear search" onPress={() => setSearch('')} style={({ pressed }) => ({ position: 'absolute', right: 4, top: 4, paddingHorizontal: theme.spacing.md, paddingVertical: theme.spacing.md, borderRadius: theme.radius.md, minHeight: 44, minWidth: 44, alignItems: 'center', justifyContent: 'center', opacity: pressed ? 0.8 : 1 })}>
+              <Text style={{ fontSize: 16, color: theme.colors.textSecondary }}>×</Text>
             </Pressable>
           )}
         </View>
         {/* Quick filters */}
-        <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 8 }}>
-            <Pressable
-              accessibilityRole="switch"
-              accessibilityLabel="Online only"
-              onPress={() => { hapticLight(); setOnlineOnly((v) => !v); }}
-              style={({ pressed }) => ({ paddingHorizontal: 12, paddingVertical: 10, borderRadius: 9999, borderWidth: 1, borderColor: '#ddd', marginRight: 10, minHeight: 44, justifyContent: 'center', opacity: pressed ? 0.9 : 1 })}
-            >
-            <Text>{onlineOnly ? 'Online only: ON' : 'Online only: OFF'}</Text>
-          </Pressable>
-          <Pressable
-            accessibilityRole="button"
-            accessibilityLabel="Sort services"
+        <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: theme.spacing.sm, gap: theme.spacing.sm }}>
+          <Button
+            variant={onlineOnly ? 'primary' : 'secondary'}
+            size="sm"
+            onPress={() => { hapticLight(); setOnlineOnly((v) => !v); }}
+            accessibilityLabel="Online only"
+            accessibilityHint={onlineOnly ? 'Currently showing online services only' : 'Show online services only'}
+          >
+            {onlineOnly ? 'Online: ON' : 'Online: OFF'}
+          </Button>
+          <Button
+            variant="secondary"
+            size="sm"
             onPress={() => {
               const options = ['Name A→Z', 'Price (low→high)', 'Duration (short→long)', 'Cancel'];
-                const apply = (idx: number | undefined | null) => {
-                  if (idx === 0) { setSortKey('name'); hapticLight(); }
-                  else if (idx === 1) { setSortKey('price'); hapticLight(); }
-                  else if (idx === 2) { setSortKey('duration'); hapticLight(); }
-                };
+              const apply = (idx: number | undefined | null) => {
+                if (idx === 0) { setSortKey('name'); hapticLight(); }
+                else if (idx === 1) { setSortKey('price'); hapticLight(); }
+                else if (idx === 2) { setSortKey('duration'); hapticLight(); }
+              };
               if (Platform.OS === 'ios' && ActionSheetIOS) {
                 ActionSheetIOS.showActionSheetWithOptions({ options, cancelButtonIndex: 3 }, apply);
               } else {
@@ -721,102 +727,109 @@ export default function ServicesScreen({ navigation }: any): JSX.Element {
                 ]);
               }
             }}
-            style={({ pressed }) => ({ paddingHorizontal: 12, paddingVertical: 10, borderRadius: 9999, borderWidth: 1, borderColor: '#ddd', minHeight: 44, justifyContent: 'center', opacity: pressed ? 0.9 : 1 })}
+            accessibilityLabel="Sort services"
           >
-            <Text>Sort: {sortKey === 'name' ? 'Name' : sortKey === 'price' ? 'Price' : 'Duration'}</Text>
-          </Pressable>
+            Sort: {sortKey === 'name' ? 'Name' : sortKey === 'price' ? 'Price' : 'Duration'}
+          </Button>
         </View>
         {/* Recently viewed chips (if any) */}
         {recentViewedIds.length > 0 && (
-          <View style={{ marginBottom: 8 }}>
-            <Text style={{ color: '#666', marginBottom: 6 }}>Recently viewed</Text>
-            <View style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center' }}>
+          <View style={{ marginBottom: theme.spacing.sm }}>
+            <Text style={{ color: theme.colors.textSecondary, fontSize: theme.typography.fontSize.sm, marginBottom: theme.spacing.xs }}>Recently viewed</Text>
+            <View style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: theme.spacing.xs }}>
               {recentViewedIds
                 .map((id) => ({ id, name: (allServices.find((s: any) => s.id === id)?.name) || 'View' }))
                 .map(({ id, name }) => (
-                  <Pressable
+                  <Badge
                     key={`rv-${id}`}
-                    accessibilityRole="button"
-                    accessibilityLabel={`Open ${name}`}
+                    variant="primary"
+                    size="md"
+                    shape="pill"
                     onPress={() => navigation.navigate('Services', { screen: 'ServiceDetail', params: { serviceId: id } })}
-                    style={({ pressed }) => ({ paddingHorizontal: 12, paddingVertical: 10, borderWidth: 1, borderColor: '#ddd', borderRadius: 9999, marginRight: 6, marginBottom: 6, minHeight: 44, justifyContent: 'center', opacity: pressed ? 0.9 : 1 })}
                   >
-                    <Text numberOfLines={1}>{name}</Text>
-                  </Pressable>
+                    {name}
+                  </Badge>
                 ))}
             </View>
           </View>
         )}
         {/* Summary + Reset */}
-        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
-          <Text accessibilityLiveRegion="polite" style={{ color: '#666' }}>
+        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: theme.spacing.sm }}>
+          <Text accessibilityLiveRegion="polite" style={{ color: theme.colors.textSecondary, fontSize: theme.typography.fontSize.sm }}>
             Showing {displayedCount} services
           </Text>
-          <Pressable accessibilityRole="button" accessibilityLabel="Reset filters" onPress={resetAll} style={({ pressed }) => ({ paddingHorizontal: 10, paddingVertical: 6, borderWidth: 1, borderColor: '#ddd', borderRadius: 8, opacity: pressed ? 0.9 : 1 })}>
-            <Text>Reset</Text>
-          </Pressable>
+          <Button
+            variant="ghost"
+            size="sm"
+            onPress={resetAll}
+            accessibilityLabel="Reset filters"
+          >
+            Reset
+          </Button>
         </View>
-        {/* Chips row (avoid FlatList inside ScrollView) */}
-        <ScrollView horizontal keyboardShouldPersistTaps="handled" showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 8 }}>
-          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+        {/* Category chips */}
+        <ScrollView horizontal keyboardShouldPersistTaps="handled" showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingBottom: theme.spacing.sm }}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: theme.spacing.xs }}>
             {order.map((cat) => (
-              <Pressable
+              <Badge
                 key={`chip-${cat}`}
+                variant={activeCategory === cat ? 'primary' : 'secondary'}
+                size="md"
+                shape="pill"
                 onPress={() => handleJump(cat)}
-                onStartShouldSetResponder={() => true}
-                delayPressIn={0}
-                pressRetentionOffset={{ top: 20, bottom: 20, left: 20, right: 20 }}
-                accessibilityRole="button"
-                accessibilityLabel={`Jump to ${cat}`}
-                hitSlop={10}
-                style={({ pressed }) => ({
-                  paddingHorizontal: 12,
-                  paddingVertical: 10,
-                  borderWidth: 1,
-                  borderColor: activeCategory === cat ? '#333' : '#ddd',
-                  backgroundColor: activeCategory === cat ? '#f2f2f2' : 'transparent',
-                  borderRadius: 9999,
-                  marginRight: 8,
-                  minHeight: 44,
-                  minWidth: 44,
-                  justifyContent: 'center',
-                  opacity: pressed ? 0.9 : 1,
-                })}
               >
-                <Text>{cat}</Text>
-              </Pressable>
+                {cat}
+              </Badge>
             ))}
           </View>
         </ScrollView>
         {!isOnline && (
-          <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 8 }}>
-            <Text style={{ color: '#666', marginRight: 10 }}>You’re offline—tap retry</Text>
-            <Pressable accessibilityRole="button" accessibilityLabel="Retry" onPress={loadData} style={({ pressed }) => ({ paddingHorizontal: 12, paddingVertical: 10, borderRadius: 8, borderWidth: 1, borderColor: '#ddd', minHeight: 44, justifyContent: 'center', opacity: pressed ? 0.9 : 1 })}>
-              <Text style={{ fontWeight: '700' }}>Retry</Text>
-            </Pressable>
-          </View>
+          <Card variant="elevated" padding="md" style={{ marginBottom: theme.spacing.sm }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+              <View style={{ flexDirection: 'row', alignItems: 'center', flex: 1 }}>
+                <Icon name="WifiOff" size={16} color={theme.colors.warning} style={{ marginRight: theme.spacing.sm }} />
+                <Text style={{ color: theme.colors.textSecondary, fontSize: theme.typography.fontSize.sm }}>You're offline</Text>
+              </View>
+              <Button
+                variant="secondary"
+                size="sm"
+                onPress={loadData}
+                accessibilityLabel="Retry"
+              >
+                Retry
+              </Button>
+            </View>
+          </Card>
         )}
         {!!lastUpdatedMs && (
-          <Text style={{ color: '#666', marginBottom: 8 }}>Updated {Math.max(0, Math.floor((Date.now() - lastUpdatedMs) / 60000))}m ago</Text>
+          <Text style={{ color: theme.colors.textTertiary, fontSize: theme.typography.fontSize.sm, marginBottom: theme.spacing.sm }}>
+            Updated {Math.max(0, Math.floor((Date.now() - lastUpdatedMs) / 60000))}m ago
+          </Text>
         )}
       </View>
-      <View style={{ paddingHorizontal: 12 }}>
+      <View style={{ paddingHorizontal: theme.spacing.base }}>
         {order.map((cat) => {
           const data = displayedGroups[cat] ?? [];
           return (
             <View key={`sec-${cat}`} onLayout={(e) => { sectionY.current[cat] = e.nativeEvent.layout.y + 0; }}>
-              <View pointerEvents="none" style={{ paddingTop: 8, paddingBottom: 6 }}>
-                <Text accessibilityRole="header" style={{ fontSize: 18, fontWeight: '800', marginBottom: 6 }}>{cat}</Text>
-                <View style={{ height: 1, backgroundColor: '#eee' }} />
-              </View>
+              <SectionHeader
+                title={cat}
+                style={{ marginTop: theme.spacing.sm, marginBottom: theme.spacing.sm }}
+              />
               {(!data || data.length === 0) ? (
                 activeCategory === cat ? (
-                  <View style={{ paddingVertical: 8 }}>
-                    <Text style={{ color: '#666', marginBottom: 6 }}>No active services in {cat}.</Text>
-                    <Pressable accessibilityRole="button" accessibilityLabel="View all services" onPress={clearFiltersOnly} style={({ pressed }) => ({ alignSelf: 'flex-start', paddingHorizontal: 10, paddingVertical: 8, borderWidth: 1, borderColor: '#ddd', borderRadius: 8, opacity: pressed ? 0.9 : 1 })}>
-                      <Text>View all services</Text>
-                    </Pressable>
-                  </View>
+                  <Card variant="default" padding="md" style={{ marginBottom: theme.spacing.md }}>
+                    <Text style={{ color: theme.colors.textSecondary, marginBottom: theme.spacing.sm }}>No active services in {cat}.</Text>
+                    <Button
+                      variant="secondary"
+                      size="sm"
+                      onPress={clearFiltersOnly}
+                      accessibilityLabel="View all services"
+                      style={{ alignSelf: 'flex-start' }}
+                    >
+                      View all services
+                    </Button>
+                  </Card>
                 ) : null
               ) : null}
               {data.map((item, idx) => (

@@ -1,5 +1,3 @@
-import type { PostgrestFilterBuilder } from '@supabase/postgrest-js';
-
 export type NormalizedError = { code?: string; message: string; hint?: string };
 
 export function normalize(error: any): NormalizedError {
@@ -10,9 +8,10 @@ export function normalize(error: any): NormalizedError {
   return { code, message, hint };
 }
 
-export async function sb<T>(q: PostgrestFilterBuilder<any, any, any>): Promise<T> {
-  const { data, error } = await (q as any);
+type QueryPromise<T> = PromiseLike<{ data: T; error: any }>;
+
+export async function sb<T>(q: QueryPromise<T>): Promise<T> {
+  const { data, error } = await q;
   if (error) throw normalize(error);
   return data as T;
 }
-

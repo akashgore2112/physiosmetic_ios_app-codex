@@ -139,13 +139,16 @@ export default function OrderDetailScreen(): JSX.Element {
                   style: 'destructive',
                   onPress: async () => {
                     setCancelling(true);
-                    const res = await cancelOrder(order.id);
-                    if (res.ok) {
+                    try {
+                      await cancelOrder(order.id);
                       showToast('Order cancelled');
                       const data = await getOrderById(order.id);
                       setOrder(data);
-                    } else showToast('Unable to cancel order');
-                    setCancelling(false);
+                    } catch (err: any) {
+                      showToast(err?.message ?? 'Unable to cancel order');
+                    } finally {
+                      setCancelling(false);
+                    }
                   },
                 },
               ]);

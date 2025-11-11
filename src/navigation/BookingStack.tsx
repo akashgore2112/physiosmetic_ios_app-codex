@@ -13,7 +13,7 @@ import BookingSuccessScreen from '../screens/Booking/BookingSuccessScreen';
 export type BookingStackParamList = {
   ServicesMain: undefined;
   ServiceDetail: { serviceName?: string; serviceId?: string };
-  SelectTherapist: { serviceName: string; serviceId: string };
+  SelectTherapist: { serviceName: string; serviceId: string; category?: string; isOnline?: boolean };
   SelectDate: { serviceName: string; serviceId: string; therapistId: string; therapistName: string; appointmentId?: string; oldSlotId?: string };
   SelectTimeSlot: { serviceName: string; serviceId: string; therapistId: string; therapistName: string; date: string; appointmentId?: string; oldSlotId?: string };
   BookingFlow: {
@@ -39,6 +39,12 @@ export type BookingStackParamList = {
     appointmentId: string;
     method: string;
     amount: number;
+  };
+  ConfirmBooking: {
+    serviceId: string;
+    serviceName: string;
+    slot: { id: string; date: string; start_time: string; end_time: string; therapist_id: string; therapistName?: string };
+    appointmentId?: string;
   };
 };
 

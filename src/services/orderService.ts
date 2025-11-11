@@ -1,6 +1,6 @@
 import { supabase } from '../config/supabaseClient';
 import { sb } from './api';
-import type { Order } from '../types/Order';
+import type { Order } from '../types/order';
 import type { OrderItem } from '../types/OrderItem';
 
 export async function getMyOrders(userId: string): Promise<Order[]> {
@@ -14,11 +14,17 @@ export async function getMyOrders(userId: string): Promise<Order[]> {
   return data ?? [];
 }
 
-export async function getOrderItems(orderId: string): Promise<(OrderItem & { product?: { id: string; name: string; price: number; image_url?: string | null; in_stock?: boolean }; variant_id?: string | null; variant_label?: string | null })[]> {
+export type OrderItemWithProduct = OrderItem & {
+  product?: { id: string; name: string; price: number; image_url?: string | null; in_stock?: boolean };
+  variant_id?: string | null;
+  variant_label?: string | null;
+};
+
+export async function getOrderItems(orderId: string): Promise<OrderItemWithProduct[]> {
   const data = await sb<any[]>(
     supabase
       .from('order_items')
-      .select('id,order_id,product_id,variant_id,variant_label,qty,price_each, products:product_id(id,name,price,image_url,in_stock)')
+      .select('id,order_id,product_id,variant_id,variant_label,qty,price_each, product:product_id(id,name,price,image_url,in_stock)')
       .eq('order_id', orderId) as any
   );
   return (data ?? []) as any;
@@ -45,17 +51,43 @@ export async function getReorderItems(orderId: string): Promise<ReorderCartItem[
   const items = await getOrderItems(orderId);
   // Skip unavailable products
   return items
-    .filter((it) => it.products?.in_stock !== false)
+    .filter((it) => it.product?.in_stock !== false)
     .map((it) => ({
       id: it.product_id,
       line_id: it.variant_id ? `${it.product_id}::${it.variant_id}` : it.product_id,
-      name: it.products?.name ?? 'Product',
-      price: it.products?.price ?? it.price_each ?? 0,
-      qty: it.qty,
-      image_url: it.products?.image_url ?? null,
+      name: it.product?.name ?? 'Product',
+      price: it.product?.price ?? it.price_each ?? 0,
+      qty: it.qty ?? 0,
+      image_url: it.product?.image_url ?? null,
       variant_id: it.variant_id ?? null,
       variant_label: it.variant_label ?? null,
     }));
+}
+
+export type OrderDetail = Order & {
+  total_amount?: number | null;
+  discount_amount?: number | null;
+  tax_amount?: number | null;
+  shipping_amount?: number | null;
+  payment_method?: string | null;
+  payment_status?: string | null;
+  gateway_payment_id?: string | null;
+  coupon_code?: string | null;
+  pickup?: boolean;
+  shipping_address?: Record<string, any> | null;
+  items: OrderItemWithProduct[];
+};
+
+export async function getOrderById(orderId: string): Promise<OrderDetail | null> {
+  const { data, error } = await supabase
+    .from('orders')
+    .select('id,user_id,total_amount,discount_amount,tax_amount,shipping_amount,status,created_at,payment_method,payment_status,gateway_payment_id,coupon_code,pickup,shipping_address')
+    .eq('id', orderId)
+    .maybeSingle();
+  if (error) throw error;
+  if (!data) return null;
+  const items = await getOrderItems(orderId);
+  return { ...(data as any), items };
 }
 
 /**
@@ -66,6 +98,7 @@ export async function applyCoupon(
   cart: Array<{ id: string; variant_id?: string | null; qty: number }>
 ): Promise<{
   valid: boolean;
+  code?: string;
   discount?: number;
   subtotal?: number;
   total_after?: number;

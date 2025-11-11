@@ -1,0 +1,9 @@
+Starting project at /Users/akashgore/physiosmetic_ios_app/work_repo/physiosmetic
+Starting Metro Bundler
+The following packages should be updated for best compatibility with the installed expo version:
+  expo@54.0.22 - expected version: 54.0.23
+  expo-network@6.0.1 - expected version: ~8.0.7
+  react-native-reanimated@3.10.1 - expected version: ~4.1.1
+Your project may not work correctly until you install the expected versions of the packages.
+Waiting on http://localhost:8081
+Logs for your project will appear below.

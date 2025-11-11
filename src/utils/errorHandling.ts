@@ -95,7 +95,7 @@ export function mapError(error: any): { code: string; message: string } {
   const message = mapErrorMessage(error);
 
   // Determine error code
-  let code = ERROR_CODES.UNKNOWN;
+  let code: string = ERROR_CODES.UNKNOWN;
 
   if (error.message?.includes('NetworkError') || error.message?.includes('fetch')) {
     code = ERROR_CODES.NETWORK;

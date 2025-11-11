@@ -5,6 +5,8 @@ type Selection = {
   longitude: number;
   line1?: string;
   line2?: string;
+  unit?: string;
+  building?: string;
   city?: string;
   state?: string;
   country?: string;
@@ -27,4 +29,3 @@ export const useMapPickerStore = create<MapPickerState>((set, get) => ({
     return cur;
   },
 }));
-

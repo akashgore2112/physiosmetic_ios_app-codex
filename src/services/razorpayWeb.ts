@@ -78,7 +78,7 @@ export async function openPayment(options: RazorpayOptions): Promise<RazorpaySuc
           window.location.href = 'exp://close?error=cancelled';
         }
       },
-      handler: function(response) {
+      handler: function(response: { razorpay_order_id: string; razorpay_payment_id: string; razorpay_signature: string }) {
         // Payment successful
         const params = new URLSearchParams({
           razorpay_order_id: response.razorpay_order_id,
@@ -92,7 +92,7 @@ export async function openPayment(options: RazorpayOptions): Promise<RazorpaySuc
     // Open Razorpay checkout immediately
     try {
       const rzp = new Razorpay(options);
-      rzp.on('payment.failed', function(response) {
+      rzp.on('payment.failed', function(response: { error: { code?: string; description?: string } }) {
         const params = new URLSearchParams({
           error: 'failed',
           code: response.error.code,

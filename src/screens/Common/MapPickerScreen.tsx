@@ -7,7 +7,7 @@ import { placesAutocomplete, placeDetails, PlaceSuggestion, PlaceDetails, getPla
 import { getCurrentCoords } from '../../services/location';
 import { light as hapticLight } from '../../utils/haptics';
 
-type Coords = { latitude: number; longitude: number; latitudeDelta?: number; longitudeDelta?: number };
+type Coords = { latitude: number; longitude: number; latitudeDelta: number; longitudeDelta: number };
 
 import { useMapPickerStore } from '../../store/useMapPickerStore';
 

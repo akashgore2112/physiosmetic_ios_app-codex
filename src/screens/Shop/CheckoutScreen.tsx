@@ -50,6 +50,7 @@ export default function CheckoutScreen({ navigation }: any): JSX.Element {
   const screenH = Dimensions.get('window').height;
   const snapMid = screenH * 0.45; // ~55% visible
   const snapHigh = screenH * 0.25; // ~75% visible
+  const sheetTranslateYValue = React.useRef(screenH);
   const [pendingAddrId, setPendingAddrId] = useState<string | null>(null);
   const [showHint, setShowHint] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState<'online' | 'stripe' | 'cod'>('online');
@@ -67,15 +68,27 @@ export default function CheckoutScreen({ navigation }: any): JSX.Element {
   } | null>(null);
   const [couponError, setCouponError] = useState<string | null>(null);
   const [applyingCoupon, setApplyingCoupon] = useState(false);
+  React.useEffect(() => {
+    const id = sheetTranslateY.addListener(({ value }) => {
+      sheetTranslateYValue.current = value;
+    });
+    return () => {
+      sheetTranslateY.removeListener(id);
+    };
+  }, [sheetTranslateY]);
+
   const pan = React.useRef(PanResponder.create({
     onStartShouldSetPanResponder: () => true,
     onMoveShouldSetPanResponder: () => true,
     onPanResponderMove: (_evt, gesture) => {
-      const newY = Math.max(0, sheetTranslateY._value + gesture.dy);
+      const current = sheetTranslateYValue.current;
+      const newY = Math.max(0, current + gesture.dy);
       sheetTranslateY.setValue(newY);
+      sheetTranslateYValue.current = newY;
     },
     onPanResponderRelease: (_evt, gesture) => {
-      const to = (gesture.vy > 1 || sheetTranslateY._value > snapMid + 60) ? screenH : (sheetTranslateY._value < snapHigh ? snapHigh : snapMid);
+      const current = sheetTranslateYValue.current;
+      const to = (gesture.vy > 1 || current > snapMid + 60) ? screenH : (current < snapHigh ? snapHigh : snapMid);
       Animated.spring(sheetTranslateY, { toValue: to, useNativeDriver: true, bounciness: 0 }).start(() => {
         if (to === screenH) setAddrSheetOpen(false);
       });
@@ -87,6 +100,7 @@ export default function CheckoutScreen({ navigation }: any): JSX.Element {
     (async () => {
       if (addrSheetOpen) {
         sheetTranslateY.setValue(screenH);
+        sheetTranslateYValue.current = screenH;
         Animated.spring(sheetTranslateY, { toValue: snapMid, useNativeDriver: true, bounciness: 0 }).start(async () => {
           try {
             // eslint-disable-next-line @typescript-eslint/no-var-requires
